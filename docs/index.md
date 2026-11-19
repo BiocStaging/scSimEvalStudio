@@ -1,0 +1,28 @@
+# scSimEvalStudio
+
+**`scSimEvalStudio`** is the interactive Shiny graphical interface
+companion package for
+**[scSimEval](https://github.com/kabilanbio/scSimEval)**
+(`SingleCellExperiment`-based benchmarking of single-cell RNA-seq,
+scATAC-seq, and paired/unpaired multiomics simulations).
+
+## Installation
+
+``` r
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+remotes::install_github("kabilanbio/scSimEval")
+remotes::install_github("kabilanbio/scSimEvalStudio")
+```
+
+## Quick Start
+
+``` r
+library(scSimEvalStudio)
+launch_scSimEval_app()
+```
+
+## Development & Support
+
+- **Maintainer:** Kabilan Sakthivel (`kabilan151414@gmail.com`)
+- **Documentation:** <https://kabilanbio.github.io/scSimEvalStudio/>
+- **Issues:** <https://github.com/kabilanbio/scSimEvalStudio/issues>

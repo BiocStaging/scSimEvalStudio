@@ -1,0 +1,62 @@
+---
+title: "Interactive Single-Cell Simulation Benchmarking with scSimEvalStudio"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Interactive Single-Cell Simulation Benchmarking with scSimEvalStudio}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+**`scSimEvalStudio`** provides the interactive Shiny graphical studio companion for **`scSimEval`**. While `scSimEval` focuses cleanly on Bioconductor programmatic evaluation across `SingleCellExperiment` objects and reproducibility pipelines, `scSimEvalStudio` exposes point-and-click dataset uploads, real-time evaluation progress logs, pre-saved `.rds` exploration, interactive zoomable plots, and Excel/figure exports.
+
+# Launching the Shiny Studio
+
+After installing both `scSimEval` and `scSimEvalStudio`, launch the interactive studio from R:
+
+```{r launch-snippet, eval = FALSE}
+library(scSimEvalStudio)
+launch_scSimEval_app()
+```
+
+By default, `launch_scSimEval_app()` configures `shiny.maxRequestSize` to 10 GiB (`10 * 1024^3`) so large multiomics `.rds` archives can be loaded locally.
+
+# Verifying Application Initialization
+
+In automated or non-interactive environments, you can confirm that the bundled Shiny application initializes cleanly and inspects the bundled demonstration benchmark dataset:
+
+```{r verify-app}
+library(scSimEvalStudio)
+
+app_dir <- system.file("shiny", "scSimEvalApp", package = "scSimEvalStudio")
+dir.exists(app_dir)
+
+app <- shiny::shinyAppDir(app_dir)
+class(app)
+
+demo_file <- file.path(app_dir, "data", "demo_benchmark_data.rds")
+demo_obj <- readRDS(demo_file)
+names(demo_obj)
+head(demo_obj$benchmark_summary_table[, c("Method", "Category", "Metric", "Score")], 6)
+```
+
+# Bioconductor Ecosystem Integration
+
+`scSimEvalStudio` accepts `SingleCellExperiment` objects (including multi-modal `SingleCellExperiment` objects with `altExp` assays and `colData` annotations `cell_type` and `batch`) evaluated directly by `scSimEval::evaluate_simulation_accuracy()` and `scSimEval::evaluate_multiomics_accuracy()`.
+
+# Session Information
+
+```{r session-info}
+sessionInfo()
+```

@@ -1,0 +1,13 @@
+url: https://kabilanbio.github.io/scSimEvalStudio/
+template:
+  bootstrap: 5
+
+home:
+  title: "scSimEvalStudio: Interactive Shiny Studio for scSimEval"
+  description: "Companion graphical Shiny interface for scSimEval SingleCellExperiment benchmarking."
+
+reference:
+  - title: "Launch Studio"
+    contents:
+      - launch_scSimEval_app
+      - scSimEvalStudio-package

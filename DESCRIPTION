@@ -1,0 +1,41 @@
+Package: scSimEvalStudio
+Type: Package
+Title: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking
+Version: 0.99.0
+Authors@R: c(
+    person("Kabilan", "Sakthivel", role = c("aut", "cre"), email = "kabilan151414@gmail.com",
+      comment = c(ORCID = "0009-0002-9422-0938"))
+  )
+Description: Companion graphical Shiny web interface for the 'scSimEval'
+    Bioconductor package. Enables interactive uploading of single-cell RNA-seq,
+    scATAC-seq, and paired or unpaired multiomics SingleCellExperiment datasets,
+    execution of the 56-measure evaluation suite, interactive bubble-matrix and
+    ordination exploration, and export of publication-quality figures and
+    tabular reports.
+License: MIT + file LICENSE
+URL: https://kabilanbio.github.io/scSimEvalStudio/, https://github.com/kabilanbio/scSimEvalStudio
+BugReports: https://github.com/kabilanbio/scSimEvalStudio/issues
+biocViews: GUI, Software, SingleCell, Transcriptomics, ATACSeq, QualityControl, Visualization
+Encoding: UTF-8
+VignetteBuilder: knitr
+Depends:
+    R (>= 4.3.0)
+Imports:
+    scSimEval,
+    shiny,
+    bslib,
+    bsicons,
+    DT,
+    ggplot2,
+    plotly,
+    Matrix,
+    SingleCellExperiment,
+    SummarizedExperiment,
+    openxlsx,
+    writexl,
+    zip
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+Config/roxygen2/version: 8.1.1

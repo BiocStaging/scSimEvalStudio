@@ -1,0 +1,17 @@
+#' @keywords internal
+"_PACKAGE"
+
+#' @importFrom DT datatable
+#' @importFrom Matrix Matrix
+#' @importFrom SingleCellExperiment SingleCellExperiment
+#' @importFrom SummarizedExperiment colData
+#' @importFrom bsicons bs_icon
+#' @importFrom bslib bs_theme
+#' @importFrom ggplot2 ggplot
+#' @importFrom openxlsx createWorkbook
+#' @importFrom plotly plot_ly
+#' @importFrom scSimEval evaluate_multiomics_accuracy evaluate_simulation_accuracy normalize_bubble_scores
+#' @importFrom shiny runApp shinyAppDir
+#' @importFrom writexl write_xlsx
+#' @importFrom zip zip
+NULL

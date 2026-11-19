@@ -1,0 +1,10 @@
+^\.Rproj\.user$
+^.*\.Rproj$
+^\.git$
+^\.gitignore$
+^docs$
+^_pkgdown\.yml$
+^Rplots\.pdf$
+^.*\.Rcheck$
+^.*\.BiocCheck$
+^scSimEvalStudio_.*\.tar\.gz$

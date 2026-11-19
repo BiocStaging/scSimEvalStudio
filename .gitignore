@@ -1,0 +1,6 @@
+.Rproj.user
+*.Rproj
+*.Rcheck/
+*.BiocCheck/
+*.tar.gz
+Rplots.pdf
