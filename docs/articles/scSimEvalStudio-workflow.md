@@ -104,7 +104,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] scSimEval_0.99.10      Matrix_1.7-6           DT_0.34.0             
+#> [1] scSimEval_0.99.11      Matrix_1.7-6           DT_0.34.0             
 #> [4] ggplot2_4.0.4          bslib_0.12.0           shiny_1.14.0          
 #> [7] scSimEvalStudio_0.99.0
 #> 

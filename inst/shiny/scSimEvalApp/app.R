@@ -57,7 +57,7 @@ default_n_cores <- max(1L, min(4L, n_physical_cores - 1L))
 
 sys_hardware_summary <- sprintf("System detected: %d CPU cores", n_physical_cores)
 .studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.0")
-.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.10")
+.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.11")
 
 # Register static resource directory for documentation figures
 fig_dirs <- c(
@@ -4377,7 +4377,7 @@ ui <- page_navbar(
   ),
   
   # ============================================================================
-  # TAB 6: HELP & GETTING STARTED (SIMPLE BEGINNER-FRIENDLY GUIDE - v0.99.10)
+  # TAB 6: HELP & GETTING STARTED (SIMPLE BEGINNER-FRIENDLY GUIDE - v0.99.11)
   # ============================================================================
   nav_panel(
     "Help & Getting Started",
@@ -5308,7 +5308,7 @@ server <- function(input, output, session) {
   }
   
   # ============================================================================
-  # LIVE RUNNING LOGS & DIAGNOSTIC ENGINE (v0.99.10)
+  # LIVE RUNNING LOGS & DIAGNOSTIC ENGINE (v0.99.11)
   # ============================================================================
   # Session-level log storage container (plain environment for safe context-free reading/writing)
   log_storage <- new.env(parent = emptyenv())
