@@ -1962,8 +1962,18 @@ ui <- page_navbar(
       [data-bs-theme='dark'] [style*='color: #3B82F6'],
       [data-bs-theme='dark'] [style*='color: #3B82F6'] *,
       [data-bs-theme='dark'] [style*='color:#3B82F6'],
-      [data-bs-theme='dark'] [style*='color:#3B82F6'] * {
-        color: #38BDF8 !important;
+      [data-bs-theme='dark'] [style*='color:#3B82F6'] *,
+      [data-bs-theme='dark'] [style*='color: #1D4ED8'],
+      [data-bs-theme='dark'] [style*='color: #1D4ED8'] *,
+      [data-bs-theme='dark'] [style*='color:#1D4ED8'],
+      [data-bs-theme='dark'] [style*='color:#1D4ED8'] *,
+      [data-bs-theme='dark'] [style*='color: #1d4ed8'],
+      [data-bs-theme='dark'] [style*='color: #1d4ed8'] *,
+      [data-bs-theme='dark'] [style*='color: #075985'],
+      [data-bs-theme='dark'] [style*='color: #075985'] *,
+      [data-bs-theme='dark'] [style*='color:#075985'],
+      [data-bs-theme='dark'] [style*='color:#075985'] * {
+        color: #7DD3FC !important;
       }
 
       /* Hardcoded deep indigos become radiant soft indigo / violet */
@@ -2006,8 +2016,16 @@ ui <- page_navbar(
       [data-bs-theme='dark'] [style*='color: #4f46e5'],
       [data-bs-theme='dark'] [style*='color: #4f46e5'] *,
       [data-bs-theme='dark'] [style*='color:#4f46e5'],
-      [data-bs-theme='dark'] [style*='color:#4f46e5'] * {
-        color: #A5B4FC !important;
+      [data-bs-theme='dark'] [style*='color:#4f46e5'] *,
+      [data-bs-theme='dark'] [style*='color: #581C87'],
+      [data-bs-theme='dark'] [style*='color: #581C87'] *,
+      [data-bs-theme='dark'] [style*='color:#581C87'],
+      [data-bs-theme='dark'] [style*='color:#581C87'] *,
+      [data-bs-theme='dark'] [style*='color: #5B21B6'],
+      [data-bs-theme='dark'] [style*='color: #5B21B6'] *,
+      [data-bs-theme='dark'] [style*='color:#5B21B6'],
+      [data-bs-theme='dark'] [style*='color:#5B21B6'] * {
+        color: #DDD6FE !important;
       }
 
       /* Hardcoded dark greens become radiant emerald */
@@ -2054,7 +2072,11 @@ ui <- page_navbar(
       [data-bs-theme='dark'] [style*='color: #0d9488'],
       [data-bs-theme='dark'] [style*='color: #0d9488'] *,
       [data-bs-theme='dark'] [style*='color:#0d9488'],
-      [data-bs-theme='dark'] [style*='color:#0d9488'] * {
+      [data-bs-theme='dark'] [style*='color:#0d9488'] *,
+      [data-bs-theme='dark'] [style*='color: #0E6655'],
+      [data-bs-theme='dark'] [style*='color: #0E6655'] *,
+      [data-bs-theme='dark'] [style*='color:#0E6655'],
+      [data-bs-theme='dark'] [style*='color:#0E6655'] * {
         color: #4ADE80 !important;
       }
 
@@ -2117,16 +2139,26 @@ ui <- page_navbar(
       [data-bs-theme='dark'] [style*='background:#F8FAFC'],
       [data-bs-theme='dark'] [style*='background-color: #F8FAFC'],
       [data-bs-theme='dark'] [style*='background-color:#F8FAFC'],
+      [data-bs-theme='dark'] [style*='background: #F1F5F9'],
+      [data-bs-theme='dark'] [style*='background:#F1F5F9'],
+      [data-bs-theme='dark'] [style*='background-color: #F1F5F9'],
+      [data-bs-theme='dark'] [style*='background-color:#F1F5F9'],
+      [data-bs-theme='dark'] [style*='background: #f1f5f9'],
+      [data-bs-theme='dark'] [style*='background: #E2E8F0'],
+      [data-bs-theme='dark'] [style*='background:#E2E8F0'],
       [data-bs-theme='dark'] [style*='background: #EEF2F6'],
       [data-bs-theme='dark'] [style*='background:#EEF2F6'],
       [data-bs-theme='dark'] .bg-white,
       [data-bs-theme='dark'] .bg-light {
+        background: #1E293B !important;
         background-color: #1E293B !important;
         color: #F8FAFC !important;
       }
 
       [data-bs-theme='dark'] [style*='background: #EFF6FF'],
       [data-bs-theme='dark'] [style*='background:#EFF6FF'],
+      [data-bs-theme='dark'] [style*='background: #E0F2FE'],
+      [data-bs-theme='dark'] [style*='background:#E0F2FE'],
       [data-bs-theme='dark'] [style*='background: #F0F9FF'],
       [data-bs-theme='dark'] [style*='background:#F0F9FF'] {
         background: #0C4A6E !important;
@@ -2332,14 +2364,26 @@ ui <- page_navbar(
       [data-bs-theme='dark'] .table,
       [data-bs-theme='dark'] table.dataTable,
       [data-bs-theme='dark'] .table > :not(caption) > * > * {
+        --bs-table-bg: transparent;
+        --bs-table-color: #F8FAFC;
         background-color: transparent !important;
+        box-shadow: none !important;
         color: #F8FAFC !important;
         border-color: #334155 !important;
       }
+      [data-bs-theme='dark'] .table thead,
+      [data-bs-theme='dark'] .table thead tr,
+      [data-bs-theme='dark'] .table thead th,
       [data-bs-theme='dark'] .table-light,
+      [data-bs-theme='dark'] .table-light > tr > th,
       [data-bs-theme='dark'] thead.table-light th {
-        background-color: #1E293B !important;
+        --bs-table-bg: #263449;
+        --bs-table-color: #FFFFFF;
+        background: #263449 !important;
+        background-color: #263449 !important;
+        box-shadow: none !important;
         color: #FFFFFF !important;
+        border-color: #475569 !important;
       }
       [data-bs-theme='dark'] pre,
       [data-bs-theme='dark'] code {
