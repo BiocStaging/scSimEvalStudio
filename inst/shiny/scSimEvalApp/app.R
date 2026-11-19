@@ -1365,6 +1365,18 @@ ui <- page_navbar(
         border: 1px solid #CBD5E1;
         border-radius: 6px;
       }
+      [data-bs-theme='dark'] .sc-zoom-toolbar {
+        background: #1E293B !important;
+        border-color: #334155 !important;
+        color: #F8FAFC !important;
+      }
+      [data-bs-theme='dark'] .sc-zoom-container {
+        background: #0F172A !important;
+        border-color: #334155 !important;
+      }
+      [data-bs-theme='dark'] .sc-zoom-target {
+        background: #0F172A !important;
+      }
       .sc-zoom-slider {
         width: 115px;
         accent-color: #1E3A8A;
@@ -2827,6 +2839,97 @@ ui <- page_navbar(
           return;
         }
 
+        var plotOut = target.querySelector('.shiny-plot-output');
+        var isStaticImg = !plotOut && !!target.querySelector('img');
+        var imgEl = target.querySelector('img');
+
+        if (isStaticImg && imgEl) {
+          if (next === 100) {
+            imgEl.style.width = '100%';
+            imgEl.style.maxWidth = imgEl.dataset.origMaxWidth || '960px';
+            imgEl.style.height = 'auto';
+            target.style.transform = '';
+            target.style.position = 'relative';
+            target.style.top = '';
+            target.style.left = '';
+            target.style.width = '100%';
+            target.style.height = '';
+            stage.style.display = 'block';
+            stage.style.width = '100%';
+            stage.style.height = '';
+            stage.style.overflow = 'visible';
+            delete target.dataset.baseW;
+            delete target.dataset.baseH;
+            delete target.dataset.scStaticZoom;
+            if (container.scrollWidth > container.clientWidth + 2 || container.scrollHeight > container.clientHeight + 2) {
+              container.classList.add('sc-pannable');
+            } else {
+              container.classList.remove('sc-pannable');
+            }
+            window.scSyncZoomBadge(targetId, 100);
+            return;
+          }
+
+          if (!imgEl.dataset.origMaxWidth) {
+            imgEl.dataset.origMaxWidth = imgEl.style.maxWidth || '960px';
+          }
+          if (!target.dataset.baseW || !target.dataset.baseH || Number(target.dataset.baseW) < 40) {
+            var natW = imgEl.naturalWidth || 0;
+            var natH = imgEl.naturalHeight || 0;
+            var curW = imgEl.getBoundingClientRect().width || imgEl.offsetWidth || Math.min(container.clientWidth - 16, natW || 960);
+            var curH = imgEl.getBoundingClientRect().height || imgEl.offsetHeight || (natW > 0 ? Math.round(curW * natH / natW) : 600);
+            if (curW >= 40 && curH >= 40) {
+              target.dataset.baseW = String(Math.round(curW));
+              target.dataset.baseH = String(Math.round(curH));
+            } else {
+              window.scSyncZoomBadge(targetId, next);
+              return;
+            }
+          }
+
+          var sBaseW = Number(target.dataset.baseW);
+          var sBaseH = Number(target.dataset.baseH);
+          var sPrevFactor = prev / 100;
+          var sFactor = next / 100;
+
+          var sRect = container.getBoundingClientRect();
+          var sRelX = (typeof anchorClientX === 'number') ? (anchorClientX - sRect.left) : (container.clientWidth / 2);
+          var sRelY = (typeof anchorClientY === 'number') ? (anchorClientY - sRect.top) : (container.clientHeight / 2);
+          var sContentX = (container.scrollLeft + sRelX) / (sPrevFactor || 1);
+          var sContentY = (container.scrollTop + sRelY) / (sPrevFactor || 1);
+
+          var sScaledW = Math.max(40, Math.round(sBaseW * sFactor));
+          var sScaledH = Math.max(40, Math.round(sBaseH * sFactor));
+
+          stage.style.display = 'inline-block';
+          stage.style.width = sScaledW + 'px';
+          stage.style.height = sScaledH + 'px';
+          stage.style.overflow = 'visible';
+
+          target.style.position = 'relative';
+          target.style.top = '';
+          target.style.left = '';
+          target.style.transform = '';
+          target.style.width = sScaledW + 'px';
+          target.style.height = sScaledH + 'px';
+
+          imgEl.style.maxWidth = 'none';
+          imgEl.style.width = sScaledW + 'px';
+          imgEl.style.height = sScaledH + 'px';
+          target.dataset.scStaticZoom = String(next);
+
+          container.scrollLeft = Math.max(0, Math.round(sContentX * sFactor - sRelX));
+          container.scrollTop = Math.max(0, Math.round(sContentY * sFactor - sRelY));
+
+          if (container.scrollWidth > container.clientWidth + 2 || container.scrollHeight > container.clientHeight + 2 || next > 100) {
+            container.classList.add('sc-pannable');
+          } else {
+            container.classList.remove('sc-pannable');
+          }
+          window.scSyncZoomBadge(targetId, next);
+          return;
+        }
+
         if (next === 100) {
           target.style.transform = '';
           target.style.position = 'relative';
@@ -2848,8 +2951,7 @@ ui <- page_navbar(
           return;
         }
 
-        var plotEl = target.querySelector('.shiny-plot-output') || target;
-        var imgEl = target.querySelector('img');
+        var plotEl = plotOut || target;
         if (imgEl && imgEl.src && target.dataset.lastImgSrc !== imgEl.src) {
           target.dataset.lastImgSrc = imgEl.src;
           delete target.dataset.baseW;
@@ -2936,7 +3038,7 @@ ui <- page_navbar(
         var target = document.getElementById('zoom_target_' + targetId);
         if (!container || !target) return;
         window.scZoomSet(targetId, 100);
-        var plotEl = target.querySelector('.shiny-plot-output') || target;
+        var plotEl = target.querySelector('.shiny-plot-output') || target.querySelector('img') || target;
         var bw = plotEl.offsetWidth || target.offsetWidth;
         var bh = plotEl.offsetHeight || target.offsetHeight;
         if (!bw || !bh) return;
@@ -3003,8 +3105,8 @@ ui <- page_navbar(
         }
 
         function fitImage() {
-          var nw = img.naturalWidth || img.width || 900;
-          var nh = img.naturalHeight || img.height || 600;
+          var nw = img.naturalWidth || srcImg.naturalWidth || img.width || 900;
+          var nh = img.naturalHeight || srcImg.naturalHeight || img.height || 600;
           var vw = window.innerWidth * 0.90;
           var vh = (window.innerHeight - 90) * 0.92;
           state.scale = Math.max(0.1, Math.min(4, Math.min(vw / nw, vh / nh)));
@@ -3026,7 +3128,8 @@ ui <- page_navbar(
           applyTransform();
         }
 
-        if (img.complete) fitImage(); else img.onload = fitImage;
+        img.onload = fitImage;
+        if (img.complete && img.naturalWidth > 0) fitImage();
 
         canvas.addEventListener('wheel', function(e) {
           e.preventDefault();
@@ -3171,7 +3274,12 @@ ui <- page_navbar(
               var target = document.getElementById('zoom_target_' + targetId);
               if (target && level && level !== 100) {
                 var imgEl = target.querySelector('img');
-                if (!target.style.transform || (imgEl && imgEl.src && target.dataset.lastImgSrc !== imgEl.src)) {
+                var isStatic = !target.querySelector('.shiny-plot-output') && !!imgEl;
+                if (isStatic) {
+                  if (target.dataset.scStaticZoom !== String(level)) {
+                    window.scZoomSet(targetId, level);
+                  }
+                } else if (!target.style.transform || (imgEl && imgEl.src && target.dataset.lastImgSrc !== imgEl.src)) {
                   window.scZoomSet(targetId, level);
                 }
               }
@@ -4378,14 +4486,15 @@ ui <- page_navbar(
             # ==================================================================
             h5(icon("sitemap", style = "color: #2E86C1; margin-right: 8px;"), "1. How scSimEval Works (4 Simple Steps)", style = "font-weight: 700; color: #1B4F72; margin-bottom: 10px;"),
             div(
-              style = "text-align: center; margin: 14px auto 16px auto; max-width: 980px;",
+              style = "text-align: center; margin: 14px auto 16px auto; width: 100%; max-width: 980px;",
               with_step_zoom(
                 "workflow_diagram",
                 tags$img(
                   src = "scfigures/workflow_diagram.png",
                   alt = "scSimEval Benchmarking Workflow Architecture",
                   style = "width: 100%; max-width: 960px; height: auto; display: block; margin: 0 auto; border-radius: 8px; border: 1px solid #E2E8F0;"
-                )
+                ),
+                max_height = "700px"
               ),
               p(
                 tags$b("Figure 1 | The 4-Step scSimEval Workflow. "),
@@ -4540,14 +4649,15 @@ ui <- page_navbar(
             # ==================================================================
             h5(icon("scale-balanced", style = "color: #2E86C1; margin-right: 8px;"), "3. How to Read the Scores (0.00 to 1.00)", style = "font-weight: 700; color: #1B4F72; margin-top: 16px; margin-bottom: 10px;"),
             div(
-              style = "text-align: center; margin: 14px auto 16px auto; max-width: 950px;",
+              style = "text-align: center; margin: 14px auto 16px auto; width: 100%; max-width: 950px;",
               with_step_zoom(
                 "score_normalization_diagram",
                 tags$img(
                   src = "scfigures/score_normalization_workflow.png",
                   alt = "Two-Step Score Normalization & Visual Mapping Pipeline",
                   style = "width: 100%; max-width: 920px; height: auto; display: block; margin: 0 auto; border-radius: 8px; border: 1px solid #E2E8F0;"
-                )
+                ),
+                max_height = "620px"
               ),
               p(
                 tags$b("Figure 2 | How Raw Measurements Become Simple [0.00, 1.00] Scores. "),
