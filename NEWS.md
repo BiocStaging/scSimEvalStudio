@@ -1,4 +1,4 @@
-# scSimEvalStudio 0.99.0
+# scSimEvalStudio 0.99.1
 
 * Initial Bioconductor release candidate extracted from `scSimEval` into a
   dedicated graphical Shiny studio companion package.

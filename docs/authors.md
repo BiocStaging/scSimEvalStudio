@@ -12,12 +12,12 @@ Source:
 
 Sakthivel K (2026). *scSimEvalStudio: Interactive Shiny Studio for
 scSimEval Single-Cell Multiomics Benchmarking*. R package version
-0.99.0, <https://kabilanbio.github.io/scSimEvalStudio/>.
+0.99.1, <https://kabilanbio.github.io/scSimEvalStudio/>.
 
     @Manual{,
       title = {scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking},
       author = {Kabilan Sakthivel},
       year = {2026},
-      note = {R package version 0.99.0},
+      note = {R package version 0.99.1},
       url = {https://kabilanbio.github.io/scSimEvalStudio/},
     }
