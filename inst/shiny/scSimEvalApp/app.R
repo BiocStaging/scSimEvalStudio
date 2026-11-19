@@ -6529,7 +6529,7 @@ server <- function(input, output, session) {
         ),
         fluidRow(
           column(4, textInput(paste0("uni_dset_name_", d), "Dataset Name:", value = sprintf("Dataset %d", d))),
-          column(8, fileInput(paste0("file_uni_ref_", d), "Reference Dataset (SingleCellExperiment .rds; Seurat .rds auto-converted):", accept = c(".rds"), placeholder = "Upload SingleCellExperiment or Seurat .rds..."))
+          column(8, fileInput(paste0("file_uni_ref_", d), "Reference Dataset (SCE .rds):", accept = c(".rds"), placeholder = "Upload SCE .rds..."))
         )
       )
     })
@@ -6572,7 +6572,7 @@ server <- function(input, output, session) {
             tags$small(class = "text-muted ms-2", "(upload simulated file and specify runtime, Peak RAM, and simulation cores used)")
           ),
           fluidRow(
-            column(12, fileInput(paste0("file_uni_sim_", s, "_", d), sprintf("Simulated Dataset for %s (SingleCellExperiment .rds; Seurat .rds auto-converted):", dname_disp), placeholder = sprintf("Simulated %s SCE/Seurat object...", dname_disp), accept = c(".rds")))
+            column(12, fileInput(paste0("file_uni_sim_", s, "_", d), sprintf("Simulated Dataset for %s (SCE .rds):", dname_disp), placeholder = sprintf("Upload %s SCE .rds...", dname_disp), accept = c(".rds")))
           ),
           div(
             style = "background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; padding: 8px 12px; margin-top: 2px;",
@@ -7170,7 +7170,7 @@ server <- function(input, output, session) {
         ),
         fluidRow(
           column(4, textInput(paste0("multi_dset_name_", d), "Dataset Name:", value = sprintf("Dataset %d", d))),
-          column(8, fileInput(paste0("file_multi_ref_", d), "Reference Multiomics Dataset (SingleCellExperiment .rds; Seurat .rds auto-converted):", accept = c(".rds"), placeholder = "Upload SingleCellExperiment or Seurat .rds..."))
+          column(8, fileInput(paste0("file_multi_ref_", d), "Reference Multiomics Dataset (SCE .rds):", accept = c(".rds"), placeholder = "Upload SCE .rds..."))
         )
       )
     })
@@ -7238,7 +7238,7 @@ server <- function(input, output, session) {
             tags$small(class = "text-muted ms-2", "(upload simulated SingleCellExperiment multiomics file and specify runtime, Peak RAM, and simulation cores used)")
           ),
           fluidRow(
-            column(12, fileInput(paste0("file_multi_sim_", s, "_", d), sprintf("Simulated Multiomics Dataset for %s (SingleCellExperiment .rds; Seurat .rds auto-converted):", dname_disp), accept = c(".rds"), placeholder = sprintf("Upload simulated %s multiomics SCE/Seurat .rds...", dname_disp)))
+            column(12, fileInput(paste0("file_multi_sim_", s, "_", d), sprintf("Simulated Multiomics Dataset for %s (SCE .rds):", dname_disp), accept = c(".rds"), placeholder = sprintf("Upload %s SCE .rds...", dname_disp)))
           ),
           div(
             style = "background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; padding: 8px 12px; margin-top: 4px;",
@@ -8752,7 +8752,7 @@ server <- function(input, output, session) {
           )
         ),
         card_body(
-          p("Upload empirical reference SingleCellExperiment objects (.rds; Seurat .rds auto-converted) with embedded cell metadata (colData) for each dataset. All simulators below will be benchmarked against these references:",
+          p("Upload empirical reference SingleCellExperiment objects (.rds) with cell metadata in colData for each dataset (Seurat .rds objects are also accepted). All simulators below will be benchmarked against these references:",
             style = "font-size: 0.82rem; color: #64748B; margin-bottom: 12px;"),
           uiOutput("ui_uni_ref_cards")
         )
@@ -8863,7 +8863,7 @@ server <- function(input, output, session) {
           )
         ),
         card_body(
-          p("Upload empirical reference RNA and ATAC SingleCellExperiment objects (.rds; Seurat .rds auto-converted) with embedded cell metadata (colData) for each dataset:",
+          p("Upload empirical reference RNA and ATAC SingleCellExperiment objects (.rds) with cell metadata in colData for each dataset (Seurat .rds objects are also accepted):",
             style = "font-size: 0.82rem; color: #64748B; margin-bottom: 12px;"),
           uiOutput("ui_multi_ref_cards")
         )
