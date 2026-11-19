@@ -23,6 +23,19 @@ Useful links:
 Authors:
 \itemize{
   \item Kabilan Sakthivel \email{kabilan151414@gmail.com} (\href{https://orcid.org/0009-0002-9422-0938}{ORCID})
+  \item Dr Dwijesh Chandra Mishra \email{dwij.mishra@gmail.com} (\href{https://orcid.org/0000-0002-3327-6156}{ORCID}) [thesis advisor]
+  \item Dr Shashi Bhushan Lal \email{sblall16@gmail.com} (\href{https://orcid.org/0000-0002-2958-6178}{ORCID})
+  \item Dr Ulavappa Angadi \email{ubaangadi.iasri@icar.org.in} (\href{https://orcid.org/0000-0003-0012-0179}{ORCID})
+  \item Dr Sudhir Srivastava \email{sudhir0401bm@gmail.com} (\href{https://orcid.org/0000-0003-4990-7693}{ORCID})
+  \item Dr Neeraj Budhlakoti \email{neeraj35669@gmail.com} (\href{https://orcid.org/0000-0003-3380-7831}{ORCID})
+  \item Dr Krishna Kumar Chaturvedi \email{kkcchaturvedi@gmail.com} (\href{https://orcid.org/0000-0002-6529-5466}{ORCID})
+  \item Dr Ranjeet Ranjan Kumar \email{ranjeetranjaniari@gmail.com} (\href{https://orcid.org/0000-0002-2279-6340}{ORCID})
+  \item Dr Navin Chandra Gupta \email{navinbtc@gmail.com} (\href{https://orcid.org/0000-0002-6502-448X}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Dr Sharanbasappa \email{smadival509@gmail.com} (\href{https://orcid.org/0000-0002-6571-9070}{ORCID}) [contributor]
 }
 
 }

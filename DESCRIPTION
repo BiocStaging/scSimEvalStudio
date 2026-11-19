@@ -4,7 +4,25 @@ Title: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarkin
 Version: 0.99.1
 Authors@R: c(
     person("Kabilan", "Sakthivel", role = c("aut", "cre"), email = "kabilan151414@gmail.com",
-      comment = c(ORCID = "0009-0002-9422-0938"))
+      comment = c(ORCID = "0009-0002-9422-0938")),
+    person("Dr", "Dwijesh Chandra Mishra", role = c("aut", "ths"), email = "dwij.mishra@gmail.com",
+      comment = c(ORCID = "0000-0002-3327-6156")),
+    person("Dr", "Shashi Bhushan Lal", role = c("aut"), email = "sblall16@gmail.com",
+      comment = c(ORCID = "0000-0002-2958-6178")),
+    person("Dr", "Ulavappa Angadi", role = c("aut"), email = "ubaangadi.iasri@icar.org.in",
+      comment = c(ORCID = "0000-0003-0012-0179")),
+    person("Dr", "Sudhir Srivastava", role = c("aut"), email = "sudhir0401bm@gmail.com",
+      comment = c(ORCID = "0000-0003-4990-7693")),
+    person("Dr", "Neeraj Budhlakoti", role = c("aut"), email = "neeraj35669@gmail.com",
+      comment = c(ORCID = "0000-0003-3380-7831")),
+    person("Dr", "Krishna Kumar Chaturvedi", role = c("aut"), email = "kkcchaturvedi@gmail.com",
+      comment = c(ORCID = "0000-0002-6529-5466")),
+    person("Dr", "Ranjeet Ranjan Kumar", role = c("aut"), email = "ranjeetranjaniari@gmail.com",
+      comment = c(ORCID = "0000-0002-2279-6340")),
+    person("Dr", "Navin Chandra Gupta", role = c("aut"), email = "navinbtc@gmail.com",
+      comment = c(ORCID = "0000-0002-6502-448X")),
+    person("Dr", "Sharanbasappa", role = c("ctb"), email = "smadival509@gmail.com",
+      comment = c(ORCID = "0000-0002-6571-9070"))
   )
 Description: Companion graphical Shiny web interface for the 'scSimEval'
     Bioconductor package. Enables interactive uploading of single-cell RNA-seq,
