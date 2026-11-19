@@ -9,67 +9,7 @@ library(DT)
 library(Matrix)
 library(scSimEval)
 
-# Source all local package R files and hot-patch scSimEval namespace so latest fixes take effect immediately
 .local_viz_loaded <- FALSE
-.source_and_patch_scSimEval <- function(cand_p) {
-  tmp_env <- new.env(parent = .GlobalEnv)
-  res_src <- try(source(cand_p, local = tmp_env, encoding = "UTF-8"), silent = TRUE)
-  if (inherits(res_src, "try-error")) return(FALSE)
-
-  ns <- if (isNamespaceLoaded("scSimEval")) asNamespace("scSimEval") else NULL
-  pkg_env <- if ("package:scSimEval" %in% search()) as.environment("package:scSimEval") else NULL
-
-  for (nm in ls(tmp_env, all.names = TRUE)) {
-    val <- get(nm, envir = tmp_env, inherits = FALSE)
-    val_global <- val
-    if (is.function(val_global)) environment(val_global) <- .GlobalEnv
-    assign(nm, val_global, envir = .GlobalEnv)
-    if (!is.null(ns)) {
-      val_ns <- val
-      if (is.function(val_ns)) environment(val_ns) <- ns
-      if (exists(nm, envir = ns, inherits = FALSE) && bindingIsLocked(nm, ns)) {
-        try(unlockBinding(nm, ns), silent = TRUE)
-        try(assign(nm, val_ns, envir = ns), silent = TRUE)
-        try(lockBinding(nm, ns), silent = TRUE)
-      } else {
-        try(assign(nm, val_ns, envir = ns), silent = TRUE)
-      }
-    }
-    if (!is.null(pkg_env) && exists(nm, envir = pkg_env, inherits = FALSE)) {
-      val_pkg <- if (is.function(val) && !is.null(ns)) {
-        v2 <- val
-        environment(v2) <- ns
-        v2
-      } else {
-        val
-      }
-      if (bindingIsLocked(nm, pkg_env)) {
-        try(unlockBinding(nm, pkg_env), silent = TRUE)
-        try(assign(nm, val_pkg, envir = pkg_env), silent = TRUE)
-        try(lockBinding(nm, pkg_env), silent = TRUE)
-      } else {
-        try(assign(nm, val_pkg, envir = pkg_env), silent = TRUE)
-      }
-    }
-  }
-  TRUE
-}
-local_r_files <- c(
-  "00_utils.R", "01_metrics_distribution.R", "02_extract_properties.R",
-  "03_metrics_clustering.R", "04_metrics_batch.R", "05_metrics_de_signal.R",
-  "06_metrics_trajectory.R", "07_multiomics_coupling.R", "08_metrics_scalability.R",
-  "09_evaluate_benchmark.R", "10_visualizations.R", "12_seurat_counts.R"
-)
-for (rf in local_r_files) {
-  for (cand_p in c(rf, file.path("R", rf), file.path("../../R", rf), file.path("../../../R", rf))) {
-    if (file.exists(cand_p)) {
-      if (.source_and_patch_scSimEval(cand_p) && identical(rf, "10_visualizations.R")) {
-        .local_viz_loaded <- TRUE
-      }
-      break
-    }
-  }
-}
 
 # Ensure internal scSimEval helpers used directly in Shiny UI/server are available
 if (!exists(".convert_time_to_seconds", mode = "function")) {
@@ -322,85 +262,9 @@ if (!exists(".HIGHER_IS_BETTER_METRICS", mode = "character")) {
   .HIGHER_IS_BETTER_METRICS <- .HIGHER_IS_BETTER_METRICS_LIST
 }
 
-# Direction-aware bubble scores normalization (fallback if local 10_visualizations.R not sourced)
-if (!isTRUE(.local_viz_loaded) || !exists(".normalize_bubble_scores", mode = "function")) {
+# Direction-aware bubble scores normalization delegating to scSimEval::normalize_bubble_scores
 .normalize_bubble_scores <- function(df) {
-  if (isNamespaceLoaded("scSimEval")) {
-    ns <- asNamespace("scSimEval")
-    if (exists(".normalize_bubble_scores", envir = ns, mode = "function")) {
-      fn <- get0(".normalize_bubble_scores", envir = ns, mode = "function", inherits = FALSE)
-      if (!is.null(fn)) return(fn(df))
-    } else if (exists("normalize_bubble_scores", envir = ns, mode = "function")) {
-      fn <- get0("normalize_bubble_scores", envir = ns, mode = "function", inherits = FALSE)
-      if (!is.null(fn)) return(fn(df))
-    }
-  }
-  if (is.null(df) || !is.data.frame(df) || nrow(df) == 0) {
-    if (is.data.frame(df)) df$Score_Norm <- numeric(0)
-    return(df)
-  }
-  if (!"Score_Raw" %in% colnames(df)) {
-    if ("Score" %in% colnames(df)) df$Score_Raw <- df$Score
-    else if ("Value" %in% colnames(df)) df$Score_Raw <- df$Value
-  }
-  df$Score_Norm <- NA_real_
-  dset_pfx <- if ("Dataset" %in% colnames(df)) paste0(df$Dataset, "___") else ""
-  mod_pfx  <- if ("Modality" %in% colnames(df)) paste0(df$Modality, "___") else ""
-  prop_pfx <- if ("Property" %in% colnames(df)) {
-    paste0(df$Property, "___")
-  } else if ("Display_Category" %in% colnames(df)) {
-    paste0(df$Display_Category, "___")
-  } else {
-    ""
-  }
-  metric_key <- paste0(dset_pfx, mod_pfx, prop_pfx, df$Metric)
-  hib_vec <- if (exists(".HIGHER_IS_BETTER_METRICS", mode = "character")) get(".HIGHER_IS_BETTER_METRICS") else .HIGHER_IS_BETTER_METRICS_LIST
-
-  for (m_key in unique(metric_key)) {
-    idx     <- metric_key == m_key
-    met     <- df$Metric[idx][1]
-    raw_val <- df$Score_Raw[idx]
-    if (met %in% c("Runs_Statistic", "Between_Dataset_Silh_Global", "Between_Dataset_Silh_2D_Global")) {
-      raw_val <- abs(raw_val)
-    }
-    non_na  <- raw_val[!is.na(raw_val) & is.finite(raw_val)]
-    if (length(non_na) == 0) {
-      df$Score_Norm[idx] <- NA_real_
-      next
-    }
-    is_hib  <- met %in% hib_vec
-    min_v   <- min(non_na)
-    max_v   <- max(non_na)
-    rng     <- max_v - min_v
-    if (is.na(rng) || !is.finite(rng)) rng <- 0
-
-    is_naturally_01 <- isTRUE(grepl("^(KS|OV|ari|nmi|ami|v_measure|ECDF_DiffArea|accuracy|precision|recall|f1_score|auc|pval_dist_score|F1|Top_DEG_Jaccard)", met, ignore.case = TRUE)) ||
-                       isTRUE(min_v >= 0 && max_v <= 1 && rng <= 1)
-
-    if (rng < 1e-10) {
-      if (is_naturally_01) {
-        if (is_hib) {
-          normed <- pmax(0, pmin(1, raw_val))
-        } else {
-          normed <- pmax(0, pmin(1, 1 - raw_val))
-        }
-      } else if (is_hib) {
-        normed <- if (max_v > 0) pmin(1, raw_val / max(1, max_v)) else rep(0.5, sum(idx))
-      } else {
-        normed <- 1 / (1 + pmax(0, raw_val))
-      }
-    } else if (is_hib) {
-      normed <- (raw_val - min_v) / rng
-    } else {
-      normed <- 1 - (raw_val - min_v) / rng
-    }
-    df$Score_Norm[idx] <- pmax(0, pmin(1, normed))
-  }
-  still_na <- is.na(df$Score_Norm)
-  if (any(still_na))
-    df$Score_Norm[still_na] <- pmax(0, pmin(1, df$Score_Raw[still_na]))
-  df
-}
+  scSimEval::normalize_bubble_scores(df)
 }
 if (!exists("normalize_bubble_scores", mode = "function")) {
   normalize_bubble_scores <- .normalize_bubble_scores
@@ -410,26 +274,11 @@ if (!exists("normalize_bubble_scores", mode = "function")) {
 # Helper Functions: Robust Matrix and Label Reading
 # ==============================================================================
 .app_get_seurat_counts <- function(obj) {
-  if (inherits(obj, "Seurat")) {
-    obj <- tryCatch(scSimEval:::.sanitize_signac_assays(obj), error = function(e) obj)
+  if (inherits(obj, "Seurat") && requireNamespace("Seurat", quietly = TRUE)) {
+    sce_obj <- Seurat::as.SingleCellExperiment(obj)
+    return(SummarizedExperiment::assay(sce_obj, "counts"))
   }
-  cts <- tryCatch(scSimEval:::.get_seurat_counts(obj), error = function(e) NULL)
-  if (!is.null(cts)) return(cts)
-  tryCatch(
-    Seurat::GetAssayData(obj, layer = "counts"),
-    error = function(e) {
-      if (length(obj@assays) > 0) {
-        def_a <- tryCatch(Seurat::DefaultAssay(obj), error = function(e2) names(obj@assays)[1])
-        a_obj <- obj[[def_a]]
-        if (inherits(a_obj, "Assay5")) {
-          return(tryCatch(SeuratObject::LayerData(a_obj, layer = "counts"), error = function(e3) a_obj$counts))
-        } else if (methods::.hasSlot(a_obj, "counts")) {
-          return(methods::slot(a_obj, "counts"))
-        }
-      }
-      NULL
-    }
-  )
+  stop("Package 'Seurat' is required to convert Seurat objects to SingleCellExperiment.", call. = FALSE)
 }
 
 as_sparse_or_matrix <- function(m) {
@@ -6223,7 +6072,7 @@ server <- function(input, output, session) {
       "    if (inherits(m, 'SingleCellExperiment')) {",
       "      m <- SummarizedExperiment::assay(m, 'counts')",
       "    } else if (inherits(m, 'Seurat')) {",
-      "      m <- tryCatch(scSimEval:::.get_seurat_counts(m), error = function(e) tryCatch(Seurat::GetAssayData(m, layer = 'counts'), error = function(e2) m))",
+      "      m <- SummarizedExperiment::assay(Seurat::as.SingleCellExperiment(m), 'counts')",
       "    } else if (is.list(m) && !is.data.frame(m) && !inherits(m, 'Matrix')) {",
       "      candidate_names <- c('new_count', 'counts', 'sim_counts', 'simulated', 'sim_rna', 'sim_atac', 'mat')",
       "      found <- intersect(candidate_names, names(m))",
@@ -11122,7 +10971,7 @@ server <- function(input, output, session) {
       "  if (endsWith(tolower(path), '.rds')) {",
       "    m <- readRDS(path)",
       "    if (inherits(m, 'SingleCellExperiment')) m <- SummarizedExperiment::assay(m, 'counts')",
-      "    else if (inherits(m, 'Seurat')) m <- tryCatch(scSimEval:::.get_seurat_counts(m), error = function(e) tryCatch(Seurat::GetAssayData(m, layer = 'counts'), error = function(e2) m))",
+      "    else if (inherits(m, 'Seurat')) m <- SummarizedExperiment::assay(Seurat::as.SingleCellExperiment(m), 'counts')",
       "    else if (is.list(m) && !is.matrix(m) && !inherits(m, 'Matrix')) {",
       "      for (item in m) if (is.matrix(item) || inherits(item, 'Matrix')) { m <- item; break }",
       "    }",
@@ -11225,7 +11074,7 @@ server <- function(input, output, session) {
       "  if (endsWith(tolower(path), '.rds')) {",
       "    m <- readRDS(path)",
       "    if (inherits(m, 'SingleCellExperiment')) m <- SummarizedExperiment::assay(m, 'counts')",
-      "    else if (inherits(m, 'Seurat')) m <- tryCatch(scSimEval:::.get_seurat_counts(m), error = function(e) tryCatch(Seurat::GetAssayData(m, layer = 'counts'), error = function(e2) m))",
+      "    else if (inherits(m, 'Seurat')) m <- SummarizedExperiment::assay(Seurat::as.SingleCellExperiment(m), 'counts')",
       "    else if (is.list(m) && !is.matrix(m) && !inherits(m, 'Matrix')) {",
       "      for (item in m) if (is.matrix(item) || inherits(item, 'Matrix')) { m <- item; break }",
       "    }",
