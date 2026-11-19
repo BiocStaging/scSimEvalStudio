@@ -56,10 +56,13 @@ ui_max_cores <- max(128L, n_physical_cores)
 default_n_cores <- max(1L, min(4L, n_physical_cores - 1L))
 
 sys_hardware_summary <- sprintf("System detected: %d CPU cores", n_physical_cores)
-
+.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.0")
+.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.10")
 
 # Register static resource directory for documentation figures
 fig_dirs <- c(
+  system.file("shiny", "scSimEvalApp", "www", package = "scSimEvalStudio"),
+  system.file("www", package = "scSimEvalStudio"),
   system.file("shiny", "scSimEvalApp", "www", package = "scSimEval"),
   system.file("www", package = "scSimEval"),
   file.path("inst", "shiny", "scSimEvalApp", "www"),
@@ -325,10 +328,10 @@ read_uploaded_matrix <- function(file_path, file_name) {
       m <- .app_get_seurat_counts(obj)
       return(as_sparse_or_matrix(m))
     } else {
-      stop("Unsupported RDS object. scSimEval strictly requires a 'Seurat' or 'SingleCellExperiment' object. Raw count matrices, data frames, or plain lists are not permitted because Category VI (Multiomics Integration & Alignment) requires dimensional reductions and cell metadata. Please wrap your count matrix using Seurat::CreateSeuratObject() or SingleCellExperiment::SingleCellExperiment() and save it as an .rds file.")
+      stop("Unsupported RDS object. scSimEvalStudio expects a Bioconductor 'SingleCellExperiment' object (or a 'Seurat' object, which is automatically converted via Seurat::as.SingleCellExperiment() when Seurat is installed). Raw count matrices, data frames, or plain lists are not permitted because multiomics integration and biological fidelity require structured assays and cell metadata (colData). Please wrap your count matrix using SingleCellExperiment::SingleCellExperiment(assays = list(counts = mat)) and save it as an .rds file.")
     }
   } else {
-    stop(paste0("Unsupported file format (.", ext, "). scSimEval strictly requires 'Seurat' or 'SingleCellExperiment' objects saved as .rds files. Spreadsheets (.csv, .xlsx, .tsv) cannot store cell metadata or dimensional reductions."))
+    stop(paste0("Unsupported file format (.", ext, "). scSimEvalStudio requires 'SingleCellExperiment' (recommended) or 'Seurat' objects saved as .rds files. Spreadsheets (.csv, .xlsx, .tsv) cannot store cell metadata or dimensional reductions."))
   }
 }
 
@@ -1250,7 +1253,7 @@ ui <- page_navbar(
       .guide-step { background: #FFFFFF; border-radius: 8px; border: 1px solid #E2E8F0; padding: 15px; margin-bottom: 12px; }
       .guide-num { display: inline-block; width: 28px; height: 28px; line-height: 28px; border-radius: 50%; background: #1E3A8A; color: white; font-weight: 700; text-align: center; margin-right: 10px; font-size: 0.85rem; }
       
-      /* Keep all 7 visual sub-panels in a single non-wrapping row */
+      /* Keep all 8 visual sub-panels in a single non-wrapping row */
       .nav-pills {
         display: flex !important;
         flex-wrap: nowrap !important;
@@ -3253,7 +3256,7 @@ ui <- page_navbar(
                   div(style = "flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #EFF6FF; color: #2563EB; font-weight: 700; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; border: 1px solid #BFDBFE;", "1"),
                   div(
                     div(tags$b("Data Ingestion"), style = "font-size: 0.86rem; color: #0F172A;"),
-                    div("Load demo benchmark data (6 simulators) or upload Seurat / SingleCellExperiment objects (.rds).", style = "font-size: 0.79rem; color: #64748B; line-height: 1.4;")
+                    div("Load demo benchmark data (6 simulators) or upload SingleCellExperiment (.rds) objects (Seurat .rds also supported via automatic conversion).", style = "font-size: 0.79rem; color: #64748B; line-height: 1.4;")
                   )
                 ),
                 div(
@@ -3289,11 +3292,11 @@ ui <- page_navbar(
         style = "margin-top: 10px; padding: 14px 18px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;",
         div(
           style = "font-size: 0.8rem; color: #64748B;",
-          tags$b("scSimEval"), " • Single-Cell & Multiomics Simulation Benchmarking Studio • Open-Source R Package"
+          tags$b("scSimEvalStudio"), " (powered by ", tags$b("scSimEval"), ") • Single-Cell & Multiomics Simulation Benchmarking Studio • Open-Source Bioconductor-Ready R Packages"
         ),
         div(
           style = "font-size: 0.8rem; color: #64748B;",
-          "Local Studio: ", tags$code("scSimEval::launch_scSimEval_app()", style = "background: #E2E8F0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.76rem;")
+          "Local Studio: ", tags$code("scSimEvalStudio::launch_scSimEval_app()", style = "background: #E2E8F0; color: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.76rem;")
         )
       )
     )
@@ -3394,13 +3397,13 @@ ui <- page_navbar(
             div(style = "font-weight: 700; color: #312E81; font-size: 0.86rem; margin-bottom: 6px;", icon("flask", class = "me-1"), "Load Example Multiomics Data:"),
             conditionalPanel(
               condition = "input.opt_multi_pairing == 'paired'",
-              p("Rice Bud (Oryza sativa) Seurat v5 paired multiomics dataset (100 balanced cells, 100 HVGs, 100 HVPs, 8 cell types, 2 batches) evaluated across 6 simulators (scMultiSim, scDesign3, MOSim, scCross, scMoMtF, Matilda).",
+              p("Rice Bud (Oryza sativa) SingleCellExperiment paired multiomics dataset (100 balanced cells, 100 HVGs, 100 HVPs via altExp, 8 cell types, 2 batches) evaluated across 6 simulators (scMultiSim, scDesign3, MOSim, scCross, scMoMtF, Matilda).",
                 style = "font-size: 0.78rem; color: #475569; margin-bottom: 8px; line-height: 1.4;"),
               actionButton("btn_load_example_paired_multi", "Load Rice Bud Example (Paired, 6 Simulators)", class = "btn btn-primary btn-sm w-100", icon = icon("play"))
             ),
             conditionalPanel(
               condition = "input.opt_multi_pairing == 'unpaired'",
-              p("Soybean Root (Glycine max) Seurat v5 unpaired multiomics dataset (100 balanced RNA cells x 100 HVGs, 100 balanced ATAC cells x 100 HVPs, 8 cell types) evaluated across 3 simulators (scMultiSim, scDesign3, scCross).",
+              p("Soybean Root (Glycine max) SingleCellExperiment unpaired multiomics dataset (100 balanced RNA cells x 100 HVGs, 100 balanced ATAC cells x 100 HVPs, 8 cell types) evaluated across 3 simulators (scMultiSim, scDesign3, scCross).",
                 style = "font-size: 0.78rem; color: #475569; margin-bottom: 8px; line-height: 1.4;"),
               actionButton("btn_load_example_unpaired_multi", "Load Soybean Root Example (Unpaired, 3 Simulators)", class = "btn btn-primary btn-sm w-100", icon = icon("play"))
             )
@@ -4236,13 +4239,13 @@ ui <- page_navbar(
               style = "background: #F8FAFC; border-left: 4px solid #1B4F72; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px;",
               div(
                 class = "d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2",
-                h4("Welcome to scSimEval — Quick & Easy Beginner's Guide", style = "font-weight: 800; color: #1B4F72; margin: 0; font-size: 1.2rem;"),
-                span(class = "badge bg-primary-subtle text-primary border border-primary-subtle", "scSimEval v0.99.10 • 56 Metrics • 8 Categories")
+                h4("Welcome to scSimEvalStudio — Quick & Easy Beginner's Guide", style = "font-weight: 800; color: #1B4F72; margin: 0; font-size: 1.2rem;"),
+                span(class = "badge bg-primary-subtle text-primary border border-primary-subtle", paste0("scSimEvalStudio v", .studio_version, " • scSimEval v", .core_version, " • 56 Metrics • 8 Categories"))
               ),
               p(
                 style = "color: #334155; font-size: 0.94rem; margin-bottom: 14px; line-height: 1.65;",
-                tags$b("What does scSimEval do? "),
-                "It compares ", tags$b("simulated single-cell or multiomics data"), " against ", tags$b("real reference data"),
+                tags$b("What does scSimEvalStudio do? "),
+                "Powered by the ", tags$b("scSimEval"), " package, it compares ", tags$b("simulated single-cell or multiomics data"), " against ", tags$b("real reference data"),
                 " and scores each simulator from ", tags$b("0.00 (lowest)"), " to ", tags$b("1.00 (best)"),
                 " across 56 quality measures so you can easily choose the best simulator for your study."
               ),
@@ -4260,7 +4263,7 @@ ui <- page_navbar(
                     div(
                       style = "background: #EFF6FF; border-radius: 6px; padding: 10px 12px; height: 100%; font-size: 0.85rem; color: #1E3A8A;",
                       tags$b("Step 1 — Load Data:"), br(),
-                      "Open ", tags$b("Data Hub"), " and load an example dataset — ", tags$b("Rice Bud"), " (paired, 8 tissues, 6 simulators) or ", tags$b("Soybean Root"), " (unpaired, 7 tissues, 3 simulators) — or upload your own ", tags$code(".rds"), " files."
+                      "Open ", tags$b("Data Hub"), " and load an example ", tags$code("SingleCellExperiment"), " dataset — ", tags$b("Rice Bud"), " (paired, 8 cell types, 6 simulators) or ", tags$b("Soybean Root"), " (unpaired, 8 cell types, 3 simulators) — or upload your own ", tags$code(".rds"), " files."
                     )
                   ),
                   column(
@@ -4285,23 +4288,43 @@ ui <- page_navbar(
                 style = "padding-top: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;",
                 span(
                   tags$i(class = "fa fa-book", style = "margin-right: 6px; color: #1B4F72;"),
-                  tags$b("Full Online Documentation & Tutorials: "),
+                  tags$b("Online Documentation: "),
                   tags$a(
                     href = "https://kabilanbio.github.io/scSimEval",
                     target = "_blank",
                     rel = "noopener noreferrer",
-                    "https://kabilanbio.github.io/scSimEval",
+                    "scSimEval",
                     style = "color: #0284C7; text-decoration: underline; font-weight: 700; font-size: 0.88rem; margin-left: 4px;"
+                  ),
+                  " | ",
+                  tags$a(
+                    href = "https://kabilanbio.github.io/scSimEvalStudio",
+                    target = "_blank",
+                    rel = "noopener noreferrer",
+                    "scSimEvalStudio",
+                    style = "color: #0284C7; text-decoration: underline; font-weight: 700; font-size: 0.88rem;"
                   )
                 ),
-                tags$a(
-                  href = "https://kabilanbio.github.io/scSimEval",
-                  target = "_blank",
-                  rel = "noopener noreferrer",
-                  class = "btn btn-sm btn-primary",
-                  style = "font-weight: 600; border-radius: 6px;",
-                  tags$i(class = "fa fa-external-link-alt", style = "margin-right: 5px;"),
-                  "Open Online Documentation"
+                div(
+                  class = "d-flex gap-2",
+                  tags$a(
+                    href = "https://kabilanbio.github.io/scSimEval",
+                    target = "_blank",
+                    rel = "noopener noreferrer",
+                    class = "btn btn-sm btn-primary",
+                    style = "font-weight: 600; border-radius: 6px;",
+                    tags$i(class = "fa fa-external-link-alt", style = "margin-right: 5px;"),
+                    "scSimEval Docs"
+                  ),
+                  tags$a(
+                    href = "https://kabilanbio.github.io/scSimEvalStudio",
+                    target = "_blank",
+                    rel = "noopener noreferrer",
+                    class = "btn btn-sm btn-outline-primary",
+                    style = "font-weight: 600; border-radius: 6px;",
+                    tags$i(class = "fa fa-external-link-alt", style = "margin-right: 5px;"),
+                    "scSimEvalStudio Docs"
+                  )
                 )
               )
             ),
@@ -4334,7 +4357,7 @@ ui <- page_navbar(
                   style = "background: #F8FAFC; border: 1px solid #E2E8F0; border-top: 3px solid #2E86C1; border-radius: 6px; padding: 12px 14px; height: 100%;",
                   div(style = "font-weight: 700; color: #1B4F72; font-size: 0.88rem; margin-bottom: 4px;", "Step 1: Input Your Data"),
                   p(style = "font-size: 0.82rem; color: #475569; margin: 0; line-height: 1.5;",
-                    "Provide one real reference dataset and one or more simulated datasets (scRNA-seq, scATAC-seq, or Multiomics) saved as ", tags$code("Seurat"), " or ", tags$code("SingleCellExperiment"), " ", tags$code(".rds"), " files.")
+                    "Provide one real reference dataset and one or more simulated datasets (scRNA-seq, scATAC-seq, or Multiomics) saved as Bioconductor ", tags$code("SingleCellExperiment"), " ", tags$code(".rds"), " files (Seurat ", tags$code(".rds"), " files are also accepted and converted automatically).")
                 )
               ),
               column(
@@ -4548,8 +4571,8 @@ ui <- page_navbar(
                 icon = bsicons::bs_icon("cloud-arrow-up-fill"),
                 tags$ul(
                   style = "margin-bottom: 0; font-size: 0.86rem; color: #334155; line-height: 1.6;",
-                  tags$li(tags$b("Built-in Example Datasets: "), "Try the app immediately using either the ", tags$b("Rice Bud"), " paired dataset (8 tissues, 6 simulators: scMultiSim, scDesign3, MOSim, scCross, scMoMtF, Matilda) or the ", tags$b("Soybean Root"), " unpaired dataset (7 tissues, 3 simulators: scMultiSim, scDesign3, scCross) under scRNA-seq, scATAC-seq, or Single-Cell Multiomics mode."),
-                  tags$li(tags$b("Evaluate Your Own Simulation Data (.rds): "), "Upload 1 real reference ", tags$code(".rds"), " object and 1 or more simulated ", tags$code(".rds"), " objects (", tags$code("Seurat"), " or ", tags$code("SingleCellExperiment"), ") along with runtime, peak RAM, and CPU cores, or download a ready-to-run R script."),
+                  tags$li(tags$b("Built-in Example Datasets: "), "Try the app immediately using either the ", tags$b("Rice Bud"), " paired SingleCellExperiment dataset (8 cell types, 2 batches, 6 simulators: scMultiSim, scDesign3, MOSim, scCross, scMoMtF, Matilda) or the ", tags$b("Soybean Root"), " unpaired SingleCellExperiment dataset (8 cell types, 3 simulators: scMultiSim, scDesign3, scCross) under scRNA-seq, scATAC-seq, or Single-Cell Multiomics mode."),
+                  tags$li(tags$b("Evaluate Your Own Simulation Data (.rds): "), "Upload 1 real reference ", tags$code(".rds"), " object and 1 or more simulated ", tags$code(".rds"), " objects (", tags$code("SingleCellExperiment"), " recommended; ", tags$code("Seurat"), " auto-converted) along with runtime, peak RAM, and CPU cores, or download a ready-to-run R script."),
                   tags$li(tags$b("Upload Saved Results (.rds / .csv): "), "Choose Mode 4 to load a previously saved ", tags$code("scSimEval"), " benchmark file without re-running calculations.")
                 )
               ),
@@ -4605,8 +4628,8 @@ ui <- page_navbar(
             h5(icon("file-code", style = "color: #2E86C1; margin-right: 8px;"), "5. How to Prepare Your Own Data (.rds Files)", style = "font-weight: 700; color: #1B4F72; margin-top: 16px; margin-bottom: 10px;"),
             p(
               style = "color: #475569; font-size: 0.88rem; margin-bottom: 12px; line-height: 1.55;",
-              "When uploading your own datasets in ", tags$b("Data Hub"), ", provide standard R ", tags$code(".rds"),
-              " files containing a ", tags$code("Seurat"), " or ", tags$code("SingleCellExperiment"), " object:"
+              "When uploading your own datasets in ", tags$b("Data Hub"), ", provide Bioconductor ", tags$code("SingleCellExperiment"),
+              " objects saved as ", tags$code(".rds"), " files (Seurat ", tags$code(".rds"), " objects are also accepted and converted via ", tags$code("Seurat::as.SingleCellExperiment()"), "):"
             ),
             fluidRow(
               class = "g-3 mb-4",
@@ -4614,12 +4637,12 @@ ui <- page_navbar(
                 4,
                 div(
                   style = "background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 14px; height: 100%;",
-                  div(style = "font-weight: 700; color: #1B4F72; font-size: 0.88rem; margin-bottom: 6px;", "1. Save Your Object as .rds"),
+                  div(style = "font-weight: 700; color: #1B4F72; font-size: 0.88rem; margin-bottom: 6px;", "1. Save SingleCellExperiment as .rds"),
                   p(style = "font-size: 0.81rem; color: #475569; margin-bottom: 8px; line-height: 1.5;",
-                    "Make sure raw counts are stored in the ", tags$code("counts"), " layer/assay (genes or peaks × cells), then save as ", tags$code(".rds"), ":"),
+                    "Store raw counts in the ", tags$code("counts"), " assay (genes or peaks × cells; secondary ATAC assay in ", tags$code("altExp(sce, 'ATAC')"), " for paired multiomics):"),
                   tags$pre(
                     style = "background: #0F172A; color: #F8FAFC; padding: 10px; border-radius: 6px; font-size: 0.76rem; margin: 0;",
-                    "# Save Reference & Simulator objects\nsaveRDS(ref_obj, 'reference.rds')\nsaveRDS(sim_obj, 'splatter_sim.rds')"
+                    "# Save Reference & Simulator SCE objects\nsaveRDS(ref_sce, 'reference.rds')\nsaveRDS(sim_sce, 'splatter_sim.rds')"
                   )
                 )
               ),
@@ -4629,10 +4652,10 @@ ui <- page_navbar(
                   style = "background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 14px; height: 100%;",
                   div(style = "font-weight: 700; color: #0E6655; font-size: 0.88rem; margin-bottom: 6px;", "2. Add Cell Types (cell_type)"),
                   p(style = "font-size: 0.81rem; color: #475569; margin-bottom: 8px; line-height: 1.5;",
-                    "To unlock clustering (ARI/NMI) and DEG/DAR metrics, store cell labels in a metadata column named ", tags$code("cell_type"), ":"),
+                    "To unlock clustering (ARI/NMI) and DEG/DAR metrics, store cell labels in ", tags$code("colData(sce)$cell_type"), ":"),
                   tags$pre(
                     style = "background: #0F172A; color: #F8FAFC; padding: 10px; border-radius: 6px; font-size: 0.76rem; margin: 0;",
-                    "# For Seurat:\nobj$cell_type <- obj$seurat_clusters\n# For SingleCellExperiment:\ncolData(sce)$cell_type <- sce$label"
+                    "# SingleCellExperiment (recommended):\ncolData(sce)$cell_type <- sce$label\n# Converting from Seurat:\nsce <- Seurat::as.SingleCellExperiment(obj)"
                   )
                 )
               ),
@@ -4642,10 +4665,10 @@ ui <- page_navbar(
                   style = "background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 14px; height: 100%;",
                   div(style = "font-weight: 700; color: #92400E; font-size: 0.88rem; margin-bottom: 6px;", "3. Add Batches (batch)"),
                   p(style = "font-size: 0.81rem; color: #475569; margin-bottom: 8px; line-height: 1.5;",
-                    "To unlock Category IV Batch Effect metrics (Batch Silhouette, PCR R², CMS, ISI, Cross-Batch F1), store batch IDs in ", tags$code("batch"), ":"),
+                    "To unlock Category IV Batch Effect metrics (Batch Silhouette, PCR R², CMS, ISI, Cross-Batch F1), store batch IDs in ", tags$code("colData(sce)$batch"), ":"),
                   tags$pre(
                     style = "background: #0F172A; color: #F8FAFC; padding: 10px; border-radius: 6px; font-size: 0.76rem; margin: 0;",
-                    "# For Seurat:\nobj$batch <- obj$orig.ident\n# For SingleCellExperiment:\ncolData(sce)$batch <- sce$Batch"
+                    "# SingleCellExperiment (recommended):\ncolData(sce)$batch <- sce$Batch\n# Save updated object:\nsaveRDS(sce, 'dataset.rds')"
                   )
                 )
               )
@@ -4665,7 +4688,7 @@ ui <- page_navbar(
                   div(style = "font-weight: 700; color: #1E293B; font-size: 0.88rem; margin-bottom: 8px;", "Launch the App or Run Offline in R"),
                   tags$pre(
                     style = "background: #0F172A; color: #F8FAFC; padding: 12px; border-radius: 6px; font-size: 0.78rem; margin: 0;",
-                    "# Install & launch the interactive Shiny app:\nremotes::install_github('kabilanbio/scSimEval')\nscSimEval::launch_scSimEval_app()\n\n# Tip: In Data Hub, click 'Download R Script' after configuring your\n# datasets to get a ready-to-run R script for workstations or HPC clusters."
+                    "# Install scSimEval (core engine) & scSimEvalStudio (Shiny app):\nremotes::install_github('kabilanbio/scSimEval')\nremotes::install_github('kabilanbio/scSimEvalStudio')\nscSimEvalStudio::launch_scSimEval_app()\n\n# Tip: In Data Hub, click 'Download R Script' after configuring your\n# datasets to get a ready-to-run R script for workstations or HPC clusters."
                   )
                 )
               ),
@@ -4783,7 +4806,7 @@ ui <- page_navbar(
             span(
               class = "badge",
               style = "background: rgba(56, 189, 248, 0.15); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.3); padding: 7px 12px; font-size: 0.82rem; font-weight: 600; border-radius: 20px;",
-              "scSimEval v0.99.10"
+              paste0("scSimEvalStudio v", .studio_version, " | scSimEval v", .core_version)
             )
           )
         )
@@ -5081,8 +5104,11 @@ ui <- page_navbar(
               style = "text-align: center; font-size: 0.88rem; color: #334155; margin: 26px auto 16px auto; max-width: 850px; padding: 14px 18px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;",
               icon("github", class = "me-2 text-dark"),
               strong("For feedback, questions, or bug reports: "),
-              "visit our GitHub repository at ",
-              tags$a(href = "https://github.com/kabilanbio/scSimEval", target = "_blank", style = "color: #0284C7; text-decoration: none; font-weight: 600;", "github.com/kabilanbio/scSimEval")
+              "visit our GitHub repositories at ",
+              tags$a(href = "https://github.com/kabilanbio/scSimEval", target = "_blank", style = "color: #0284C7; text-decoration: none; font-weight: 600;", "github.com/kabilanbio/scSimEval"),
+              " (core package) and ",
+              tags$a(href = "https://github.com/kabilanbio/scSimEvalStudio", target = "_blank", style = "color: #0284C7; text-decoration: none; font-weight: 600;", "github.com/kabilanbio/scSimEvalStudio"),
+              " (Shiny studio)"
             ),
             
             # Footer Note
@@ -5196,13 +5222,13 @@ server <- function(input, output, session) {
   }
 
   # Startup Diagnostic Log Sequence
-  sc_log("INFO", "scSimEval Interactive Benchmarking Studio v0.99.10 initialized.", "Startup")
+  sc_log("INFO", paste0("scSimEvalStudio v", .studio_version, " (powered by scSimEval v", .core_version, ") initialized."), "Startup")
   sc_log("NOTE", paste0("Runtime Environment: R ", getRversion(), " | Platform: ", R.version$platform, " | OS: ", Sys.info()[["sysname"]], " ", Sys.info()[["release"]]), "Environment")
   sc_log("INFO", paste0("System Concurrency: ", n_physical_cores, " CPU cores detected. Sparse matrix arithmetic (dgCMatrix) enabled."), "Hardware")
   sc_log("NOTE", "Evaluation Suite: 56 evaluation measures registered across Categories 1 to 8.", "Metrics")
   
   # Check demo benchmark cache status
-  demo_rds_path <- system.file("shiny/scSimEvalApp/demo_benchmark_data.rds", package = "scSimEval")
+  demo_rds_path <- if (nzchar(demo_data_path) && file.exists(demo_data_path)) demo_data_path else system.file("shiny", "scSimEvalApp", "data", "demo_benchmark_data.rds", package = "scSimEvalStudio")
   if (nzchar(demo_rds_path) && file.exists(demo_rds_path)) {
     cache_sz <- round(file.info(demo_rds_path)$size / (1024 * 1024), 2)
     sc_log("INFO", paste0("Precomputed benchmark database found (", cache_sz, " MB). Fast demo loading enabled."), "Cache")
@@ -5368,12 +5394,12 @@ server <- function(input, output, session) {
   # Modal format guide for cell types and batches
   show_metadata_format_modal <- function() {
     showModal(modalDialog(
-      title = div(icon("table-list", class = "me-2 text-primary"), tags$strong("Modality-Specific Metrics & Object Guidelines (Seurat / SingleCellExperiment)")),
+      title = div(icon("table-list", class = "me-2 text-primary"), tags$strong("Modality-Specific Metrics & Object Guidelines (SingleCellExperiment)")),
       size = "l",
       easyClose = TRUE,
       footer = modalButton("Close"),
       div(
-        p("In scSimEval, reference and simulated datasets are uploaded as standard Seurat or SingleCellExperiment S4 objects (.rds). Providing ", tags$b("cell_type"), " and ", tags$b("batch"), " metadata annotations enables complete benchmarking across all biological clustering, batch mixing, and differential signal evaluation categories (embedded directly in ", tags$code("meta.data"), " in Seurat or ", tags$code("colData"), " in SingleCellExperiment):"),
+        p("In scSimEvalStudio, reference and simulated datasets are uploaded as Bioconductor ", tags$code("SingleCellExperiment"), " S4 objects (.rds) — Seurat (.rds) objects are also accepted and automatically converted via ", tags$code("Seurat::as.SingleCellExperiment()"), ". Providing ", tags$b("cell_type"), " and ", tags$b("batch"), " metadata annotations in ", tags$code("colData"), " enables complete benchmarking across all biological clustering, batch mixing, and differential signal evaluation categories:"),
         # Metric measurement capacity callout
         div(
           style = "background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 6px; padding: 14px 16px; margin-bottom: 16px;",
@@ -5439,16 +5465,16 @@ server <- function(input, output, session) {
         fluidRow(
           column(6,
             div(style = "background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 14px; margin-bottom: 12px;",
-              h6(tags$b(icon("cube", class = "me-1 text-primary"), " 1. Seurat Object Setup (.rds)"), style = "color: #1E3A8A; margin-bottom: 6px; font-size: 0.90rem;"),
-              p("Embed annotations in ", tags$code("meta.data"), " or via standard column assignment. Save object as an ", tags$code(".rds"), " file:", style = "font-size: 0.80rem; color: #475569; margin-bottom: 8px;"),
-              tags$pre("# Seurat v4 / v5 object\nseurat_obj$cell_type <- cell_types_vector   # Enables Cat III, V, VI\nseurat_obj$batch     <- batch_vector        # Enables Cat IV & V\n# Save for upload\nsaveRDS(seurat_obj, file = 'dataset.rds')", style = "font-size: 0.76rem; background: #FFFFFF; border: 1px solid #CBD5E1; padding: 8px; border-radius: 4px; margin-bottom: 0;")
+              h6(tags$b(icon("cube", class = "me-1 text-primary"), " 1. SingleCellExperiment Setup (.rds) — Recommended"), style = "color: #1E3A8A; margin-bottom: 6px; font-size: 0.90rem;"),
+              p("Embed annotations in ", tags$code("colData"), " (and secondary ATAC counts in ", tags$code("altExp(sce, 'ATAC')"), " for paired multiomics). Save as ", tags$code(".rds"), ":", style = "font-size: 0.80rem; color: #475569; margin-bottom: 8px;"),
+              tags$pre("# SingleCellExperiment (Bioconductor standard)\ncolData(sce)$cell_type <- cell_types_vector # Enables Cat III, V, VI\ncolData(sce)$batch     <- batch_vector      # Enables Cat IV & V\n# Save for upload\nsaveRDS(sce, file = 'dataset.rds')", style = "font-size: 0.76rem; background: #FFFFFF; border: 1px solid #CBD5E1; padding: 8px; border-radius: 4px; margin-bottom: 0;")
             )
           ),
           column(6,
             div(style = "background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 14px; margin-bottom: 12px;",
-              h6(tags$b(icon("cube", class = "me-1 text-teal"), " 2. SingleCellExperiment Setup (.rds)"), style = "color: #0D9488; margin-bottom: 6px; font-size: 0.90rem;"),
-              p("Embed annotations in ", tags$code("colData"), ". Save object as an ", tags$code(".rds"), " file:", style = "font-size: 0.80rem; color: #475569; margin-bottom: 8px;"),
-              tags$pre("# SingleCellExperiment object\ncolData(sce)$cell_type <- cell_types_vector # Enables Cat III, V, VI\ncolData(sce)$batch     <- batch_vector      # Enables Cat IV & V\n# Save for upload\nsaveRDS(sce, file = 'dataset.rds')", style = "font-size: 0.76rem; background: #FFFFFF; border: 1px solid #CBD5E1; padding: 8px; border-radius: 4px; margin-bottom: 0;")
+              h6(tags$b(icon("cube", class = "me-1 text-teal"), " 2. Converting from Seurat (.rds)"), style = "color: #0D9488; margin-bottom: 6px; font-size: 0.90rem;"),
+              p("Convert a ", tags$code("Seurat"), " object to ", tags$code("SingleCellExperiment"), " before saving (or upload the Seurat ", tags$code(".rds"), " for automatic conversion):", style = "font-size: 0.80rem; color: #475569; margin-bottom: 8px;"),
+              tags$pre("# Convert Seurat to SingleCellExperiment\nseurat_obj$cell_type <- cell_types_vector\nseurat_obj$batch     <- batch_vector\nsce <- Seurat::as.SingleCellExperiment(seurat_obj)\nsaveRDS(sce, file = 'dataset.rds')", style = "font-size: 0.76rem; background: #FFFFFF; border: 1px solid #CBD5E1; padding: 8px; border-radius: 4px; margin-bottom: 0;")
             )
           )
         )
@@ -5582,7 +5608,7 @@ server <- function(input, output, session) {
         cd <- SummarizedExperiment::colData(rb$reference$rna)
         if ("cell_type" %in% colnames(cd)) return(as.character(cd$cell_type))
       }
-      if (inherits(rb$reference$rna, "Seurat") && "cell_type" %in% colnames(rb$reference$rna@meta.data)) {
+      if (inherits(rb$reference$rna, "Seurat") && "cell_type" %in% colnames(rb$reference$rna[[]])) {
         return(as.character(rb$reference$rna$cell_type))
       }
       if (!is.null(rb$reference$cell_types)) {
@@ -5598,7 +5624,7 @@ server <- function(input, output, session) {
         cd <- SummarizedExperiment::colData(rb$reference$rna)
         if ("batch" %in% colnames(cd)) return(as.character(cd$batch))
       }
-      if (inherits(rb$reference$rna, "Seurat") && "batch" %in% colnames(rb$reference$rna@meta.data)) {
+      if (inherits(rb$reference$rna, "Seurat") && "batch" %in% colnames(rb$reference$rna[[]])) {
         return(as.character(rb$reference$rna$batch))
       }
       if (!is.null(rb$reference$batches)) {
@@ -5615,7 +5641,7 @@ server <- function(input, output, session) {
         cd <- SummarizedExperiment::colData(obj_m)
         if ("cell_type" %in% colnames(cd)) return(as.character(cd$cell_type))
       }
-      if (inherits(obj_m, "Seurat") && "cell_type" %in% colnames(obj_m@meta.data)) {
+      if (inherits(obj_m, "Seurat") && "cell_type" %in% colnames(obj_m[[]])) {
         return(as.character(obj_m$cell_type))
       }
       df <- if (tolower(mod) == "atac") sb$reference$atac_cell_types else sb$reference$rna_cell_types
@@ -5630,7 +5656,7 @@ server <- function(input, output, session) {
         cd <- SummarizedExperiment::colData(obj_m)
         if ("batch" %in% colnames(cd)) return(as.character(cd$batch))
       }
-      if (inherits(obj_m, "Seurat") && "batch" %in% colnames(obj_m@meta.data)) {
+      if (inherits(obj_m, "Seurat") && "batch" %in% colnames(obj_m[[]])) {
         return(as.character(obj_m$batch))
       }
       df <- if (tolower(mod) == "atac") sb$reference$atac_batches else sb$reference$rna_batches
@@ -5666,7 +5692,7 @@ server <- function(input, output, session) {
       summary_df$Dataset <- "Rice Bud (scRNA-seq)"
       ct <- get_rb_ct()
       bt <- get_rb_bt()
-      source_name <- "Example Data: Rice Bud scRNA-seq (Seurat v5: 100 balanced cells, 100 HVGs, 8 cell types, 2 batches, 6 simulators)"
+      source_name <- "Example Data: Rice Bud scRNA-seq (SingleCellExperiment: 100 balanced cells, 100 HVGs, 8 cell types, 2 batches, 6 simulators)"
       
     } else if (type == "scrna_soy") {
       target_mode <- "scrna"
@@ -5722,7 +5748,7 @@ server <- function(input, output, session) {
       summary_df$Dataset <- "Soybean Root (scRNA-seq)"
       ct <- get_sb_ct("rna")
       bt <- get_sb_bt("rna")
-      source_name <- "Example Data: Soybean Root scRNA-seq (Seurat v5: 100 cells, 200 genes, 4 cell types, 2 batches, 3 simulators)"
+      source_name <- "Example Data: Soybean Root scRNA-seq (SingleCellExperiment: 100 balanced cells, 100 HVGs, 8 cell types, 3 simulators)"
       
     } else if (type == "scatac_rice") {
       target_mode <- "scatac"
@@ -5741,7 +5767,7 @@ server <- function(input, output, session) {
       summary_df$Dataset <- "Rice Bud (scATAC-seq)"
       ct <- get_rb_ct()
       bt <- get_rb_bt()
-      source_name <- "Example Data: Rice Bud scATAC-seq (Seurat v5: 100 balanced cells, 100 HVPs, 8 cell types, 2 batches, 6 simulators)"
+      source_name <- "Example Data: Rice Bud scATAC-seq (SingleCellExperiment: 100 balanced cells, 100 HVPs, 8 cell types, 2 batches, 6 simulators)"
       
     } else if (type == "scatac_soy") {
       target_mode <- "scatac"
@@ -5797,7 +5823,7 @@ server <- function(input, output, session) {
       summary_df$Dataset <- "Soybean Root (scATAC-seq)"
       ct <- get_sb_ct("atac")
       bt <- get_sb_bt("atac")
-      source_name <- "Example Data: Soybean Root scATAC-seq (Seurat v5: 100 cells, 200 peaks, 4 cell types, 2 batches, 3 simulators)"
+      source_name <- "Example Data: Soybean Root scATAC-seq (SingleCellExperiment: 100 balanced cells, 100 HVPs, 8 cell types, 3 simulators)"
       
     } else if (type == "multi_paired") {
       target_mode <- "multiomics"
@@ -5817,7 +5843,7 @@ server <- function(input, output, session) {
       summary_df <- bm$dataset_summary_df[bm$dataset_summary_df$Dataset == "Rice Bud (Paired)", ]
       ct <- get_rb_ct()
       bt <- get_rb_bt()
-      source_name <- "Example Data: Rice Bud Paired Multiomics (Seurat v5: 100 balanced cells, 100 HVGs, 100 HVPs, 8 cell types, 2 batches, 6 simulators)"
+      source_name <- "Example Data: Rice Bud Paired Multiomics (SingleCellExperiment: 100 balanced cells, 100 HVGs, 100 HVPs, 8 cell types, 2 batches, 6 simulators)"
       
     } else if (type == "multi_unpaired") {
       target_mode <- "multiomics"
@@ -5838,7 +5864,7 @@ server <- function(input, output, session) {
       summary_df <- bm$dataset_summary_df[bm$dataset_summary_df$Dataset == "Soybean Root (Unpaired)", ]
       ct <- get_sb_ct("rna")
       bt <- get_sb_bt("rna")
-      source_name <- "Example Data: Soybean Root Unpaired Multiomics (Seurat v5: 100 balanced RNA cells x 100 HVGs, 100 balanced ATAC cells x 100 HVPs, 8 cell types, 3 simulators)"
+      source_name <- "Example Data: Soybean Root Unpaired Multiomics (SingleCellExperiment: 100 balanced RNA cells x 100 HVGs, 100 balanced ATAC cells x 100 HVPs, 8 cell types, 3 simulators)"
       
     } else {
       # "all" - Full benchmark of both datasets
@@ -6041,52 +6067,56 @@ server <- function(input, output, session) {
       sprintf("# Parallel CPU Cores: %d", n_cores),
       "#",
       "# Instructions:",
-      "#   1. Ensure required R packages are installed: install.packages(c('Matrix', 'ggplot2'))",
-      "#   2. Ensure scSimEval is installed: remotes::install_local('.') or BiocManager::install('scSimEval')",
+      "#   1. Ensure required packages are installed: BiocManager::install(c('SingleCellExperiment', 'SummarizedExperiment'))",
+      "#   2. Ensure scSimEval is installed: remotes::install_github('kabilanbio/scSimEval') or BiocManager::install('scSimEval')",
       "#   3. Run from terminal or cluster job: Rscript <this_script>.R",
       "# ==============================================================================",
       "",
       "# 1. Load Required Libraries",
       "suppressPackageStartupMessages({",
       "  library(scSimEval)",
+      "  library(SingleCellExperiment)",
+      "  library(SummarizedExperiment)",
       "  library(Matrix)",
       "})",
       "",
       "cat('[scSimEval] Initializing user-defined benchmarking pipeline...\n')",
       "",
-      "# Helper: Safe Matrix Loader",
-      "load_matrix_safe <- function(path, placeholder = 'matrix') {",
+      "# Helper: Safe SingleCellExperiment Loader (preserves colData & altExp metadata)",
+      "load_sce_safe <- function(path, placeholder = 'dataset') {",
       "  if (is.null(path) || is.na(path) || path == '') {",
       "    stop(sprintf('Path for %s is empty. Please specify a valid file path.', placeholder))",
       "  }",
       "  if (!file.exists(path)) {",
-      "    warning(sprintf('File \\\"%s\\\" not found. Using small placeholder matrix for pipeline verification.', path))",
+      "    warning(sprintf('File \\\"%s\\\" not found. Using small placeholder SingleCellExperiment for pipeline verification.', path))",
       "    set.seed(42)",
-      "    m <- Matrix::rsparsematrix(nrow = 50, ncol = 30, density = 0.2)",
+      "    m <- abs(Matrix::rsparsematrix(nrow = 50, ncol = 30, density = 0.2))",
       "    rownames(m) <- paste0('Feature_', seq_len(50))",
       "    colnames(m) <- paste0('Cell_', seq_len(30))",
-      "    return(abs(m))",
+      "    return(SingleCellExperiment::SingleCellExperiment(assays = list(counts = m)))",
       "  }",
       "  if (endsWith(tolower(path), '.rds')) {",
-      "    m <- readRDS(path)",
-      "    if (inherits(m, 'SingleCellExperiment')) {",
-      "      m <- SummarizedExperiment::assay(m, 'counts')",
-      "    } else if (inherits(m, 'Seurat')) {",
-      "      m <- SummarizedExperiment::assay(Seurat::as.SingleCellExperiment(m), 'counts')",
-      "    } else if (is.list(m) && !is.data.frame(m) && !inherits(m, 'Matrix')) {",
-      "      candidate_names <- c('new_count', 'counts', 'sim_counts', 'simulated', 'sim_rna', 'sim_atac', 'mat')",
-      "      found <- intersect(candidate_names, names(m))",
-      "      if (length(found) > 0) m <- m[[found[1]]] else {",
-      "        for (item in m) if (is.matrix(item) || inherits(item, 'Matrix') || is.data.frame(item)) { m <- item; break }",
-      "      }",
+      "    obj <- readRDS(path)",
+      "    if (inherits(obj, 'SingleCellExperiment')) return(obj)",
+      "    if (inherits(obj, 'Seurat')) return(Seurat::as.SingleCellExperiment(obj))",
+      "    if (is.matrix(obj) || inherits(obj, 'Matrix')) {",
+      "      if (!inherits(obj, 'dgCMatrix')) obj <- Matrix::Matrix(obj, sparse = TRUE)",
+      "      return(SingleCellExperiment::SingleCellExperiment(assays = list(counts = obj)))",
       "    }",
-      "  } else {",
-      "    sep_char <- if (endsWith(tolower(path), '.csv')) ',' else '\t'",
-      "    df <- utils::read.table(path, header = TRUE, row.names = 1, sep = sep_char, check.names = FALSE)",
-      "    m <- as.matrix(df)",
+      "    return(obj)",
       "  }",
-      "  if (!inherits(m, 'dgCMatrix')) m <- Matrix::Matrix(m, sparse = TRUE)",
-      "  return(m)",
+      "  sep_char <- if (endsWith(tolower(path), '.csv')) ',' else '\t'",
+      "  df <- utils::read.table(path, header = TRUE, row.names = 1, sep = sep_char, check.names = FALSE)",
+      "  m <- Matrix::Matrix(as.matrix(df), sparse = TRUE)",
+      "  SingleCellExperiment::SingleCellExperiment(assays = list(counts = m))",
+      "}",
+      "",
+      "# Helper: Safe Matrix Loader",
+      "load_matrix_safe <- function(path, placeholder = 'matrix') {",
+      "  obj <- load_sce_safe(path, placeholder = placeholder)",
+      "  if (inherits(obj, 'SingleCellExperiment')) return(SummarizedExperiment::assay(obj, 'counts'))",
+      "  if (!inherits(obj, 'dgCMatrix')) obj <- Matrix::Matrix(obj, sparse = TRUE)",
+      "  obj",
       "}",
       "",
       "# Helper: Safe Vector Loader (Cell Types / Batches)",
@@ -6152,7 +6182,7 @@ server <- function(input, output, session) {
           sprintf("cat('[scSimEval] Processing %s [%d/%d]...\n')", dname, d, n_dsets),
           sprintf("dset_name_%d <- '%s'", d, dname),
           sprintf("ref_file_%d  <- '%s'", d, ref_f),
-          sprintf("ref_val_%d   <- validate_sc_object(load_matrix_safe(ref_file_%d, placeholder = paste0('Reference ', dset_name_%d)))", d, d, d),
+          sprintf("ref_val_%d   <- validate_sc_object(load_sce_safe(ref_file_%d, placeholder = paste0('Reference ', dset_name_%d)))", d, d, d),
           sprintf("ref_mat_%d   <- ref_val_%d$counts", d, d),
           sprintf("ref_obj_%d   <- ref_val_%d$object", d, d),
           sprintf("ct_vec_%d    <- ref_val_%d$cell_types", d, d),
@@ -6201,7 +6231,7 @@ server <- function(input, output, session) {
             sprintf("  sim_munit_%d_%d <- '%s'", s, d, sim_mu),
             sprintf("  sim_cores_%d_%d <- %dL # Simulation CPU cores used", s, d, sim_c),
             sprintf("  cat('[scSimEval]   Evaluating ', sim_name_%d_%d, ' on ', dset_name_%d, '...\n')", s, d, d),
-            sprintf("  sim_val_%d_%d   <- validate_sc_object(load_matrix_safe(sim_file_%d_%d, placeholder = paste0(sim_name_%d_%d, ' matrix')))", s, d, s, d, s, d),
+            sprintf("  sim_val_%d_%d   <- validate_sc_object(load_sce_safe(sim_file_%d_%d, placeholder = paste0(sim_name_%d_%d, ' dataset')))", s, d, s, d, s, d),
             sprintf("  sim_mat_%d_%d   <- sim_val_%d_%d$counts", s, d, s, d),
             sprintf("  sim_obj_%d_%d   <- sim_val_%d_%d$object", s, d, s, d),
             sprintf("  sim_ct_%d_%d    <- sim_val_%d_%d$cell_types %%||%% ct_vec_%d", s, d, s, d, d),
@@ -6249,7 +6279,7 @@ server <- function(input, output, session) {
           sprintf("cat('[scSimEval] Processing %s [%d/%d]...\n')", dname, d, n_dsets),
           sprintf("dset_name_%d     <- '%s'", d, dname),
           sprintf("ref_file_%d      <- '%s'", d, ref_f),
-          sprintf("ref_val_%d       <- validate_multiomics_input(if (file.exists(ref_file_%d)) readRDS(ref_file_%d) else load_matrix_safe(ref_file_%d, placeholder = paste0('Reference Multiomics ', dset_name_%d)))", d, d, d, d, d),
+          sprintf("ref_val_%d       <- validate_multiomics_input(load_sce_safe(ref_file_%d, placeholder = paste0('Reference Multiomics ', dset_name_%d)))", d, d, d),
           sprintf("ref_rna_%d       <- ref_val_%d$m1", d, d),
           sprintf("ref_atac_%d      <- ref_val_%d$m2", d, d),
           sprintf("ref_rna_obj_%d   <- ref_val_%d$m1_obj", d, d),
@@ -6321,16 +6351,10 @@ server <- function(input, output, session) {
               sprintf("  sim_cores_atac_%d_%d <- %dL", s, d, ca_val)
             )
             scal_call_lines <- c(
-              sprintf("    elapsed_time_rna  = sim_time_rna_%d_%d,", s, d),
-              sprintf("    elapsed_time_atac = sim_time_atac_%d_%d,", s, d),
-              sprintf("    time_unit_rna     = sim_tunit_rna_%d_%d,", s, d),
-              sprintf("    time_unit_atac    = sim_tunit_atac_%d_%d,", s, d),
-              sprintf("    memory_mb_rna     = sim_mem_rna_%d_%d,", s, d),
-              sprintf("    memory_mb_atac    = sim_mem_atac_%d_%d,", s, d),
-              sprintf("    memory_unit_rna   = sim_munit_rna_%d_%d,", s, d),
-              sprintf("    memory_unit_atac  = sim_munit_atac_%d_%d,", s, d),
-              sprintf("    sim_cores_rna     = sim_cores_rna_%d_%d,", s, d),
-              sprintf("    sim_cores_atac    = sim_cores_atac_%d_%d,", s, d)
+              "    separate_resources = list(",
+              sprintf("      rna  = list(elapsed_time = sim_time_rna_%d_%d, time_unit = sim_tunit_rna_%d_%d, memory_mb = sim_mem_rna_%d_%d, memory_unit = sim_munit_rna_%d_%d, sim_cores = sim_cores_rna_%d_%d),", s, d, s, d, s, d, s, d, s, d),
+              sprintf("      atac = list(elapsed_time = sim_time_atac_%d_%d, time_unit = sim_tunit_atac_%d_%d, memory_mb = sim_mem_atac_%d_%d, memory_unit = sim_munit_atac_%d_%d, sim_cores = sim_cores_atac_%d_%d)", s, d, s, d, s, d, s, d, s, d),
+              "    ),"
             )
           }
           
@@ -6340,7 +6364,7 @@ server <- function(input, output, session) {
             sprintf("  sim_file_%d_%d      <- '%s'", s, d, sim_f),
             scal_var_lines,
             sprintf("  cat('[scSimEval]   Evaluating ', sim_name_%d_%d, ' on ', dset_name_%d, '...\n')", s, d, d),
-            sprintf("  sim_val_%d_%d   <- validate_multiomics_input(if (file.exists(sim_file_%d_%d)) readRDS(sim_file_%d_%d) else load_matrix_safe(sim_file_%d_%d, placeholder = paste0(sim_name_%d_%d, ' multiomics')))", s, d, s, d, s, d, s, d, s, d),
+            sprintf("  sim_val_%d_%d   <- validate_multiomics_input(load_sce_safe(sim_file_%d_%d, placeholder = paste0(sim_name_%d_%d, ' multiomics')))", s, d, s, d, s, d),
             sprintf("  sim_rna_%d_%d   <- sim_val_%d_%d$m1", s, d, s, d),
             sprintf("  sim_atac_%d_%d  <- sim_val_%d_%d$m2", s, d, s, d),
             sprintf("  sim_rna_obj_%d_%d  <- sim_val_%d_%d$m1_obj", s, d, s, d),
@@ -6505,7 +6529,7 @@ server <- function(input, output, session) {
         ),
         fluidRow(
           column(4, textInput(paste0("uni_dset_name_", d), "Dataset Name:", value = sprintf("Dataset %d", d))),
-          column(8, fileInput(paste0("file_uni_ref_", d), "Reference Dataset (Seurat / SingleCellExperiment .rds):", accept = c(".rds"), placeholder = "Upload Seurat or SingleCellExperiment .rds..."))
+          column(8, fileInput(paste0("file_uni_ref_", d), "Reference Dataset (SingleCellExperiment .rds; Seurat .rds auto-converted):", accept = c(".rds"), placeholder = "Upload SingleCellExperiment or Seurat .rds..."))
         )
       )
     })
@@ -6548,7 +6572,7 @@ server <- function(input, output, session) {
             tags$small(class = "text-muted ms-2", "(upload simulated file and specify runtime, Peak RAM, and simulation cores used)")
           ),
           fluidRow(
-            column(12, fileInput(paste0("file_uni_sim_", s, "_", d), sprintf("Simulated Dataset for %s (Seurat / SingleCellExperiment .rds):", dname_disp), placeholder = sprintf("Simulated %s Seurat/SCE object...", dname_disp), accept = c(".rds")))
+            column(12, fileInput(paste0("file_uni_sim_", s, "_", d), sprintf("Simulated Dataset for %s (SingleCellExperiment .rds; Seurat .rds auto-converted):", dname_disp), placeholder = sprintf("Simulated %s SCE/Seurat object...", dname_disp), accept = c(".rds")))
           ),
           div(
             style = "background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; padding: 8px 12px; margin-top: 2px;",
@@ -6656,8 +6680,8 @@ server <- function(input, output, session) {
 
           if (!is.null(ref_mat_d) && length(sim_objs) > 0) {
             get_meta_vec <- function(obj, col_nm) {
-              if (inherits(obj, "Seurat") && col_nm %in% colnames(obj@meta.data)) return(as.character(obj@meta.data[[col_nm]]))
               if (inherits(obj, "SingleCellExperiment") && col_nm %in% colnames(SummarizedExperiment::colData(obj))) return(as.character(SummarizedExperiment::colData(obj)[[col_nm]]))
+              if (inherits(obj, "Seurat") && col_nm %in% colnames(obj[[]])) return(as.character(obj[[]][[col_nm]]))
               NULL
             }
             ct_vec <- get_meta_vec(ref_mat_d, "cell_type") %||% rv$cell_types
@@ -7136,7 +7160,7 @@ server <- function(input, output, session) {
           div(
             span(class = "badge text-white me-2", style = "background: #4F46E5;", sprintf("Reference %d", d)),
             tags$b(sprintf("Biological Reference Multiomics Dataset %d", d), style = "color: #312E81; font-size: 0.94rem;"),
-            tags$small(class = "text-muted ms-2", if (is_unpaired) "(Unpaired: Seurat/SCE object containing RNA & ATAC assays)" else "(Paired single-cell co-assay Seurat/SCE object with RNA & ATAC)")
+            tags$small(class = "text-muted ms-2", if (is_unpaired) "(Unpaired: SingleCellExperiment object containing RNA & ATAC assays)" else "(Paired single-cell co-assay SingleCellExperiment object with RNA & altExp ATAC)")
           ),
           div(
             uiOutput(paste0("ui_multi_ref_badge_", d)),
@@ -7146,7 +7170,7 @@ server <- function(input, output, session) {
         ),
         fluidRow(
           column(4, textInput(paste0("multi_dset_name_", d), "Dataset Name:", value = sprintf("Dataset %d", d))),
-          column(8, fileInput(paste0("file_multi_ref_", d), "Reference Multiomics Dataset (Seurat / SingleCellExperiment .rds):", accept = c(".rds"), placeholder = "Upload Seurat or SingleCellExperiment .rds..."))
+          column(8, fileInput(paste0("file_multi_ref_", d), "Reference Multiomics Dataset (SingleCellExperiment .rds; Seurat .rds auto-converted):", accept = c(".rds"), placeholder = "Upload SingleCellExperiment or Seurat .rds..."))
         )
       )
     })
@@ -7211,10 +7235,10 @@ server <- function(input, output, session) {
             class = "d-flex align-items-center mb-2",
             span(class = "badge text-white me-2", style = "background: #4F46E5;", sprintf("Dataset %d", d)),
             tags$b(sprintf("Simulated Multiomics Data for: %s", dname_disp), style = "color: #312E81; font-size: 0.90rem;"),
-            tags$small(class = "text-muted ms-2", "(upload simulated Seurat/SCE multiomics file and specify runtime, Peak RAM, and simulation cores used)")
+            tags$small(class = "text-muted ms-2", "(upload simulated SingleCellExperiment multiomics file and specify runtime, Peak RAM, and simulation cores used)")
           ),
           fluidRow(
-            column(12, fileInput(paste0("file_multi_sim_", s, "_", d), sprintf("Simulated Multiomics Dataset for %s (Seurat / SingleCellExperiment .rds):", dname_disp), accept = c(".rds"), placeholder = sprintf("Upload simulated %s multiomics Seurat/SCE .rds...", dname_disp)))
+            column(12, fileInput(paste0("file_multi_sim_", s, "_", d), sprintf("Simulated Multiomics Dataset for %s (SingleCellExperiment .rds; Seurat .rds auto-converted):", dname_disp), accept = c(".rds"), placeholder = sprintf("Upload simulated %s multiomics SCE/Seurat .rds...", dname_disp)))
           ),
           div(
             style = "background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; padding: 8px 12px; margin-top: 4px;",
@@ -7375,11 +7399,11 @@ server <- function(input, output, session) {
 
           if (!is.null(ref_rna_d) && !is.null(ref_atac_d) && length(sim_pairs) > 0) {
             get_meta_vec <- function(obj, col_nm) {
-              if (inherits(obj, "Seurat") && col_nm %in% colnames(obj@meta.data)) {
-                return(as.character(obj@meta.data[[col_nm]]))
-              }
               if (inherits(obj, "SingleCellExperiment") && col_nm %in% colnames(SummarizedExperiment::colData(obj))) {
                 return(as.character(SummarizedExperiment::colData(obj)[[col_nm]]))
+              }
+              if (inherits(obj, "Seurat") && col_nm %in% colnames(obj[[]])) {
+                return(as.character(obj[[]][[col_nm]]))
               }
               NULL
             }
@@ -8600,7 +8624,7 @@ server <- function(input, output, session) {
         class = "bg-light",
         div(
           class = "d-flex justify-content-between align-items-center",
-          tags$b("Example Dataset Analysis (Seurat v5: Rice Bud & Soybean Root)", style = "color: #1E3A8A; font-size: 0.96rem;"),
+          tags$b("Example Dataset Analysis (SingleCellExperiment: Rice Bud & Soybean Root)", style = "color: #1E3A8A; font-size: 0.96rem;"),
           if (has_demo_loaded) {
             span(class = "badge bg-success text-white px-2 py-1", icon("check", class = "me-1"), "Loaded & Ready")
           } else {
@@ -8613,10 +8637,10 @@ server <- function(input, output, session) {
         div(
           class = "mb-3",
           p(
-            "This section provides real plant single-cell multiomics demo datasets (Seurat v5) and pre-computed benchmarks across ",
+            "This section provides real plant single-cell multiomics demo datasets (", tags$code("SingleCellExperiment"), ") and pre-computed benchmarks across ",
             tags$strong("56 curated evaluation measures"), " in 8 scientific categories. ",
-            "Each demo object stores raw sparse integer ", tags$code("counts"), " (200 genes / 200 peaks), harmonized ",
-            tags$code("cell_type"), " (4 clusters, 25 cells each), ", tags$code("batch"), " (2 replicates), and joint dimensional reductions (", tags$code("integrated"), " / ", tags$code("pca"), ").",
+            "Each demo object stores sparse ", tags$code("counts"), " (100 HVGs / 100 HVPs; paired ATAC in ", tags$code("altExp(..., 'ATAC')"), "), harmonized ",
+            tags$code("cell_type"), " (8 cell types), ", tags$code("batch"), " annotations, and dimensional reductions (", tags$code("reducedDim"), ").",
             style = "font-size: 0.88rem; color: #334155; line-height: 1.6;"
           )
         ),
@@ -8628,7 +8652,7 @@ server <- function(input, output, session) {
               class = "p-3 rounded border h-100",
               style = "background: #F8FAFC;",
               h6(tags$b(icon("dna", class = "me-2 text-primary"), "Rice Bud (Paired) — 6 Simulators"), style = "color: #1E293B; font-size: 0.88rem; margin-bottom: 6px;"),
-              p("100 paired cells (200 genes & 200 peaks) across 4 cell types & 2 batches (Bud_21, Bud_22) evaluated for scMultiSim, scDesign3, MOSim, scCross, scMoMtF, and Matilda.", style = "font-size: 0.80rem; color: #64748B; margin: 0;")
+              p("100 balanced paired cells (100 HVGs & 100 HVPs) across 8 cell types & 2 batches (Bud_21, Bud_22) evaluated for scMultiSim, scDesign3, MOSim, scCross, scMoMtF, and Matilda.", style = "font-size: 0.80rem; color: #64748B; margin: 0;")
             )
           ),
           div(
@@ -8637,7 +8661,7 @@ server <- function(input, output, session) {
               class = "p-3 rounded border h-100",
               style = "background: #F8FAFC;",
               h6(tags$b(icon("layer-group", class = "me-2 text-primary"), "Soybean Root (Unpaired) — 3 Simulators"), style = "color: #1E293B; font-size: 0.88rem; margin-bottom: 6px;"),
-              p("100 RNA cells + 100 ATAC cells (200 genes & 200 peaks) across 4 cell types & 2 replicates evaluated for scMultiSim, scDesign3, and scCross.", style = "font-size: 0.80rem; color: #64748B; margin: 0;")
+              p("100 balanced RNA cells (100 HVGs) + 100 balanced ATAC cells (100 HVPs) across 8 cell types evaluated for scMultiSim, scDesign3, and scCross.", style = "font-size: 0.80rem; color: #64748B; margin: 0;")
             )
           )
         ),
@@ -8728,7 +8752,7 @@ server <- function(input, output, session) {
           )
         ),
         card_body(
-          p("Upload empirical reference Seurat or SingleCellExperiment objects (.rds) with embedded cell metadata for each dataset. All simulators below will be benchmarked against these references:",
+          p("Upload empirical reference SingleCellExperiment objects (.rds; Seurat .rds auto-converted) with embedded cell metadata (colData) for each dataset. All simulators below will be benchmarked against these references:",
             style = "font-size: 0.82rem; color: #64748B; margin-bottom: 12px;"),
           uiOutput("ui_uni_ref_cards")
         )
@@ -8839,7 +8863,7 @@ server <- function(input, output, session) {
           )
         ),
         card_body(
-          p("Upload empirical reference RNA and ATAC Seurat or SingleCellExperiment objects (.rds) with embedded cell metadata for each dataset:",
+          p("Upload empirical reference RNA and ATAC SingleCellExperiment objects (.rds; Seurat .rds auto-converted) with embedded cell metadata (colData) for each dataset:",
             style = "font-size: 0.82rem; color: #64748B; margin-bottom: 12px;"),
           uiOutput("ui_multi_ref_cards")
         )
@@ -10215,7 +10239,7 @@ server <- function(input, output, session) {
       "  cat(sprintf('[scSimEval Workflow] Step 2: BENCHMARK_RESULTS_FILE (\"%s\") not found on disk.\n', BENCHMARK_RESULTS_FILE))",
       "  cat('  Please set the correct path in the FILE PATH CONFIGURATION section at the bottom of this script.\n')",
       "  cat('  Loading package demo benchmark database for execution demonstration...\n')",
-      "  pth <- system.file('shiny/scSimEvalApp/data/demo_benchmark_data.rds', package = 'scSimEval')",
+      "  pth <- system.file('shiny/scSimEvalApp/data/demo_benchmark_data.rds', package = 'scSimEvalStudio')",
       "  if (file.exists(pth)) {",
       "    demo_obj <- readRDS(pth)",
       "    benchmark_data <- demo_obj$benchmark_summary_table %||% demo_obj$benchmark_df",
@@ -10738,7 +10762,7 @@ server <- function(input, output, session) {
       "    cat(sprintf('[scSimEval Workflow] Step 2: Specified file \"%s\" not found on disk.\n', benchmark_file))",
       "    cat('  Please verify or update the path in FILE PATH CONFIGURATION at the end of this script.\n')",
       "    cat('  Loading package demo benchmark database for execution verification...\n')",
-      "    demo_pth <- system.file('shiny/scSimEvalApp/data/demo_benchmark_data.rds', package = 'scSimEval')",
+      "    demo_pth <- system.file('shiny/scSimEvalApp/data/demo_benchmark_data.rds', package = 'scSimEvalStudio')",
       "    if (file.exists(demo_pth)) {",
       "      demo_obj <- readRDS(demo_pth)",
       "      benchmark_data <- demo_obj$benchmark_summary_table %||% demo_obj$benchmark_df",
@@ -11441,7 +11465,7 @@ server <- function(input, output, session) {
       return(
         ggplot2::ggplot() +
           ggplot2::annotate("text", x = 0.5, y = 0.58, label = "Count Matrices Not Bundled in Uploaded Summary", fontface = "bold", size = 5.2, color = "#1E293B") +
-          ggplot2::annotate("text", x = 0.5, y = 0.42, label = "This uploaded session contains complete evaluation metrics across all 56 criteria.\nRaw and simulated count matrices were not included in this summary table export.\n\nAll Leaderboards, Bubble Matrices, and Metric Summary charts (Tabs 3, 5, and 6) are fully active.", size = 3.8, color = "#64748B", lineheight = 1.3) +
+          ggplot2::annotate("text", x = 0.5, y = 0.42, label = "This uploaded session contains complete evaluation metrics across all 56 criteria.\nRaw and simulated count matrices were not included in this summary table export.\n\nAll Leaderboards, Bubble Matrices, Visualizations, and Master Tables (Tabs 3, 4, and 5) are fully active.", size = 3.8, color = "#64748B", lineheight = 1.3) +
           ggplot2::theme_void() +
           ggplot2::theme(plot.background = ggplot2::element_rect(fill = "#F8FAFC", color = "#CBD5E1", linewidth = 1))
       )
@@ -12034,7 +12058,7 @@ server <- function(input, output, session) {
       return(
         ggplot2::ggplot() +
           ggplot2::annotate("text", x = 0.5, y = 0.58, label = "Count Matrices Not Bundled in Uploaded Summary", fontface = "bold", size = 5.2, color = "#1E293B") +
-          ggplot2::annotate("text", x = 0.5, y = 0.42, label = "Dimension reduction (PCA / UMAP) requires raw and simulated count matrices.\nCount matrices were not included in this summary table export.\n\nAll Leaderboards, Bubble Matrices, and Metric Summary charts (Tabs 3, 5, and 6) are fully active.", size = 3.8, color = "#64748B", lineheight = 1.3) +
+          ggplot2::annotate("text", x = 0.5, y = 0.42, label = "Dimension reduction (PCA / UMAP) requires raw and simulated count matrices.\nCount matrices were not included in this summary table export.\n\nAll Leaderboards, Bubble Matrices, Visualizations, and Master Tables (Tabs 3, 4, and 5) are fully active.", size = 3.8, color = "#64748B", lineheight = 1.3) +
           ggplot2::theme_void() +
           ggplot2::theme(plot.background = ggplot2::element_rect(fill = "#F8FAFC", color = "#CBD5E1", linewidth = 1))
       )
@@ -12262,7 +12286,7 @@ server <- function(input, output, session) {
       datasets                = rv$datasets,
       source_name             = rv$source_name,
       timestamp               = Sys.time(),
-      version                 = "0.99.10"
+      version                 = paste0("scSimEvalStudio ", .studio_version, " / scSimEval ", .core_version)
     )
   }
 
@@ -12600,10 +12624,10 @@ server <- function(input, output, session) {
       entries <- log_storage$entries
       hdr <- c(
         "================================================================================",
-        " scSimEval: Single-Cell Multiomics Simulation Benchmarking Studio",
+        " scSimEvalStudio: Single-Cell Multiomics Simulation Benchmarking Studio",
         " Interactive Execution & Diagnostic Runtime Log Export",
         paste0(" Generated At:    ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
-        paste0(" Package Version: scSimEval v0.99.10"),
+        paste0(" Package Version: scSimEvalStudio v", .studio_version, " (scSimEval v", .core_version, ")"),
         paste0(" R Version:       ", R.version.string),
         paste0(" Platform:        ", R.version$platform),
         paste0(" Total Entries:   ", length(entries)),
