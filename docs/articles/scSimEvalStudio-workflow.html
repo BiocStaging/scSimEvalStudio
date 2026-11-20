@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scSimEvalStudio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +76,16 @@ focuses cleanly on Bioconductor programmatic evaluation across
 <code>scSimEvalStudio</code> exposes point-and-click dataset uploads,
 real-time evaluation progress logs, pre-saved <code>.rds</code>
 exploration, interactive zoomable plots, and Excel/figure exports.</p>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<p>Install the package from Bioconductor with:</p>
+<div class="sourceCode" id="cb0"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"scSimEvalStudio"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="launching-the-shiny-studio">Launching the Shiny Studio<a class="anchor" aria-label="anchor" href="#launching-the-shiny-studio"></a>
@@ -171,9 +181,9 @@ assays and <code>colData</code> annotations <code>cell_type</code> and
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] scSimEval_0.99.11      Matrix_1.7-6           DT_0.34.0             </span></span>
+<span><span class="co">#&gt; [1] scSimEval_0.99.12      Matrix_1.7-6           DT_0.34.0             </span></span>
 <span><span class="co">#&gt; [4] ggplot2_4.0.4          bslib_0.12.0           shiny_1.14.0          </span></span>
-<span><span class="co">#&gt; [7] scSimEvalStudio_0.99.1</span></span>
+<span><span class="co">#&gt; [7] scSimEvalStudio_0.99.2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             </span></span>

@@ -10,6 +10,17 @@ point-and-click dataset uploads, real-time evaluation progress logs,
 pre-saved `.rds` exploration, interactive zoomable plots, and
 Excel/figure exports.
 
+## Installation
+
+Install the package from Bioconductor with:
+
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("scSimEvalStudio")
+```
+
 ## Launching the Shiny Studio
 
 After installing both `scSimEval` and `scSimEvalStudio`, launch the
@@ -104,9 +115,9 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] scSimEval_0.99.11      Matrix_1.7-6           DT_0.34.0             
+#> [1] scSimEval_0.99.12      Matrix_1.7-6           DT_0.34.0             
 #> [4] ggplot2_4.0.4          bslib_0.12.0           shiny_1.14.0          
-#> [7] scSimEvalStudio_0.99.1
+#> [7] scSimEvalStudio_0.99.2
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             

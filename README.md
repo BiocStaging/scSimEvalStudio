@@ -4,8 +4,21 @@
 
 ## Installation
 
+Install the package from Bioconductor:
+
 ```r
-if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("scSimEvalStudio")
+```
+
+To install the development version from GitHub:
+
+```r
+if (!requireNamespace("remotes", quietly = TRUE)) {
+    install.packages("remotes")
+}
 remotes::install_github("kabilanbio/scSimEval")
 remotes::install_github("kabilanbio/scSimEvalStudio")
 ```

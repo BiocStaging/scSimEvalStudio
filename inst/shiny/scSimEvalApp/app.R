@@ -56,8 +56,8 @@ ui_max_cores <- max(128L, n_physical_cores)
 default_n_cores <- max(1L, min(4L, n_physical_cores - 1L))
 
 sys_hardware_summary <- sprintf("System detected: %d CPU cores", n_physical_cores)
-.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.1")
-.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.11")
+.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.2")
+.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.12")
 
 # Register static resource directory for documentation figures
 fig_dirs <- c(
@@ -4377,7 +4377,7 @@ ui <- page_navbar(
   ),
   
   # ============================================================================
-  # TAB 6: HELP & GETTING STARTED (SIMPLE BEGINNER-FRIENDLY GUIDE - v0.99.11)
+  # TAB 6: HELP & GETTING STARTED (SIMPLE BEGINNER-FRIENDLY GUIDE - v0.99.12)
   # ============================================================================
   nav_panel(
     "Help & Getting Started",
@@ -4842,7 +4842,7 @@ ui <- page_navbar(
                   div(style = "font-weight: 700; color: #1E293B; font-size: 0.88rem; margin-bottom: 8px;", "Launch the App or Run Offline in R"),
                   tags$pre(
                     style = "background: #0F172A; color: #F8FAFC; padding: 12px; border-radius: 6px; font-size: 0.78rem; margin: 0;",
-                    "# Install scSimEval (core engine) & scSimEvalStudio (Shiny app):\nremotes::install_github('kabilanbio/scSimEval')\nremotes::install_github('kabilanbio/scSimEvalStudio')\nscSimEvalStudio::launch_scSimEval_app()\n\n# Tip: In Data Hub, click 'Download R Script' after configuring your\n# datasets to get a ready-to-run R script for workstations or HPC clusters."
+                    "# Install from Bioconductor:\nif (!requireNamespace('BiocManager', quietly = TRUE)) {\n    install.packages('BiocManager')\n}\nBiocManager::install(c('scSimEval', 'scSimEvalStudio'))\n\n# Or install development versions from GitHub:\nremotes::install_github('kabilanbio/scSimEval')\nremotes::install_github('kabilanbio/scSimEvalStudio')\n\n# Launch the interactive Shiny studio:\nscSimEvalStudio::launch_scSimEval_app()"
                   )
                 )
               ),
@@ -5308,7 +5308,7 @@ server <- function(input, output, session) {
   }
   
   # ============================================================================
-  # LIVE RUNNING LOGS & DIAGNOSTIC ENGINE (v0.99.11)
+  # LIVE RUNNING LOGS & DIAGNOSTIC ENGINE (v0.99.12)
   # ============================================================================
   # Session-level log storage container (plain environment for safe context-free reading/writing)
   log_storage <- new.env(parent = emptyenv())

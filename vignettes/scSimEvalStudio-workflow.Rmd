@@ -21,6 +21,17 @@ knitr::opts_chunk$set(
 
 **`scSimEvalStudio`** provides the interactive Shiny graphical studio companion for **`scSimEval`**. While `scSimEval` focuses cleanly on Bioconductor programmatic evaluation across `SingleCellExperiment` objects and reproducibility pipelines, `scSimEvalStudio` exposes point-and-click dataset uploads, real-time evaluation progress logs, pre-saved `.rds` exploration, interactive zoomable plots, and Excel/figure exports.
 
+# Installation
+
+Install the package from Bioconductor with:
+
+```{r install, eval = FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+}
+BiocManager::install("scSimEvalStudio")
+```
+
 # Launching the Shiny Studio
 
 After installing both `scSimEval` and `scSimEvalStudio`, launch the interactive studio from R:

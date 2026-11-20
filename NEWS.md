@@ -1,3 +1,7 @@
+# scSimEvalStudio 0.99.2
+
+* Added standard Bioconductor (`BiocManager::install("scSimEvalStudio")`) installation instructions in `README.md`, package vignette, and Shiny Help documentation, synchronized with `scSimEval 0.99.12`.
+
 # scSimEvalStudio 0.99.1
 
 * Synchronized companion version compatibility with `scSimEval 0.99.11` and updated high-DPI workflow diagrams (350 DPI), dark-mode contrast styling, and responsive image zoom controls.
