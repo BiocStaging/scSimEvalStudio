@@ -1,5 +1,9 @@
 # Changelog
 
+## scSimEvalStudio 0.99.4
+
+- Extracted inline post-footer JavaScript across `docs/*.html` into `docs/studio-ui.js` for clean HTML markup and verified `R CMD check` and `BiocCheck` compliance.
+
 ## scSimEvalStudio 0.99.3
 
 - Streamlined `README.md`, `vignettes/scSimEvalStudio-workflow.Rmd`, and

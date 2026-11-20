@@ -3,6 +3,7 @@
 ^\.git$
 ^\.gitignore$
 ^docs$
+^pkgdown$
 ^_pkgdown\.yml$
 ^AGENTS\.md$
 ^Rplots\.pdf$

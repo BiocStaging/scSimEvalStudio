@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 ## 1. Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.3`) is a **point-and-click Shiny web app** built to make single-cell and multiomics simulation benchmarking simple and accessible—even if you are brand new to R.
+**`scSimEvalStudio`** (version `0.99.4`) is a **point-and-click Shiny web app** built to make single-cell and multiomics simulation benchmarking simple and accessible—even if you are brand new to R.
 
 Instead of writing scripts to run metrics and format dozens of plots, `scSimEvalStudio` gives you a clean browser workspace where you can:
 

@@ -2,7 +2,7 @@
 
 ## 1. Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.3`) is a **point-and-click Shiny
+**`scSimEvalStudio`** (version `0.99.4`) is a **point-and-click Shiny
 web app** built to make single-cell and multiomics simulation
 benchmarking simple and accessible—even if you are brand new to R.
 

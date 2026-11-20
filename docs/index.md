@@ -8,7 +8,7 @@
 
 ## Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.3`) is the beginner-friendly,
+**`scSimEvalStudio`** (version `0.99.4`) is the beginner-friendly,
 point-and-click **Shiny web application** companion to
 **[`scSimEval`](https://kabilanbio.github.io/scSimEval/)**.
 
@@ -52,6 +52,8 @@ remotes::install_github("kabilanbio/scSimEvalStudio")
 
 ``` r
 library(scSimEvalStudio)
+
+# Launches the Shiny studio on a local port with a 10 GiB upload limit
 launch_scSimEval_app()
 ```
 

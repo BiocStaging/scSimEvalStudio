@@ -148,15 +148,30 @@
         },
       },
     ]).on('autocomplete:selected', function (event, s) {
-      window.location.href = s.path + "?q=" + q + "#" + s.id;
+      if (!s || s.what === "No results found.") {
+        return;
+      }
+      var target = s.path + "?q=" + encodeURIComponent(q || "");
+      if (s.id) {
+        target += "#" + s.id;
+      }
+      window.location.href = target;
     });
   });
 })(window.jQuery || window.$)
 
 document.addEventListener('keydown', function (event) {
-  // Check if the pressed key is '/'
-  if (event.key === '/') {
-    event.preventDefault();  // Prevent any default action associated with the '/' key
-    document.getElementById('search-input').focus();  // Set focus to the search input
+  // Check if the pressed key is '/' outside editable inputs
+  if (event.key === '/' && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    var active = document.activeElement;
+    var tag = active && active.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (active && active.isContentEditable)) {
+      return;
+    }
+    var searchEl = document.getElementById('search-input');
+    if (searchEl) {
+      event.preventDefault();
+      searchEl.focus();
+    }
   }
 });

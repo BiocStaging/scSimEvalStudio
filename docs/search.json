@@ -6,7 +6,7 @@
     "previous_headings": "",
     "what": "Welcome to scSimEvalStudio",
     "title": "scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking",
-    "text": "scSimEvalStudio (version 0.99.3) is the beginner-friendly, point-and-click Shiny web application companion to scSimEval. Compare single-cell RNA-seq, ATAC-seq, and multiomics simulation methods right in your browser without writing plotting or analysis code. Visit https://kabilanbio.github.io/scSimEval/ for statistical methods and the full 56-metric catalog.",
+    "text": "scSimEvalStudio (version 0.99.4) is the beginner-friendly, point-and-click Shiny web application companion to scSimEval. Compare single-cell RNA-seq, ATAC-seq, and multiomics simulation methods right in your browser without writing plotting or analysis code. Visit https://kabilanbio.github.io/scSimEval/ for statistical methods and the full 56-metric catalog.",
     "code": ""
   },
   {
@@ -17,7 +17,7 @@
     "what": "Get Started in 3 Simple Steps",
     "title": "scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking",
     "text": "Install scSimEvalStudio from Bioconductor or GitHub, launch the Shiny app with launch_scSimEval_app(), and explore 1-click built-in example datasets or upload your own SingleCellExperiment or Seurat .rds files.",
-    "code": "BiocManager::install(\"scSimEvalStudio\")\nlibrary(scSimEvalStudio)\nlaunch_scSimEval_app()"
+    "code": "BiocManager::install(c(\"scSimEval\", \"scSimEvalStudio\"))\nlibrary(scSimEvalStudio)\nlaunch_scSimEval_app()"
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/index.html",
@@ -81,7 +81,7 @@
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/reference/launch_scSimEval_app.html",
-    "id": null,
+    "id": "",
     "dir": "Reference",
     "previous_headings": "",
     "what": "Launch Interactive scSimEval Benchmarking Studio — launch_scSimEval_app",
@@ -90,11 +90,21 @@
     "code": "library(scSimEvalStudio)\nlaunch_scSimEval_app()"
   },
   {
+    "path": "https://kabilanbio.github.io/scSimEvalStudio/reference/scSimEvalStudio-package.html",
+    "id": "",
+    "dir": "Reference",
+    "previous_headings": "",
+    "what": "scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking — scSimEvalStudio-package",
+    "title": "scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking — scSimEvalStudio-package",
+    "text": "Companion graphical Shiny web interface for the scSimEval Bioconductor package for interactive single-cell RNA-seq, ATAC-seq, and multiomics simulation benchmarking.",
+    "code": ""
+  },
+  {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/news/index.html",
     "id": "scsimevalstudio-0993",
     "dir": "Changelog",
     "previous_headings": "",
-    "what": "scSimEvalStudio 0.99.3",
+    "what": "scSimEvalStudio 0.99.4",
     "title": "Changelog",
     "text": "Streamlined README, vignette, and pkgdown github.io documentation into a beginner-friendly Shiny studio guide.",
     "code": ""

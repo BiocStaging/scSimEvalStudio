@@ -1,23 +1,14 @@
-# Authors and Citation
+# Authors
 
 ## Authors
 
-- **Kabilan Sakthivel**. Author, maintainer.
-  [](https://orcid.org/0009-0002-9422-0938)
-
-## Citation
-
-Source:
-[`DESCRIPTION`](https://github.com/kabilanbio/scSimEvalStudio/blob/HEAD/DESCRIPTION)
-
-Sakthivel K (2026). *scSimEvalStudio: Interactive Shiny Studio for
-scSimEval Single-Cell Multiomics Benchmarking*. R package version
-0.99.3, <https://kabilanbio.github.io/scSimEvalStudio/>.
-
-    @Manual{,
-      title = {scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking},
-      author = {Kabilan Sakthivel},
-      year = {2026},
-      note = {R package version 0.99.3},
-      url = {https://kabilanbio.github.io/scSimEvalStudio/},
-    }
+- **Kabilan Sakthivel**. Author, maintainer. [ORCID](https://orcid.org/0009-0002-9422-0938)
+- **Dr Dwijesh Chandra Mishra**. Author, thesis advisor. [ORCID](https://orcid.org/0000-0002-3327-6156)
+- **Dr Shashi Bhushan Lal**. Author. [ORCID](https://orcid.org/0000-0002-2958-6178)
+- **Dr Ulavappa Angadi**. Author. [ORCID](https://orcid.org/0000-0003-0012-0179)
+- **Dr Sudhir Srivastava**. Author. [ORCID](https://orcid.org/0000-0003-4990-7693)
+- **Dr Neeraj Budhlakoti**. Author. [ORCID](https://orcid.org/0000-0003-3380-7831)
+- **Dr Krishna Kumar Chaturvedi**. Author. [ORCID](https://orcid.org/0000-0002-6529-5466)
+- **Dr Ranjeet Ranjan Kumar**. Author. [ORCID](https://orcid.org/0000-0002-2279-6340)
+- **Dr Navin Chandra Gupta**. Author. [ORCID](https://orcid.org/0000-0002-6502-448X)
+- **Dr Sharanbasappa**. Contributor. [ORCID](https://orcid.org/0000-0002-6571-9070)

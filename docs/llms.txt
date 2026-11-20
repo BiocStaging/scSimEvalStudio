@@ -1,6 +1,6 @@
 # scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking
 
-`scSimEvalStudio` (version `0.99.3`) is the beginner-friendly, point-and-click Shiny web application companion to [`scSimEval`](https://kabilanbio.github.io/scSimEval/). It lets users explore built-in examples, upload single-cell RNA-seq, ATAC-seq, or multiomics `.rds` datasets, compare simulators on a simple 0 to 1 visual scale, explore 8 interactive chart views, and export 600 DPI figures, Excel workbooks, CSV tables, and reusable `.rds` sessions.
+`scSimEvalStudio` (version `0.99.4`) is the beginner-friendly, point-and-click Shiny web application companion to [`scSimEval`](https://kabilanbio.github.io/scSimEval/). It lets users explore built-in examples, upload single-cell RNA-seq, ATAC-seq, or multiomics `.rds` datasets, compare simulators on a simple 0 to 1 visual scale, explore 8 interactive chart views, and export 600 DPI figures, Excel workbooks, CSV tables, and reusable `.rds` sessions.
 
 ## Key Documentation Pages
 

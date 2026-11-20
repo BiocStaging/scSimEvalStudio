@@ -1,3 +1,7 @@
+# scSimEvalStudio 0.99.4
+
+* Extracted inline post-footer JavaScript across `docs/*.html` into `docs/studio-ui.js` for clean HTML markup and verified `R CMD check` and `BiocCheck` compliance.
+
 # scSimEvalStudio 0.99.3
 
 * Streamlined `README.md`, `vignettes/scSimEvalStudio-workflow.Rmd`, and the `pkgdown` (`github.io`) documentation into a beginner-friendly Shiny studio guide—removing complex formulas and redundant `scSimEval` metric tables, keeping documentation focused on GUI usage, and linking inline to the core `scSimEval` documentation.

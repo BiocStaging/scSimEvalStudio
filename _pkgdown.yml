@@ -15,14 +15,28 @@ template:
     after_body: |
       <script>
       document.addEventListener("DOMContentLoaded", function() {
-        // Hide citation block on authors page if present
+        function safeGetStorage(key) {
+          try { return window.localStorage.getItem(key); } catch (e) { return null; }
+        }
+        function safeSetStorage(key, val) {
+          try { window.localStorage.setItem(key, val); } catch (e) {}
+        }
+
+        // Hide citation block and its TOC link on authors page if present
         const citationHeader = document.getElementById("citation");
         if (citationHeader && citationHeader.closest(".section")) {
           citationHeader.closest(".section").remove();
         }
+        const tocCitationLink = document.querySelector('#toc a[href="#citation"]');
+        if (tocCitationLink && tocCitationLink.closest("li")) {
+          tocCitationLink.closest("li").remove();
+        }
         const authorsH1 = document.querySelector(".template-citation-authors h1");
         if (authorsH1 && authorsH1.textContent.includes("Citation")) {
           authorsH1.textContent = "Authors";
+          if (document.title && document.title.includes("Authors and Citation")) {
+            document.title = document.title.replace("Authors and Citation", "Authors");
+          }
         }
         // Custom search placeholder
         const searchInput = document.getElementById("search-input");
@@ -72,7 +86,7 @@ template:
             }
 
             function setTocState(visible) {
-              const container = mainEl.closest(".container") || mainEl.closest(".container-fluid") || document.querySelector(".container.template-article") || document.querySelector(".container");
+              const container = mainEl.closest(".container") || mainEl.closest(".container-fluid") || document.querySelector(".container.template-article") || document.querySelector("body > .container");
               if (visible) {
                 document.body.classList.remove("toc-collapsed");
                 if (container) container.classList.remove("container-fullwidth");
@@ -84,7 +98,7 @@ template:
                 mainEl.style.maxWidth = "";
                 mainEl.style.flex = "";
                 if (showBtn) showBtn.classList.add("d-none");
-                localStorage.setItem("scSimEval_toc_hidden", "false");
+                safeSetStorage("scSimEval_toc_hidden", "false");
               } else {
                 document.body.classList.add("toc-collapsed");
                 if (container) container.classList.add("container-fullwidth");
@@ -96,11 +110,11 @@ template:
                 mainEl.style.maxWidth = "100%";
                 mainEl.style.flex = "0 0 100%";
                 if (showBtn) showBtn.classList.remove("d-none");
-                localStorage.setItem("scSimEval_toc_hidden", "true");
+                safeSetStorage("scSimEval_toc_hidden", "true");
               }
             }
 
-            if (localStorage.getItem("scSimEval_toc_hidden") === "true") {
+            if (safeGetStorage("scSimEval_toc_hidden") === "true") {
               setTocState(false);
             }
           }
@@ -147,7 +161,7 @@ template:
           overlay.appendChild(bar);
           document.body.appendChild(overlay);
 
-          var state = { scale: 1, tx: 0, ty: 0, dragging: false, sx: 0, sy: 0, stx: 0, sty: 0 };
+          var state = { scale: 1, tx: 0, ty: 0, dragging: false, moved: false, sx: 0, sy: 0, stx: 0, sty: 0 };
           var lbSlider = document.getElementById("sc_lb_slider");
           var lbPct = document.getElementById("sc_lb_pct");
 
@@ -182,7 +196,7 @@ template:
             applyTransform();
           }
 
-          if (img.complete) fitImage(); else img.onload = fitImage;
+          if (img.complete && img.naturalWidth > 0) fitImage(); else img.onload = fitImage;
 
           canvas.addEventListener("wheel", function(e) {
             e.preventDefault();
@@ -192,7 +206,9 @@ template:
 
           canvas.addEventListener("mousedown", function(e) {
             if (e.button !== 0) return;
+            e.preventDefault();
             state.dragging = true;
+            state.moved = false;
             state.sx = e.clientX; state.sy = e.clientY;
             state.stx = state.tx; state.sty = state.ty;
             canvas.classList.add("sc-panning");
@@ -200,8 +216,11 @@ template:
 
           function onLbMove(e) {
             if (!state.dragging) return;
-            state.tx = state.stx + (e.clientX - state.sx);
-            state.ty = state.sty + (e.clientY - state.sy);
+            var dx = e.clientX - state.sx;
+            var dy = e.clientY - state.sy;
+            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) state.moved = true;
+            state.tx = state.stx + dx;
+            state.ty = state.sty + dy;
             applyTransform();
           }
 
@@ -245,6 +264,10 @@ template:
           window.addEventListener("keydown", onLbKey);
           closeBtn.onclick = closeLightbox;
           overlay.addEventListener("click", function(e) {
+            if (state.moved) {
+              state.moved = false;
+              return;
+            }
             if (e.target === overlay || e.target === canvas) closeLightbox();
           });
         };
@@ -309,6 +332,16 @@ template:
             var btnReset = toolbar.querySelector(".sc-btn-reset");
             var btnFull = toolbar.querySelector(".sc-btn-full");
 
+            function syncPannable() {
+              if (container.scrollWidth > container.clientWidth + 2 || container.scrollHeight > container.clientHeight + 2 || curZoom > 100) {
+                container.classList.add("sc-pannable");
+              } else {
+                container.classList.remove("sc-pannable");
+              }
+            }
+
+            if (img.complete && img.naturalWidth > 0) syncPannable(); else img.addEventListener("load", syncPannable);
+
             function setZoom(next, anchorX, anchorY) {
               next = Math.max(25, Math.min(400, Math.round(next)));
               var prev = curZoom;
@@ -326,11 +359,13 @@ template:
                 stage.style.width = "100%";
                 stage.style.height = "";
                 stage.style.overflow = "visible";
-                container.classList.remove("sc-pannable");
+                delete target.dataset.baseW;
+                delete target.dataset.baseH;
+                syncPannable();
                 return;
               }
 
-              if (!target.dataset.baseW) {
+              if (prev === 100 || !target.dataset.baseW) {
                 var bw = img.offsetWidth || 800;
                 var bh = img.offsetHeight || 500;
                 if (bw > 40 && bh > 40) {
@@ -365,11 +400,7 @@ template:
               container.scrollLeft = Math.max(0, Math.round(contentX * factor - relX));
               container.scrollTop = Math.max(0, Math.round(contentY * factor - relY));
 
-              if (container.scrollWidth > container.clientWidth + 2 || container.scrollHeight > container.clientHeight + 2 || next > 100) {
-                container.classList.add("sc-pannable");
-              } else {
-                container.classList.remove("sc-pannable");
-              }
+              syncPannable();
             }
 
             slider.addEventListener("input", function() { setZoom(Number(this.value)); });
@@ -382,8 +413,8 @@ template:
             });
             btnFit.addEventListener("click", function() {
               setZoom(100);
-              var bw = Number(target.dataset.baseW) || img.offsetWidth || 800;
-              var bh = Number(target.dataset.baseH) || img.offsetHeight || 500;
+              var bw = img.offsetWidth || 800;
+              var bh = img.offsetHeight || 500;
               var availW = Math.max(120, container.clientWidth - 20);
               var availH = Math.max(120, container.clientHeight - 20);
               var fitScale = Math.min(availW / bw, availH / bh);
@@ -414,6 +445,7 @@ template:
             container.addEventListener("mousedown", function(e) {
               if (e.button !== 0) return;
               if (container.scrollWidth <= container.clientWidth && container.scrollHeight <= container.clientHeight && curZoom <= 100) return;
+              e.preventDefault();
               isDragging = true;
               container.classList.add("sc-panning");
               startX = e.clientX;
@@ -444,6 +476,8 @@ template:
 home:
   title: "scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking"
   description: "Point-and-click Shiny studio for exploring, comparing, and exporting single-cell and multiomics simulation benchmarks powered by scSimEval."
+  sidebar:
+    structure: [links, license, authors]
 
 footer:
   structure:
