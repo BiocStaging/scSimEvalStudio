@@ -1,46 +1,12 @@
-# scSimEvalStudio
+# scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Simulation Benchmarking
 
-**`scSimEvalStudio`** is the interactive Shiny graphical interface
-companion package for
-**[scSimEval](https://github.com/kabilanbio/scSimEval)**
-(`SingleCellExperiment`-based benchmarking of single-cell RNA-seq,
-scATAC-seq, and paired/unpaired multiomics simulations).
+`scSimEvalStudio` (version `0.99.3`) is the interactive graphical benchmarking studio companion to [`scSimEval`](https://kabilanbio.github.io/scSimEval/) (version `0.99.12`). It operationalizes reference-based simulation benchmarking by comparing one or more synthetic datasets against an empirical biological reference dataset across **56 curated quantitative evaluation measures** organized into **8 canonical biological and computational categories** on Bioconductor **`SingleCellExperiment`** S4 objects (`scRNA-seq` [44 measures], `scATAC-seq` [38 measures], `Paired Co-Assay Multiomics` [56 measures], and `Unpaired Multiomics` [56 measures]).
 
-## Installation
+## Key Documentation Pages
 
-``` r
-if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
-remotes::install_github("kabilanbio/scSimEval")
-remotes::install_github("kabilanbio/scSimEvalStudio")
-```
-
-## Quick Start
-
-``` r
-library(scSimEvalStudio)
-launch_scSimEval_app()
-```
-
-## Development & Support
-
-- **Maintainer:** Kabilan Sakthivel (`kabilan151414@gmail.com`)
-- **Documentation:** <https://kabilanbio.github.io/scSimEvalStudio/>
-- **Issues:** <https://github.com/kabilanbio/scSimEvalStudio/issues>
-
-# Package index
-
-## Launch Studio
-
-- [`launch_scSimEval_app()`](https://kabilanbio.github.io/scSimEvalStudio/reference/launch_scSimEval_app.md)
-  : Launch Interactive scSimEval Benchmarking Studio
-- [`scSimEvalStudio`](https://kabilanbio.github.io/scSimEvalStudio/reference/scSimEvalStudio-package.md)
-  [`scSimEvalStudio-package`](https://kabilanbio.github.io/scSimEvalStudio/reference/scSimEvalStudio-package.md)
-  : scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell
-  Multiomics Benchmarking
-
-# Articles
-
-### All vignettes
-
-- [Interactive Single-Cell Simulation Benchmarking with
-  scSimEvalStudio](https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.md):
+- [Home & Scientific Overview](https://kabilanbio.github.io/scSimEvalStudio/index.md)
+- [Architecture & Interactive Studio Guide (Vignette)](https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.md)
+- [Function Reference: `launch_scSimEval_app()`](https://kabilanbio.github.io/scSimEvalStudio/reference/launch_scSimEval_app.md)
+- [Package Overview: `scSimEvalStudio-package`](https://kabilanbio.github.io/scSimEvalStudio/reference/scSimEvalStudio-package.md)
+- [Changelog](https://kabilanbio.github.io/scSimEvalStudio/news/index.md)
+- [Core Engine (`scSimEval` v0.99.12) Documentation](https://kabilanbio.github.io/scSimEval/)

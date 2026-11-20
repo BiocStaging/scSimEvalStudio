@@ -1,11 +1,11 @@
 ---
-title: "Interactive Single-Cell Simulation Benchmarking with scSimEvalStudio"
+title: "Interactive Single-Cell & Multiomics Simulation Benchmarking with scSimEvalStudio"
 output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{Interactive Single-Cell Simulation Benchmarking with scSimEvalStudio}
+  %\VignetteIndexEntry{Interactive Single-Cell & Multiomics Simulation Benchmarking with scSimEvalStudio}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,35 +17,368 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Introduction
+## 1. Scientific Motivation & Multiomics Experimental Design Coverage
 
-**`scSimEvalStudio`** provides the interactive Shiny graphical studio companion for **`scSimEval`**. While `scSimEval` focuses cleanly on Bioconductor programmatic evaluation across `SingleCellExperiment` objects and reproducibility pipelines, `scSimEvalStudio` exposes point-and-click dataset uploads, real-time evaluation progress logs, pre-saved `.rds` exploration, interactive zoomable plots, and Excel/figure exports.
+Single-cell and multiomics simulation algorithms are foundational to computational biology: they enable method developers and applied bioinformaticians to benchmark clustering, batch integration, differential expression/accessibility, trajectory inference, and cross-modal alignment algorithms under controlled ground-truth conditions. However, any *in silico* benchmark is only as trustworthy as the biological realism of its underlying synthetic datasets. A simulator that reproduces marginal gene means while distorting zero-inflation kinetics, collapsing rare cell manifolds, inflating false-positive differential markers, or decoupling chromatin accessibility from transcription can systematically mislead downstream tool selection.
 
-# Installation
+**`scSimEvalStudio`** (version `0.99.3`) is the interactive Shiny graphical studio companion to **[`scSimEval`](https://kabilanbio.github.io/scSimEval/)** (version `0.99.12`). Together, they establish a rigorous, reference-based benchmarking framework that compares one or more simulated datasets ($\mathcal{D}_{\text{sim}}^{(1)}, \dots, \mathcal{D}_{\text{sim}}^{(M)}$) against an empirical biological reference dataset ($\mathcal{D}_{\text{ref}}$) across **56 curated evaluation measures** organized into **8 canonical biological and computational categories**.
 
-Install the package from Bioconductor with:
+### Bioconductor Ecosystem Integration & S4 Data Structures
 
-```{r install, eval = FALSE}
+`scSimEvalStudio` is engineered directly around Bioconductor S4 data representations and statistical infrastructure:
+
+- **Core S4 Container (`SingleCellExperiment`)**: All evaluation workflows operate natively on [`SingleCellExperiment`](https://bioconductor.org/packages/SingleCellExperiment/) objects storing raw count matrices in `assay(sce, "counts")` (supporting memory-efficient sparse `dgCMatrix` representations from the `Matrix` package) and cell-level biological annotations (`cell_type` and `batch`) in `SummarizedExperiment::colData(sce)`.
+- **Multi-Modal Co-Assay Representation (`altExp`)**: Paired multiomics datasets (`scRNA-seq + scATAC-seq` profiled across identical cell barcodes) are represented either as a single `SingleCellExperiment` containing the secondary chromatin accessibility assay in `altExp(sce, "ATAC")` or as a named list `list(RNA = rna_sce, ATAC = atac_sce)`.
+- **Automatic `Seurat` Interoperability**: Users working with `Seurat` objects can convert them in one line via `Seurat::as.SingleCellExperiment(seurat_obj)` prior to saving, or upload `.rds` files containing `Seurat` objects directly into `scSimEvalStudio` for automatic on-the-fly S4 conversion.
+- **Statistical & Parallel Backends**: Integrates with `BiocParallel` for dynamic multi-core task scheduling, `edgeR` for replicate-aware pseudobulk quasi-likelihood differential testing (`glmQLFit` / `glmQLFTest`), `CDI` for penalized likelihood Clustering Deviation Index computation, `CellMixS` for cell-specific batch mixing, and `scater` / `scuttle` for single-cell normalization and quality control.
+
+### Coverage Across Four Experimental Designs
+
+Depending on the experimental modality and available metadata annotations, `scSimEvalStudio` automatically activates the appropriate subset of the 56-measure evaluation suite:
+
+| Experimental Design | S4 Input Representation | `colData` Metadata | Active Categories | Curated Measures Evaluated |
+|:---|:---|:---|:---:|:---:|
+| **1. Unimodal `scRNA-seq`** | Gene $\times$ cell raw UMI/read count matrix in `assay(sce, "counts")` | `cell_type` (Cat III, V) & `batch` (Cat IV, V) | **7 Categories** (I–V, VII, VIII) | **44 Measures** (Cat I: 14, Cat II: 4, Cat III: 8, Cat IV: 5, Cat V: 6 DE, Cat VII: 5 Trajectory, Cat VIII: 2 Scalability) |
+| **2. Unimodal `scATAC-seq`** | Peak/bin $\times$ cell raw fragment/insertion count matrix in `assay(sce, "counts")` with TF-IDF latent semantic indexing | `cell_type` (Cat III, V) & `batch` (Cat IV, V) | **6 Categories** (I–V, VIII) | **38 Measures** (Cat I: 14, Cat II: 3, Cat III: 8, Cat IV: 5, Cat V: 6 DA, Cat VIII: 2 Scalability; Cat VII skipped for ATAC) |
+| **3. Paired Co-Assay Multiomics** | Joint `scRNA-seq + scATAC-seq` across identical cells (1-to-1 barcode correspondence via `altExp(sce, "ATAC")` or `list(RNA = rna_sce, ATAC = atac_sce)`) | Shared `cell_type` & `batch` | **All 8 Categories** (I–VIII) | **56 Measures** *(rendered as 50 unique columns in the Comparative Bubble Matrix)* |
+| **4. Unpaired Multiomics** | Independent `scRNA-seq` and `scATAC-seq` `SingleCellExperiment` objects from the same tissue without shared barcodes | Modality-specific `cell_type` & `batch` | **All 8 Categories** (I–VIII) | **56 Measures** *(Cat VI evaluated on joint stacked latent embeddings; 50 Bubble Matrix columns)* |
+
+---
+
+## 2. End-to-End Architecture & The 8-Category / 56-Measure Taxonomy
+
+The benchmarking engine underlying `scSimEvalStudio` executes a four-stage scientific pipeline:
+
+```{r workflow-diagram, echo = FALSE, out.width = "100%", fig.cap = "Figure 1 | The 4-Stage scSimEval & scSimEvalStudio Benchmarking Architecture: (1) multi-modal data ingestion and S4 validation; (2) parallel metric extraction across 56 curated evaluation measures in 8 canonical categories; (3) direction-aware normalization onto a unified [0.00, 1.00] fidelity scale; and (4) interactive visual analytics, multidimensional ordinations, and reproducible exports."}
+wf_img <- system.file("shiny", "scSimEvalApp", "www", "workflow_diagram.png", package = "scSimEvalStudio")
+if (!nzchar(wf_img) || !file.exists(wf_img)) {
+  wf_img <- "../inst/shiny/scSimEvalApp/www/workflow_diagram.png"
+}
+if (file.exists(wf_img)) {
+  knitr::include_graphics(wf_img)
+}
+```
+
+### Detailed Scientific Breakdown of Categories I–VIII
+
+#### Category I: Distributional Properties (14 Measures Across 18 Empirical Properties)
+
+Category I evaluates whether synthetic count matrices reproduce both marginal (1D) and joint (2D) statistical distributions of real cells and features. First, 18 empirical summary distributions are extracted from $\mathcal{D}_{\text{ref}}$ and $\mathcal{D}_{\text{sim}}$:
+
+- **7 Univariate Cell-Level Properties (`extract_cell_properties()`)**:
+  1. `library_size`: Total UMI/read or fragment count per cell ($L_c = \sum_{g=1}^{G} Y_{g,c}$).
+  2. `log_library_size`: Log-transformed total library depth ($\log_{10}(L_c + 1)$).
+  3. `tmm_factor`: Trimmed Mean of M-values normalization size factor capturing compositional bias.
+  4. `zero_fraction_cell`: Cellular sparsity / dropout fraction ($f_{0,c} = \frac{1}{G}\sum_{g=1}^{G} \mathbb{I}(Y_{g,c} = 0)$).
+  5. `detection_freq_cell`: Proportion of expressed genes or accessible peaks per cell ($1 - f_{0,c}$).
+  6. `cell_cor`: Pairwise cell-to-cell Pearson correlation distribution across top highly variable features.
+  7. `pca_dist`: Euclidean distance of each cell to the centroid in top principal component space.
+- **7 Univariate Feature-Level Properties (`extract_feature_properties()`)**:
+  1. `mean_expression`: Empirical feature mean across cells ($\mu_g = \frac{1}{C}\sum_{c=1}^{C} Y_{g,c}$).
+  2. `variance`: Empirical feature variance ($\sigma_g^2$).
+  3. `scaled_variance`: Variance standardized by mean expression ($\sigma_g^2 / \mu_g$, Fano factor).
+  4. `cv`: Coefficient of variation ($\sigma_g / \mu_g$).
+  5. `zero_fraction_feature`: Feature-wise dropout fraction ($f_{0,g} = \frac{1}{C}\sum_{c=1}^{C} \mathbb{I}(Y_{g,c} = 0)$).
+  6. `dispersion`: Negative binomial overdispersion parameter ($\phi_g$ satisfying $\sigma_g^2 = \mu_g + \phi_g \mu_g^2$).
+  7. `gene_cor`: Pairwise feature-to-feature Pearson co-expression or co-accessibility correlation distribution.
+- **4 Bivariate Property Couplings**:
+  1. `lib_vs_cellzero`: Joint cell-level distribution of library size ($L_c$) versus cell zero fraction ($f_{0,c}$).
+  2. `mean_vs_sd`: Joint feature-level distribution of mean expression ($\mu_g$) versus standard deviation ($\sigma_g$).
+  3. `mean_vs_featzero`: Joint feature-level mean–dropout coupling ($\mu_g$ versus $f_{0,g}$).
+  4. `mean_vs_dispersion`: Joint feature-level mean–overdispersion relationship ($\mu_g$ versus $\phi_g$).
+
+Across the 14 univariate properties, `scSimEval` computes **10 complementary 1D divergence measures**: 1D Wasserstein optimal transport distance (`Wasserstein`), two-sample Kolmogorov–Smirnov statistic (`KS`), quantile Median Absolute Deviation (`MAD`), Mean Absolute Error (`MAE`), Root Mean Squared Error (`RMSE`), histogram Bhattacharyya distance (`Bhattacharyya`), Gaussian Kernel Density Integrated Squared Error (`KDE_ISE`), Wald–Wolfowitz Runs randomness statistic (`Runs_Statistic`), 1D $k$-Nearest-Neighbor source mismatch (`NN_Mismatch`), and 1D Inter-Dataset Silhouette width (`Between_Dataset_Silh_Global`). Across the 4 bivariate pairs, it computes **4 two-dimensional divergence measures**: 2D Fasano–Franceschini Kolmogorov–Smirnov distance (`Fasano_Franceschini_2D_KS`), 2D Earth Mover's Distance (`EMD_2D`), 2D Nearest-Neighbor Mismatch (`NN_Mismatch_2D`), and 2D Inter-Dataset Silhouette width (`Between_Dataset_Silh_2D_Global`).
+
+#### Category II: Sparsity & Zero-Inflation Dynamics (5 Measures)
+
+Single-cell technologies exhibit characteristic non-linear dropout and sparsity curves:
+
+- **Logistic Dropout Probability Curve (`scRNA-seq`, 3 measures)**: Models feature dropout probability as a logistic function of log-mean expression $\mu_g$:
+  $$P(\text{zero}_g \mid \mu_g) = \frac{1}{1 + \exp\big(-k(\mu_g - x_0)\big)}$$
+  comparing reference and simulated inflection midpoints (`midpoint_error` $= |x_{0,\text{ref}} - x_{0,\text{sim}}|$), transition slopes (`slope_error` $= |k_{\text{ref}} - k_{\text{sim}}|$), and curve goodness-of-fit (`r2_discrepancy` $= |R^2_{\text{ref}} - R^2_{\text{sim}}|$).
+- **Chromatin Accessibility Sparsity Curve (`scATAC-seq`, 2 measures)**: Models the quadratic trend between mean peak accessibility and non-zero cell fraction, quantifying residual Root Mean Squared Error (`curve_rmse`) and fit discrepancy (`r2_discrepancy`).
+- **Excess Zero-Inflation Weight (`excess_zero_weight_discrepancy`, 1 measure)**: Estimates the discrepancy in technical zero-inflation weights beyond negative binomial sampling expectation.
+
+#### Category III: Cellular Manifold & Clustering Concordance (8 Measures)
+
+Evaluates whether simulated cells preserve the high-dimensional latent geometry (PCA for `scRNA-seq`; TF-IDF + SVD latent semantic indexing for `scATAC-seq`) and discrete cell-type cluster structure of $\mathcal{D}_{\text{ref}}$:
+
+- **Point-Cloud Manifold Alignment**: Multi-scale Radial Basis Function (RBF) kernel Maximum Mean Discrepancy (`MMD`), along with $k$-NN manifold support `Generative_Precision` (fraction of simulated cells falling within the real reference manifold support, penalizing hallucinated cell states) and `Generative_Recall` (fraction of real cell states covered by the simulator, penalizing mode collapse).
+- **Cluster Separation & Assignment Concordance**: Cell-type Average Silhouette Width (`silhouette_sim`), penalized negative log-likelihood Clustering Deviation Index (`cdi`; Fang et al., *Genome Biol.* 2022), local $k$-NN `neighborhood_purity`, Adjusted Rand Index (`ari`), and Normalized Mutual Information (`nmi`).
+
+#### Category IV: Technical Variation & Batch Mixing Dynamics (5 Measures)
+
+When multi-batch or multi-replicate annotations (`colData(sce)$batch`) are present, Category IV quantifies how faithfully technical batch effects and local inter-batch mixing are reproduced:
+
+- `batch_silhouette`: Global batch silhouette width (values near $0$ indicate natural batch intermixing without artificial batch segregation).
+- `pcr_r2`: Principal Component Regression $R^2$, measuring the proportion of total variance in the top principal components attributable to technical batch labels.
+- `cms`: Cell-Specific Mixing Score (Lütge et al., *Life Sci. Alliance* 2021), testing whether local $k$-NN neighborhoods reflect global batch proportions.
+- `isi`: Local Inverse Simpson's Index (LISI; Korsunsky et al., *Nat. Methods* 2019), measuring the effective number of batches represented in each cell's local neighborhood.
+- `cross_batch_F1`: Macro-$F_1$ accuracy of a cell-type classifier trained on one batch and evaluated on held-out batches.
+
+#### Category V: Biological Signal & Differential Fidelity (12 Measures: 6 scRNA-seq DE + 6 scATAC-seq DA)
+
+To avoid the false-positive inflation inherent to single-cell Wilcoxon or $t$-tests (Squair et al., *Nat. Commun.* 2021; Duo et al., *Genome Biol.* 2024; Teo et al., *Nat. Commun.* 2024), Category V aggregates single cells into biological replicate **cell-type $\times$ batch pseudobulks** (`to_pseudobulk()`) and fits negative binomial quasi-likelihood generalized linear models (`edgeR::glmQLFit` and `edgeR::glmQLFTest`) with cellular detection rate covariates (`run_edger_qlf_detrate()` for scRNA-seq; binarized peak accessibility `binarize_matrix()` + `run_edger_qlf_da()` for scATAC-seq). Treating empirical reference DEGs/DARs ($\text{FDR} < 0.05$) as ground truth, it computes **6 scRNA-seq Differential Expression (DE)** measures and **6 scATAC-seq Differential Accessibility (DA)** measures:
+
+1. `pval_dist_score`: Null $p$-value uniformity score under permuted null comparisons (verifies Type I error calibration).
+2. `accuracy`: Overall binary classification accuracy for recovering reference DEGs / DARs.
+3. `precision`: Positive predictive value ($\text{TP} / (\text{TP} + \text{FP})$).
+4. `recall`: Statistical sensitivity / power ($\text{TP} / (\text{TP} + \text{FN})$).
+5. `f1_score`: Harmonic mean of differential recovery precision and recall.
+6. `auc`: Threshold-free Area Under the Receiver Operating Characteristic curve (ROC-AUC) ranking true markers above background features.
+
+#### Category VI: Multiomics Integration & Alignment (5 Measures)
+
+For paired co-assay and unpaired multiomics datasets, Category VI projects RNA and ATAC modalities into a joint latent embedding and evaluates cross-modal alignment using gold-standard `scib` / `scMultiSim` / `scCross` / `Matilda` / `scMoMtF` metrics: Cross-Modal Batch ASW (`batch_asw`), Joint Cell-Type ASW (`cell_type_asw`), $k$-NN Graph Connectivity (`graph_connectivity`), Joint Integration ARI (`ari`), and Joint Integration NMI (`nmi`).
+
+#### Category VII: Trajectory & Lineage Topology (5 Measures)
+
+Following the **`dynverse`** trajectory benchmarking framework (Saelens et al., *Nat. Biotechnol.* 2019), Category VII filters for top highly variable genes (`preprocess_trajectory_hvgs()`), infers minimum-spanning-tree milestone networks and geodesic pseudotimes (`infer_dynverse_trajectory()`), and compares reference and simulated differentiation topologies across 5 measures:
+
+1. `him`: Hamming–Ipsen–Mikhailov graph topology similarity combining local adjacency and global Laplacian spectra.
+2. `edge_flip`: Graph edit similarity measuring the minimum edge additions/removals required to align milestone trees.
+3. `geodesic_correlation`: Spearman/Pearson correlation of pairwise cell geodesic distances along the inferred lineage graph.
+4. `F1_branches`: Harmonic $F_1$ concordance of cellular branch assignments across developmental trajectories.
+5. `wcor_features`: Weighted Pearson correlation of Ranger Random Forest trajectory driver gene importance scores.
+
+#### Category VIII: Computational Scalability & Efficiency (2 Hardware-Normalized Measures)
+
+Because benchmark experiments often execute simulators across heterogeneous workstation or HPC core allocations ($N_{\text{cores}}$), raw wall-clock runtime and total resident RAM are confounded by parallelism. Category VIII standardizes computational cost into two hardware-normalized measures (`benchmark_resource_usage()`):
+
+$$\text{Core-Seconds (core}\cdot\text{s)} = T_{\text{elapsed, seconds}} \times N_{\text{cores}}, \qquad \text{Peak RAM per Core (MiB/core)} = \frac{M_{\text{peak, MiB}}}{N_{\text{cores}}}$$
+
+### Complete Master Reference Table of All 56 Evaluation Measures
+
+| # | Metric ID | Display Name | Category | Modalities | Optimization Direction | Scientific & Statistical Definition |
+|:---:|:---|:---|:---|:---:|:---:|:---|
+| 1 | `Wasserstein` | 1D Wasserstein Distance | I. Distributional | All | Lower is better | Earth mover's $L_1$ transport distance $\int_0^1 |F_{\text{ref}}^{-1}(u) - F_{\text{sim}}^{-1}(u)|\,du$ across 14 1D properties. |
+| 2 | `KS` | Kolmogorov–Smirnov Distance | I. Distributional | All | Lower is better | Supremum ECDF vertical divergence $\sup_x |F_{\text{ref}}(x) - F_{\text{sim}}(x)|$. |
+| 3 | `MAD` | Median Absolute Deviation | I. Distributional | All | Lower is better | Outlier-robust median absolute quantile discrepancy $\text{median}(|q_{\text{ref}} - q_{\text{sim}}|)$. |
+| 4 | `MAE` | Mean Absolute Error | I. Distributional | All | Lower is better | Mean absolute quantile discrepancy $\frac{1}{Q}\sum_{i=1}^Q |q_{\text{ref},i} - q_{\text{sim},i}|$. |
+| 5 | `RMSE` | Root Mean Squared Error | I. Distributional | All | Lower is better | Tail-sensitive root mean squared quantile error $\sqrt{\frac{1}{Q}\sum_{i=1}^Q (q_{\text{ref},i} - q_{\text{sim},i})^2}$. |
+| 6 | `Bhattacharyya` | Bhattacharyya Distance | I. Distributional | All | Lower is better | Information-geometric density divergence $-\ln \sum_b \sqrt{p_{\text{ref},b}\,p_{\text{sim},b}}$. |
+| 7 | `KDE_ISE` | Kernel Density Error | I. Distributional | All | Lower is better | Integrated squared error $\int (\hat{f}_{\text{ref}}(x) - \hat{f}_{\text{sim}}(x))^2\,dx$ between Gaussian KDE curves. |
+| 8 | `Runs_Statistic` | Wald–Wolfowitz Runs | I. Distributional | All | Closer to 0 is better | Standardized $Z$-statistic testing random interleaving of pooled reference and simulated values. |
+| 9 | `NN_Mismatch` | 1D Nearest-Neighbor Mismatch | I. Distributional | All | Lower is better | Deviation of local 1D $k$-NN source label proportions from balanced mixing. |
+| 10 | `Between_Dataset_Silh_Global` | 1D Inter-Dataset Silhouette | I. Distributional | All | Closer to 0 is better | Global silhouette width between reference and simulated labels along 1D property axes. |
+| 11 | `Fasano_Franceschini_2D_KS` | 2D Kolmogorov–Smirnov | I. Distributional | All | Lower is better | Four-quadrant bivariate extension of the Kolmogorov–Smirnov supremum test across 4 2D pairs. |
+| 12 | `EMD_2D` | 2D Earth Mover's Distance | I. Distributional | All | Lower is better | Two-dimensional optimal transport distance across binned bivariate density surfaces. |
+| 13 | `NN_Mismatch_2D` | 2D Nearest-Neighbor Mismatch | I. Distributional | All | Lower is better | Local $k$-NN source mixing discrepancy in standardized 2D property space. |
+| 14 | `Between_Dataset_Silh_2D_Global` | 2D Inter-Dataset Silhouette | I. Distributional | All | Closer to 0 is better | Inter-dataset silhouette width in 2D bivariate property space. |
+| 15 | `midpoint_error` | Dropout Midpoint Error | II. Sparsity | RNA, Multi | Lower is better | Absolute error $|x_{0,\text{ref}} - x_{0,\text{sim}}|$ in the 50% logistic dropout inflection expression level. |
+| 16 | `slope_error` | Dropout Slope Error | II. Sparsity | RNA, Multi | Lower is better | Absolute error $|k_{\text{ref}} - k_{\text{sim}}|$ in the logistic dropout transition steepness parameter. |
+| 17 | `r2_discrepancy` | Sparsity Fit Discrepancy | II. Sparsity | All | Lower is better | Discrepancy $|R^2_{\text{ref}} - R^2_{\text{sim}}|$ in parametric sparsity curve coefficient of determination. |
+| 18 | `curve_rmse` | Accessibility Sparsity RMSE | II. Sparsity | ATAC, Multi | Lower is better | RMSE between reference and simulated quadratic chromatin accessibility-sparsity curves. |
+| 19 | `excess_zero_weight_discrepancy` | Excess Zero Discrepancy | II. Sparsity | All | Lower is better | Absolute divergence in technical zero-inflation mixture weight beyond sampling expectation. |
+| 20 | `MMD` | Maximum Mean Discrepancy | III. Manifold | All | Lower is better | Multi-scale Gaussian RBF kernel distance in top principal / LSI latent space. |
+| 21 | `Generative_Precision` | Generative Precision | III. Manifold | All | Higher is better | Fraction of simulated cells falling within the $k$-NN manifold support of real reference cells. |
+| 22 | `Generative_Recall` | Generative Recall | III. Manifold | All | Higher is better | Fraction of real reference cells covered by the $k$-NN manifold support of simulated cells. |
+| 23 | `silhouette_sim` | Cluster Silhouette (ASW) | III. Manifold | All | Higher is better | Mean cell-type silhouette width measuring intra-cluster cohesion vs. inter-cluster separation. |
+| 24 | `cdi` | Clustering Deviation Index | III. Manifold | All | Lower is better | Penalized negative log-likelihood quantifying deviation from true cell-type partitions. |
+| 25 | `neighborhood_purity` | Neighborhood Purity | III. Manifold | All | Higher is better | Mean fraction of each cell's $k$ nearest neighbors sharing the same biological `cell_type`. |
+| 26 | `ari` | Adjusted Rand Index | III. Manifold | All | Higher is better | Chance-corrected agreement between unsupervised clusters and ground-truth `cell_type` labels. |
+| 27 | `nmi` | Normalized Mutual Info | III. Manifold | All | Higher is better | Normalized mutual information between unsupervised clusters and ground-truth `cell_type` labels. |
+| 28 | `batch_silhouette` | Batch Silhouette | IV. Technical Batch | All | Closer to 0 is better | Silhouette width with respect to `batch` labels ($0$ indicates ideal batch intermixing). |
+| 29 | `pcr_r2` | PC Regression $R^2$ | IV. Technical Batch | All | Lower is better | Variance in top principal components explained by technical `batch` covariates. |
+| 30 | `cms` | Cell-Specific Mixing Score | IV. Technical Batch | All | Higher is better | Local $\chi^2$ / Anderson–Darling p-value score testing uniform batch mixing in $k$-NN neighborhoods. |
+| 31 | `isi` | Inverse Simpson Index (LISI) | IV. Technical Batch | All | Higher is better | Effective number of batches represented in local Gaussian-weighted cellular neighborhoods. |
+| 32 | `cross_batch_F1` | Cross-Batch Classification $F_1$ | IV. Technical Batch | All | Higher is better | Macro-$F_1$ score of cell-type prediction across held-out technical batches. |
+| 33 | `pval_dist_score` (scRNA) | DE Null P-Value Uniformity | V. Bio-Signal (DE) | RNA, Multi | Higher is better | Calibration score $1 - D_{\text{KS}}(p_{\text{null}}, \text{Uniform}[0,1])$ for pseudobulk `edgeR-QLF` scRNA-seq DE. |
+| 34 | `pval_dist_score` (scATAC) | DA Null P-Value Uniformity | V. Bio-Signal (DA) | ATAC, Multi | Higher is better | Calibration score $1 - D_{\text{KS}}(p_{\text{null}}, \text{Uniform}[0,1])$ for pseudobulk `edgeR-QLF` scATAC-seq DA. |
+| 35 | `accuracy` (scRNA) | DE Detection Accuracy | V. Bio-Signal (DE) | RNA, Multi | Higher is better | Binary accuracy $(\text{TP}+\text{TN})/G$ in recovering reference pseudobulk `edgeR-QLF` DEGs. |
+| 36 | `accuracy` (scATAC) | DA Detection Accuracy | V. Bio-Signal (DA) | ATAC, Multi | Higher is better | Binary accuracy $(\text{TP}+\text{TN})/P$ in recovering reference pseudobulk `edgeR-QLF` DARs. |
+| 37 | `precision` (scRNA) | DE Detection Precision | V. Bio-Signal (DE) | RNA, Multi | Higher is better | Proportion of simulated DEGs ($\text{FDR} < 0.05$) that are true reference DEGs. |
+| 38 | `precision` (scATAC) | DA Detection Precision | V. Bio-Signal (DA) | ATAC, Multi | Higher is better | Proportion of simulated DARs ($\text{FDR} < 0.05$) that are true reference DARs. |
+| 39 | `recall` (scRNA) | DE Detection Recall | V. Bio-Signal (DE) | RNA, Multi | Higher is better | Proportion of true reference DEGs successfully recovered in simulated pseudobulk DE testing. |
+| 40 | `recall` (scATAC) | DA Detection Recall | V. Bio-Signal (DA) | ATAC, Multi | Higher is better | Proportion of true reference DARs successfully recovered in simulated pseudobulk DA testing. |
+| 41 | `f1_score` (scRNA) | DE Detection $F_1$-Score | V. Bio-Signal (DE) | RNA, Multi | Higher is better | Harmonic mean $2\cdot\text{Precision}\cdot\text{Recall}/(\text{Precision}+\text{Recall})$ for scRNA-seq DEGs. |
+| 42 | `f1_score` (scATAC) | DA Detection $F_1$-Score | V. Bio-Signal (DA) | ATAC, Multi | Higher is better | Harmonic mean $2\cdot\text{Precision}\cdot\text{Recall}/(\text{Precision}+\text{Recall})$ for scATAC-seq DARs. |
+| 43 | `auc` (scRNA) | DE Ranking ROC-AUC | V. Bio-Signal (DE) | RNA, Multi | Higher is better | Threshold-independent ROC-AUC evaluating gene ranking concordance in pseudobulk `edgeR-QLF`. |
+| 44 | `auc` (scATAC) | DA Ranking ROC-AUC | V. Bio-Signal (DA) | ATAC, Multi | Higher is better | Threshold-independent ROC-AUC evaluating peak ranking concordance in pseudobulk `edgeR-QLF`. |
+| 45 | `batch_asw` | Cross-Modal Batch ASW | VI. Multiomics | Multiomics | Higher is better | Modality mixing ASW scaled to $[0, 1]$ within cell types in joint RNA + ATAC space. |
+| 46 | `cell_type_asw` | Joint Cell-Type ASW | VI. Multiomics | Multiomics | Higher is better | Cell-type separation ASW scaled to $[0, 1]$ in joint multiomics latent space. |
+| 47 | `graph_connectivity` | Graph Connectivity | VI. Multiomics | Multiomics | Higher is better | Mean largest connected component fraction per cell type in the joint multiomics $k$-NN graph. |
+| 48 | `ari` (Integration) | Integration ARI | VI. Multiomics | Multiomics | Higher is better | Adjusted Rand Index of joint multiomics graph clustering against ground-truth cell types. |
+| 49 | `nmi` (Integration) | Integration NMI | VI. Multiomics | Multiomics | Higher is better | Normalized Mutual Information of joint multiomics clustering against ground-truth cell types. |
+| 50 | `him` | HIM Topology Similarity | VII. Trajectory | RNA, Multi | Higher is better | Hamming–Ipsen–Mikhailov metric comparing reference and simulated milestone network graphs. |
+| 51 | `edge_flip` | Edge Flip Similarity | VII. Trajectory | RNA, Multi | Higher is better | Normalized graph edit similarity between reference and simulated trajectory topologies. |
+| 52 | `geodesic_correlation` | Geodesic Distance Corr. | VII. Trajectory | RNA, Multi | Higher is better | Correlation between reference and simulated pairwise cell geodesic pseudotime distances. |
+| 53 | `F1_branches` | Branch Assignment $F_1$ | VII. Trajectory | RNA, Multi | Higher is better | Macro-$F_1$ recovery of cellular developmental branch memberships. |
+| 54 | `wcor_features` | Driver Gene Importance Corr. | VII. Trajectory | RNA, Multi | Higher is better | Weighted correlation of Ranger Random Forest trajectory feature importance profiles. |
+| 55 | `core_seconds` | Cumulative Core-Seconds | VIII. Scalability | All | Lower is better | Hardware-normalized total CPU execution work: $T_{\text{elapsed}} \times N_{\text{cores}}$. |
+| 56 | `memory_per_core_mib` | Peak RAM per Core (MiB) | VIII. Scalability | All | Lower is better | Hardware-normalized resident memory footprint: $M_{\text{peak, MiB}} / N_{\text{cores}}$. |
+
+---
+
+## 3. Direction-Aware Score Normalization & Hierarchical Aggregation
+
+To compare simulators fairly across all 56 heterogeneous measures, `scSimEvalStudio` delegates score standardization to `scSimEval::normalize_bubble_scores()`, implementing a two-stage direction-aware transformation:
+
+```{r score-normalization-diagram, echo = FALSE, out.width = "100%", fig.cap = "Figure 2 | Two-Stage Direction-Aware Mathematical Normalization & Hierarchical Aggregation Pipeline: raw measurements (Score_Raw) are direction-aligned, mapped onto a unified [0.00, 1.00] fidelity scale, averaged within each canonical category, and aggregated into the composite Overall Score."}
+norm_img <- system.file("shiny", "scSimEvalApp", "www", "score_normalization_workflow.png", package = "scSimEvalStudio")
+if (!nzchar(norm_img) || !file.exists(norm_img)) {
+  norm_img <- "../inst/shiny/scSimEvalApp/www/score_normalization_workflow.png"
+}
+if (file.exists(norm_img)) {
+  knitr::include_graphics(norm_img)
+}
+```
+
+### Stage 1: Direction Alignment & $[0, 1]$ Fidelity Transformation
+
+Let $x_{m,j}$ denote the raw value (`Score_Raw`) of simulator $m \in \{1, \dots, M\}$ on metric $j$:
+
+1. **Zero-Targeted Statistics** ($\mathcal{J}_{\text{zero}} = \{\text{Runs\_Statistic}, \text{Between\_Dataset\_Silh\_Global}, \text{Between\_Dataset\_Silh\_2D\_Global}, \text{batch\_silhouette}\}$):
+   Because $x_{m,j} = 0$ corresponds to indistinguishable reference/simulated distributions or ideal batch mixing, raw values are first mapped to non-negative divergence magnitudes:
+   $$d_{m,j} = |x_{m,j}|$$
+2. **Lower-is-Better Error, Divergence, and Cost Metrics** ($\mathcal{J}_{\text{low}}$, including $d_{m,j}$ from $\mathcal{J}_{\text{zero}}$, distributional distances, sparsity errors, `MMD`, `cdi`, `pcr_r2`, `core_seconds`, and `memory_per_core_mib`):
+   Values are inverted so that smaller errors or resource costs yield higher fidelity scores in $[0, 1]$:
+   $$s_{m,j} = \frac{\max_{m'} d_{m',j} - d_{m,j}}{\max_{m'} d_{m',j} - \min_{m'} d_{m',j} + \varepsilon} \in [0, 1]$$
+   When only a single simulator ($M = 1$) is evaluated or all methods tie, bounded monotonic reference transforms ($s_{m,j} = \frac{1}{1 + d_{m,j}}$) ensure well-defined scores in $[0, 1]$.
+3. **Higher-is-Better Concordance & Classification Metrics** ($\mathcal{J}_{\text{high}}$, including `Generative_Precision`, `Generative_Recall`, `silhouette_sim`, `neighborhood_purity`, `ari`, `nmi`, `cms`, `isi`, `cross_batch_F1`, Category V DE/DA scores, Category VI integration scores, and Category VII trajectory scores):
+   $$s_{m,j} = \frac{x_{m,j} - \min_{m'} x_{m',j}}{\max_{m'} x_{m',j} - \min_{m'} x_{m',j} + \varepsilon} \in [0, 1]$$
+
+### Stage 2: Hierarchical Category & Overall Composite Aggregation
+
+1. **Category I Property Consolidation**: For each of the 14 distributional measures in Category I, normalized scores are averaged across its constituent empirical properties (14 univariate properties for 1D metrics; 4 bivariate pairs for 2D metrics) so that each distributional test contributes a single consolidated metric column.
+2. **Category Fidelity Means ($S_{\text{cat}, m, k}$)**: For each active category $k \in \{1, \dots, K\}$ with evaluated metric set $\mathcal{M}_k$:
+   $$S_{\text{cat}, m, k} = \frac{1}{|\mathcal{M}_k|} \sum_{j \in \mathcal{M}_k} s_{m,j}$$
+3. **Unweighted Overall Composite Score ($S_{\text{overall}, m}$)**: By default, `scSimEvalStudio` computes an unweighted arithmetic mean across all $K$ active categories so that categories with more constituent measures (e.g., Category I with 14 measures or Category V with 12 measures) do not dominate categories with fewer measures (e.g., Category VIII with 2 measures):
+   $$S_{\text{overall}, m} = \frac{1}{K} \sum_{k=1}^{K} S_{\text{cat}, m, k}$$
+
+---
+
+## 4. Detailed Guide to All 8 Interactive Modules in `scSimEvalStudio`
+
+### Module 1: `Home` — Executive Overview & Taxonomy Dashboard
+
+The **`Home`** tab presents an executive overview of the evaluation studio:
+
+- **KPI Metrics Ribbon**: Displays the 4 core pillars of the framework (`56 Evaluation Measures`, `8 Biological Dimensions`, `3 Modality Classes [RNA / ATAC / Co-Assay]`, and `0.0 – 1.0 Normalized Fidelity Scale`).
+- **8-Category Evaluation Grid**: Summarizes the constituent tests and measure counts for Categories I–VIII.
+- **3-Stage Interactive Pipeline Card**: Guides users through (1) Data Ingestion, (2) Evaluation & Ranking, and (3) Visual Analytics & Export, with a direct `Go to Data Hub →` action trigger.
+
+### Module 2: `Data Hub` — Multi-Modal Ingestion, Custom Evaluation & Standalone HPC Script Generator
+
+The **`Data Hub`** tab manages dataset loading, metadata validation, multi-core benchmark execution, and offline script generation across **4 dedicated ingestion modes** (each maintaining an isolated reactive data cache so switching modes never overwrites active results):
+
+1. **Mode 1 (`1. scRNA-seq datasets`)**:
+   - *1-Click Empirical Benchmark*: Loads the **Rice Bud (*Oryza sativa*)** `SingleCellExperiment` scRNA-seq dataset (`100` balanced cells across `8` cell types, top `100` HVGs, `2` biological batches: `Bud_21` and `Bud_45`) evaluated across **6 simulators** (`scMultiSim`, `scDesign3`, `MOSim`, `scCross`, `scMoMtF`, `Matilda`).
+   - *Custom Evaluation*: Upload 1 reference `SingleCellExperiment` `.rds` (or `Seurat` `.rds`) and 1–10 simulated `.rds` files across up to 50 datasets, specify per-simulator elapsed runtime (`seconds` or `minutes`), peak RAM (`MiB` or `MB`), and allocated simulation CPU cores (`sim_cores`), and click **Calculate scRNA-seq Metrics**.
+2. **Mode 2 (`2. scATAC-seq datasets`)**:
+   - *1-Click Empirical Benchmark*: Loads the **Rice Bud (*Oryza sativa*)** `SingleCellExperiment` scATAC-seq chromatin accessibility dataset (`100` balanced cells across `8` cell types, top `100` highly variable peaks [HVPs], `2` batches) evaluated across the same 6 simulators.
+   - *Custom Evaluation*: Upload reference and simulated peak-by-cell `SingleCellExperiment` `.rds` files and execute the 38-measure scATAC-seq pipeline.
+3. **Mode 3 (`3. Single-Cell Multiomics datasets`)**:
+   - Supports toggling between **Paired (Same Cells, 10x / SHARE-seq)** and **Unpaired (Independent Cells)** co-assay designs:
+     - *Paired Example*: Loads the **Rice Bud (*Oryza sativa*)** paired `SingleCellExperiment` dataset (`100` cells $\times$ `100` HVGs + `100` HVPs in `altExp(sce, "ATAC")`, `8` cell types, `2` batches) across **6 simulators** (`scMultiSim`, `scDesign3`, `MOSim`, `scCross`, `scMoMtF`, `Matilda`).
+     - *Unpaired Example*: Loads the **Soybean Root (*Glycine max*)** unpaired `SingleCellExperiment` dataset (`100` balanced RNA cells $\times$ `100` HVGs + `100` balanced ATAC cells $\times$ `100` HVPs across `8` cell types) evaluated across **3 simulators** (`scMultiSim`, `scDesign3`, `scCross`).
+4. **Mode 4 (`4. Upload Saved Results (.rds / .csv)`)**:
+   - Restores any previously exported `scSimEval` or `scSimEvalStudio` session (`.rds` or `.csv`)—or loads the pre-computed Rice Bud Paired Multiomics `.rds` archive—for instant visualization without recalculating metrics.
+   - **Incremental Benchmark Appending**: Checking `Add to current benchmark results` merges newly evaluated or uploaded simulators/datasets into the active session via `combine_benchmark_results()`.
+5. **1-Click Standalone HPC / Workstation R Script Generator**:
+   - For large-scale single-cell datasets ($>10,000$ cells) best executed on high-memory compute clusters, `Data Hub` dynamically generates a self-contained, commented R script pre-populated with the user's exact dataset paths, simulator names, modality settings, runtime/RAM parameters, and `BiocParallel` thread counts.
+
+### Module 3: `Comparative Bubble Matrix` — Flagship Visual Ranking & Fidelity Leaderboard
+
+Organized into two sub-tabs:
+
+- **Sub-Tab 1 (`Comparative Bubble Matrix Figure`)**: Renders `scSimEval::plot_benchmark_bubble_matrix()`, a publication-grade composite visualization inspired by `scib` and `dynverse` benchmarks:
+  - *Left Panel (Summary Horizontal Bars)*: Displays the ranked **Overall Score** alongside the category mean bars for Categories I–VIII.
+  - *Right Panel (Metric Bubble Grid)*: Displays individual evaluation metrics grouped and color-coded by canonical category, where bubble area scales proportionally with normalized fidelity score ($s_{m,j} \in [0, 1]$) and a bold black border highlights the top-scoring simulator for each metric.
+  - *Interactive Controls*: Supports multi-dataset averaging vs. single-dataset pill navigation, modality filtering (`Combined Multiomics`, `scRNA-seq Layer`, `scATAC-seq Layer`), custom category/metric checklists, simulator subsetting, dynamic width/height sliders (`800–3200 px`), **600 DPI JPEG**, **Vector PDF**, and **Standalone R Script** downloads.
+- **Sub-Tab 2 (`Fidelity Leaderboard`)**: Renders an interactive `DT` ranking table (`compute_method_leaderboard()`) reporting each simulator's Overall Score and category-by-category scores in $[0.00, 1.00]$, with 1-click CSV export.
+
+### Module 4: `Visualizations` — The 8 Diagnostic Sub-Panels & Interactive Zoom/Lightbox Engine
+
+All 8 diagnostic visualization panels render at **2x Retina pixel density** (144 DPI on-screen canvas) and are wrapped in `scSimEvalStudio`'s **Interactive Step-Zoom, Drag-to-Pan & Fullscreen Lightbox Component** (25%–400% inline slider and `Ctrl+Wheel` zoom, click-and-drag panning, double-click 200% toggle, and a 10%–600% fullscreen lightbox modal). Every panel provides dedicated **600 DPI JPEG**, **Vector PDF**, and **Reproducible R Script** download buttons:
+
+1. **Sub-Panel 1 (`1. Evaluation Summary` — `plot_evaluation_summary()`)**:
+   Horizontal grouped bar charts and multi-axis radar/spider profiles comparing simulators across Overall Score and all active evaluation categories, with optional score value labels and raw vs. normalized $[0, 1]$ toggle.
+2. **Sub-Panel 2 (`2. Distribution QC` — `plot_distribution_qc()`)**:
+   Compares empirical reference versus simulated distributions across all **18 Category I properties** (7 cell-level, 7 feature-level, and 4 bivariate property pairs). Users can switch between **Quantile–Quantile (Q-Q) Plots** and **1D/2D Kernel Density Overlays**, and inspect either full property groups or individual properties.
+3. **Sub-Panel 3 (`3. Metric Heatmap` — `plot_metric_heatmap()`)**:
+   High-contrast thermal matrix of Simulators $\times$ Metrics with cell value annotations, category facet headers, adjustable pixel dimensions, and a toggle between **Normalized Fidelity $[0, 1]$** and **Raw Metric Values (`Score_Raw`)**.
+4. **Sub-Panel 4 (`4. Metric Plots` — `plot_individual_metric_bar()` & `plot_metric_boxplots()`)**:
+   - *View Individual Metric*: Ranked bar charts comparing simulators on any single metric (either normalized $[0, 1]$ or raw physical units).
+   - *View by Category Group*: Multi-metric boxplot and jittered point distributions summarizing simulator spread across each canonical category.
+5. **Sub-Panel 5 (`5. PCA Ordination` — `plot_metric_pca()`)**:
+   Performs Principal Component Analysis on the normalized simulator $\times$ metric score matrix anchored against the theoretical **Ideal Reference Anchor** $\mathbf{1} = (1, 1, \dots, 1)^\top$ (a synthetic reference point achieving $1.00$ across all metrics). Supports 3 panel modes: *Both (Simulators & Metric Loadings)*, *Simulator Ordination Only*, and *Metric Loadings Only* (with configurable top $k$ loading arrows).
+6. **Sub-Panel 6 (`6. MDS Metric Space` — `plot_metric_mds()`)**:
+   Computes classical Euclidean Multidimensional Scaling (`cmdscale`) on the normalized benchmark matrix to map pairwise similarity distances either **By Simulators** (relative to the Ideal Reference Anchor $\mathbf{1}$) or **By Metric Summaries**.
+7. **Sub-Panel 7 (`7. Cell Embeddings` — `compute_dataset_embeddings()` & `plot_dataset_embeddings()`)**:
+   Computes joint 2D cellular embeddings (**UMAP**, **t-SNE**, or **PCA**) across the reference dataset and selected simulators (`Faceted Grid` or `Overlaid Reference vs. Simulator` layout), colored by **Cell Type (`cell_type`)**, **Technical Batch (`batch`)**, **Dataset Source**, or **Log10 Library Size**. Below the figure, an automated **Cluster Separation and Quality Metrics Table** (`compute_embedding_quality_metrics()`) reports each dataset's empirical cell count, feature count, mean library size, **Cluster Silhouette (ASW)**, and **Adjusted Rand Index (ARI)**.
+8. **Sub-Panel 8 (`8. Scalability Benchmark` — `plot_scalability_benchmark()`)**:
+   Visualizes Category VIII computational cost across 5 selectable views (*All 4 Panels Combined*, *Runtime*, *Peak RAM Memory*, *Runtime vs. Memory Trade-Off*, and *Overall Resource Cost*), with on-the-fly unit conversion across runtime units (`Core-Seconds [core·s]`, `Seconds [s]`, `Minutes [min]`, `Hours [h]`) and memory units (`MiB/core`, `GiB/core`, `MiB`, `GiB`, `MB`, `GB`).
+
+### Module 5: `Benchmark Results & Export` — Reproducible Session Archives & Multi-Sheet Workbooks
+
+- **Benchmark Session Archive (`.rds`)**: Exports the complete reactive session state (`benchmark_df`, `benchmark_summary_table`, `dataset_summary_df`, `methods`) as a single `.rds` file that can be reloaded in Mode 4 of `Data Hub` or analyzed programmatically in R.
+- **Master Benchmark Scores Table (`DT`)**: Interactive table with per-column dropdown filters, global search, and sorting, displaying both raw statistical/computational measurements (`Score_Raw`) and normalized $[0, 1]$ fidelity scores (`Score`).
+- **Multi-Sheet Excel (`.xlsx`) & CSV Exports**: Exports a formatted multi-sheet Excel workbook (`export_excel_workbook()`) containing up to 4 worksheets: `All_Benchmark_Metrics`, `Dataset_Properties`, `Method_Rankings`, and `Scalability_Metrics`, alongside a flat `.csv` export.
+
+### Module 6: `Help & Getting Started` — Interactive Workflow Diagrams & Dynamic Multi-Core Scheduling
+
+Provides a self-contained tutorial inside the Shiny studio, complete with interactive zoomable diagrams (Figures 1 & 2), copy-paste `SingleCellExperiment` preparation snippets, and the **Intelligent Dynamic Multi-Core Scheduling Table** describing how `scSimEval` allocates $N$ user-selected CPU cores across mathematical tasks via `BiocParallel`:
+
+| Pipeline Step / Evaluation Category | Allocated Cores | Computational & Mathematical Rationale |
+|:---|:---:|:---|
+| **Property Extraction** (`extract_*_properties()`) | $\min(N, 4)$ | Parallelizes across the 4 summary property matrices (Reference/Simulated Cells & Features). |
+| **(I) Distributional Properties** | **All $N$ Cores** | Distributes 140+ univariate and bivariate property–metric combinations evenly across all $N$ workers. |
+| **(II & III) Sparsity & Cellular Manifold** | $\min(N, 5)$ | Executes 5 independent parametric dropout, RBF-MMD, and clustering models concurrently. |
+| **(IV) Technical Batch Mixing Dynamics** | $B(B - 1)$ Cores | Cross-batch cell-type transfer classification scales with the number of batch pairs $B(B-1)$. |
+| **(V) Biological Signal (`edgeR-QLF` DE & DA)** | **All $N$ Cores** | Parallelizes pseudobulk negative binomial quasi-likelihood fitting and null permutations across all $N$ cores. |
+| **(VI) Multiomics Integration & Alignment** | **Up to $N$ Cores** | Joint SVD/LSI projection, parallel silhouette evaluation across $N$ cores, and C++ `RANN` $k$-NN search. |
+| **(VII) Trajectory & Lineage Topology** | **All $N$ Cores** | Multi-threaded `ranger` Random Forest importance and pairwise geodesic distance matrices scale across all $N$ cores. |
+| **(VIII) Computational Scalability Benchmark** | **1 Core** | Computes deterministic hardware-normalized `core_seconds` and `memory_per_core_mib`. |
+
+### Module 7: `Logs` — Real-Time Reactive Diagnostic Console
+
+The **`Logs`** tab embeds a live WebSocket terminal (`sc_live_log`) that intercepts all R `message()` and `warning()` streams via `withCallingHandlers()` during long-running evaluations:
+
+- **5 Semantic Severity Levels**: `INFO` (user actions, pipeline stage transitions), `NOTE` (sparse `dgCMatrix` conversions, metadata unlock events), `WARNING` (missing optional metadata, boundary fallbacks), `ERROR` (dimension mismatches, execution interrupts), and `SUCCESS` (completed evaluations).
+- **Interactive Console Controls**: Real-time KPI event counters, severity level radio filters, live substring search box, auto-scroll lock, 1-click clipboard copy, log clear, and timestamped `.txt` diagnostic log download.
+
+### Module 8: `Contact` — Institutional Profile & Research Team Directory
+
+Displays institutional attribution for the **Division of Agricultural Bioinformatics, ICAR-Indian Agricultural Statistics Research Institute (ICAR-IASRI), New Delhi, India**, author profiles and contact emails for all 10 package contributors, and direct links to the `scSimEval` and `scSimEvalStudio` GitHub repositories.
+
+---
+
+## 5. Installation, Launching & Programmatic Verification
+
+### Installing `scSimEval` and `scSimEvalStudio`
+
+Install from Bioconductor:
+
+```{r install-bioc, eval = FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
-BiocManager::install("scSimEvalStudio")
+BiocManager::install(c("scSimEval", "scSimEvalStudio"))
 ```
 
-# Launching the Shiny Studio
+Or install the latest development versions from GitHub:
 
-After installing both `scSimEval` and `scSimEvalStudio`, launch the interactive studio from R:
+```{r install-github, eval = FALSE}
+if (!requireNamespace("remotes", quietly = TRUE)) {
+    install.packages("remotes")
+}
+remotes::install_github("kabilanbio/scSimEval")
+remotes::install_github("kabilanbio/scSimEvalStudio")
+```
 
-```{r launch-snippet, eval = FALSE}
+### Launching the Interactive Studio
+
+```{r launch-studio, eval = FALSE}
 library(scSimEvalStudio)
+
+# Configures shiny.maxRequestSize = 10 GiB by default for large multiomics .rds archives
 launch_scSimEval_app()
 ```
 
-By default, `launch_scSimEval_app()` configures `shiny.maxRequestSize` to 10 GiB (`10 * 1024^3`) so large multiomics `.rds` archives can be loaded locally.
+### Verifying Application Initialization & Bundled Benchmark Database
 
-# Verifying Application Initialization
-
-In automated or non-interactive environments, you can confirm that the bundled Shiny application initializes cleanly and inspects the bundled demonstration benchmark dataset:
+In automated or non-interactive environments, you can verify that the bundled Shiny application object initializes cleanly and inspect the pre-computed 6-simulator demonstration benchmark database (`demo_benchmark_data.rds`):
 
 ```{r verify-app}
 library(scSimEvalStudio)
@@ -59,14 +392,13 @@ class(app)
 demo_file <- file.path(app_dir, "data", "demo_benchmark_data.rds")
 demo_obj <- readRDS(demo_file)
 names(demo_obj)
+demo_obj$methods
 head(demo_obj$benchmark_summary_table[, c("Method", "Category", "Metric", "Score")], 6)
 ```
 
-# Bioconductor Ecosystem Integration
+---
 
-`scSimEvalStudio` accepts `SingleCellExperiment` objects (including multi-modal `SingleCellExperiment` objects with `altExp` assays and `colData` annotations `cell_type` and `batch`) evaluated directly by `scSimEval::evaluate_simulation_accuracy()` and `scSimEval::evaluate_multiomics_accuracy()`.
-
-# Session Information
+## 6. Session Information
 
 ```{r session-info}
 sessionInfo()

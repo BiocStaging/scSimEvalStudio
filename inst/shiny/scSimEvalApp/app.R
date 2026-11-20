@@ -56,7 +56,7 @@ ui_max_cores <- max(128L, n_physical_cores)
 default_n_cores <- max(1L, min(4L, n_physical_cores - 1L))
 
 sys_hardware_summary <- sprintf("System detected: %d CPU cores", n_physical_cores)
-.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.2")
+.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.3")
 .core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.12")
 
 # Register static resource directory for documentation figures

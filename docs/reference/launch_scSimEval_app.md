@@ -1,11 +1,6 @@
 # Launch Interactive scSimEval Benchmarking Studio
 
-Launches the companion Shiny web application bundled in scSimEvalStudio.
-Provides a graphical interface to upload `SingleCellExperiment`
-biological reference and simulated datasets (scRNA-seq, scATAC-seq,
-paired or unpaired multiomics), inspect 56 evaluation metrics, explore
-diagnostic figures interactively, and export high-resolution plots and
-Excel/PDF reports.
+Launches the companion Shiny web application bundled in `scSimEvalStudio`. Provides a graphical interface to upload `SingleCellExperiment` biological reference and simulated datasets (scRNA-seq, scATAC-seq, paired or unpaired multiomics), execute the 56-measure evaluation suite across 8 canonical categories, explore diagnostic figures interactively, and export publication-quality figures, standalone HPC R scripts, and Excel/PDF reports.
 
 ## Usage
 
@@ -20,32 +15,18 @@ launch_scSimEval_app(
 
 ## Arguments
 
-- port:
-
-  Optional port number for the local web server. Default is `NULL`
-  (random open port).
-
-- host:
-
-  Character string specifying the IP address to listen on. Defaults to
-  `"127.0.0.1"`.
-
-- launch.browser:
-
-  Logical, whether to automatically open the default web browser.
-  Defaults to
-  [`interactive()`](https://rdrr.io/r/base/interactive.html).
-
-- maxRequestSize:
-
-  Numeric maximum upload file size in bytes. Defaults to `10 * 1024^3`
-  (10 GiB).
+- `port`: Optional port number for the local web server. Default is `NULL` (random open port).
+- `host`: Character string specifying the IP address to listen on. Defaults to `"127.0.0.1"`.
+- `launch.browser`: Logical, whether to automatically open the default web browser. Defaults to `interactive()`.
+- `maxRequestSize`: Numeric maximum upload file size in bytes. Defaults to `10 * 1024^3` (10 GiB).
 
 ## Value
 
-A `shiny.appobj` returned invisibly when
-[`shiny::runApp()`](https://rdrr.io/pkg/shiny/man/runApp.html) exits
-cleanly.
+A `shiny.appobj` returned invisibly when `shiny::runApp()` exits cleanly.
+
+## Details
+
+The interactive `scSimEvalStudio` web application organizes single-cell and multiomics simulation benchmarking into 8 modular navigation tabs (`Home`, `Data Hub`, `Comparative Bubble Matrix`, `Visualizations`, `Benchmark Results & Export`, `Help & Getting Started`, `Logs`, and `Contact`).
 
 ## Examples
 

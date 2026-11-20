@@ -5,24 +5,34 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>scSimEvalStudio: Interactive Shiny Studio for scSimEval • scSimEvalStudio</title>
-<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking • scSimEvalStudio</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
+<script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="scSimEvalStudio: Interactive Shiny Studio for scSimEval">
-<meta name="description" content="Companion graphical Shiny interface for scSimEval SingleCellExperiment benchmarking.">
-<meta property="og:description" content="Companion graphical Shiny interface for scSimEval SingleCellExperiment benchmarking.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<meta property="og:title" content="scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking">
+<meta name="description" content="Companion graphical Shiny web studio for scSimEval SingleCellExperiment benchmarking across 56 evaluation measures in 8 canonical categories.">
+<meta property="og:description" content="Companion graphical Shiny web studio for scSimEval SingleCellExperiment benchmarking across 56 evaluation measures in 8 canonical categories.">
+<meta property="og:image" content="https://kabilanbio.github.io/scSimEvalStudio/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">scSimEvalStudio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,20 +41,25 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="active nav-item"><a class="nav-link" href="index.html">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/scSimEvalStudio-workflow.html">Architecture &amp; Studio Guide</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/scSimEvalStudio-workflow.html">Interactive Single-Cell Simulation Benchmarking with scSimEvalStudio</a></li>
-  </ul>
-</li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://kabilanbio.github.io/scSimEval/">scSimEval Core Docs</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/kabilanbio/scSimEvalStudio/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
+<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
+    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
+  </ul>
+</li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/kabilanbio/scSimEvalStudio" aria-label="GitHub repository"><span class="fa fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -53,19 +68,256 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="scsimevalstudio">scSimEvalStudio<a class="anchor" aria-label="anchor" href="#scsimevalstudio"></a>
-</h1></div>
-<p><strong><code>scSimEvalStudio</code></strong> is the interactive Shiny graphical interface companion package for <strong><a href="https://github.com/kabilanbio/scSimEval" class="external-link">scSimEval</a></strong> (<code>SingleCellExperiment</code>-based benchmarking of single-cell RNA-seq, scATAC-seq, and paired/unpaired multiomics simulations).</p>
+<div class="page-header">
+<img src="logo.png" class="logo" alt="scSimEvalStudio logo"><h1 id="scsimevalstudio-interactive-shiny-studio-for-single-cell-multiomics-simulation-benchmarking">scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Simulation Benchmarking<a class="anchor" aria-label="anchor" href="#scsimevalstudio-interactive-shiny-studio-for-single-cell-multiomics-simulation-benchmarking"></a>
+</h1>
+</div>
+<p><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://kabilanbio.github.io/scSimEvalStudio/"><img src="https://img.shields.io/badge/docs-pkgdown-blue.svg" alt="Documentation"></a> <a href="https://bioconductor.org/packages/SingleCellExperiment/" class="external-link"><img src="https://img.shields.io/badge/Bioconductor-SingleCellExperiment-18bc9c.svg" alt="Bioconductor S4"></a> <a href="https://kabilanbio.github.io/scSimEval/" class="external-link"><img src="https://img.shields.io/badge/scSimEval-v0.99.12-2c3e50.svg" alt="Core Engine"></a></p>
+<hr>
+
 <div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<h2 id="scientific-overview-multiomics-experimental-design-coverage">1. Scientific Overview &amp; Multiomics Experimental Design Coverage<a class="anchor" aria-label="anchor" href="#scientific-overview-multiomics-experimental-design-coverage"></a>
 </h2>
-<p>Install the package from Bioconductor:</p>
+<p><strong><code>scSimEvalStudio</code></strong> (version <code>0.99.3</code>) is the interactive graphical benchmarking studio companion to <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link"><code>scSimEval</code></a></strong> (version <code>0.99.12</code>). Single-cell and multiomics simulation algorithms are indispensable for benchmarking computational methods, conducting <em>in silico</em> power analyses, and evaluating data integration pipelines. However, synthetic datasets only provide valid benchmarks if they faithfully recapitulate the statistical distributions, technical dropout kinetics, high-dimensional cellular manifolds, batch confounder structure, differential regulatory signals, lineage topology, and cross-modal coupling of empirical biological tissues.</p>
+<p><code>scSimEvalStudio</code> operationalizes reference-based simulation benchmarking by comparing one or more synthetic datasets (<math display="inline"><mrow><msubsup><mi>𝒟</mi><mtext>sim</mtext><mrow><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup><mo>,</mo><mo>…</mo><mo>,</mo><msubsup><mi>𝒟</mi><mtext>sim</mtext><mrow><mo stretchy="false">(</mo><mi>M</mi><mo stretchy="false">)</mo></mrow></msubsup></mrow></math>) directly against an empirical biological reference dataset (<math display="inline"><mrow><msub><mi>𝒟</mi><mtext>ref</mtext></msub></mrow></math>) across <strong>56 curated quantitative evaluation measures</strong> organized into <strong>8 canonical biological and computational categories</strong>.</p>
+
+<div class="section level3">
+<h3 id="supported-single-cell-multiomics-experimental-designs">Supported Single-Cell &amp; Multiomics Experimental Designs<a class="anchor" aria-label="anchor" href="#supported-single-cell-multiomics-experimental-designs"></a>
+</h3>
+<p>Built natively on Bioconductor <strong><code>SingleCellExperiment</code></strong> S4 containers (with automatic one-line conversion from <code>Seurat</code> objects via <code>Seurat::as.SingleCellExperiment()</code>), <code>scSimEvalStudio</code> supports four experimental design architectures:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Experimental Design</th>
+<th style="text-align: left;">Primary Assay &amp; S4 Representation</th>
+<th style="text-align: left;">Required <code>colData</code> Annotations</th>
+<th style="text-align: center;">Active Categories</th>
+<th style="text-align: center;">Curated Measures Evaluated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>1. Unimodal <code>scRNA-seq</code></strong></td>
+<td style="text-align: left;">Gene × cell raw UMI/read count matrix (<code>assay(sce, "counts")</code>, sparse <code>dgCMatrix</code>)</td>
+<td style="text-align: left;"><code>cell_type</code> (Cat III, V) &amp; <code>batch</code> (Cat IV, V)</td>
+<td style="text-align: center;"><strong>7 Categories</strong> (I–V, VII, VIII)</td>
+<td style="text-align: center;"><strong>44 Measures</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>2. Unimodal <code>scATAC-seq</code></strong></td>
+<td style="text-align: left;">Peak/bin × cell raw chromatin fragment/insertion matrix (<code>assay(sce, "counts")</code>) with TF-IDF latent semantic indexing</td>
+<td style="text-align: left;"><code>cell_type</code> (Cat III, V) &amp; <code>batch</code> (Cat IV, V)</td>
+<td style="text-align: center;"><strong>6 Categories</strong> (I–V, VIII)</td>
+<td style="text-align: center;"><strong>38 Measures</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>3. Paired Co-Assay Multiomics</strong></td>
+<td style="text-align: left;">Simultaneous <code>scRNA-seq + scATAC-seq</code> across identical cell barcodes (1-to-1 correspondence via <code>altExp(sce, "ATAC")</code> or <code>list(RNA = rna_sce, ATAC = atac_sce)</code>)</td>
+<td style="text-align: left;">Shared <code>cell_type</code> &amp; <code>batch</code> across paired barcodes</td>
+<td style="text-align: center;"><strong>All 8 Categories</strong> (I–VIII)</td>
+<td style="text-align: center;"><strong>56 Measures</strong> <em>(50 Bubble Matrix Columns)</em></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>4. Unpaired Multiomics</strong></td>
+<td style="text-align: left;">Independent <code>scRNA-seq</code> and <code>scATAC-seq</code> <code>SingleCellExperiment</code> objects profiled from the same biological tissue without shared barcodes</td>
+<td style="text-align: left;">Modality-specific <code>cell_type</code> &amp; <code>batch</code> coupled in joint stacked latent space</td>
+<td style="text-align: center;"><strong>All 8 Categories</strong> (I–VIII)</td>
+<td style="text-align: center;"><strong>56 Measures</strong> <em>(50 Bubble Matrix Columns)</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="section level2">
+<h2 id="end-to-end-architecture-the-8-category-56-measure-taxonomy">2. End-to-End Architecture &amp; The 8-Category / 56-Measure Taxonomy<a class="anchor" aria-label="anchor" href="#end-to-end-architecture-the-8-category-56-measure-taxonomy"></a>
+</h2>
+<p><code>scSimEvalStudio</code> orchestrates a four-stage evaluation workflow connecting data ingestion, parallelized statistical estimation, direction-aware mathematical score normalization, and interactive visual analytics:</p>
+
+<div class="figure">
+<img src="workflow_diagram.png" alt="scSimEval &amp; scSimEvalStudio 4-Stage Benchmarking Workflow Architecture" width="100%">
+<p class="caption"><strong>Figure 1 | The 4-Stage scSimEval &amp; scSimEvalStudio Benchmarking Architecture.</strong> (1) Multi-modal data ingestion and S4 validation for unimodal scRNA-seq, unimodal scATAC-seq, paired co-assay multiomics, and unpaired multiomics; (2) multi-core evaluation across 56 curated measures in 8 canonical categories; (3) direction-aware normalization onto a unified [0.00, 1.00] fidelity scale; and (4) visual analytics, multidimensional ordinations, and reproducible script/report exports.</p>
+</div>
+
+<div class="section level3">
+<h3 id="summary-of-the-8-canonical-evaluation-categories-56-measures">Summary of the 8 Canonical Evaluation Categories (56 Measures)<a class="anchor" aria-label="anchor" href="#summary-of-the-8-canonical-evaluation-categories-56-measures"></a>
+</h3>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Category</th>
+<th style="text-align: left;">Biological / Computational Domain</th>
+<th style="text-align: center;">Measures</th>
+<th style="text-align: left;">Statistical Formulation &amp; Biological Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>I</strong></td>
+<td style="text-align: left;"><strong>Distributional Properties</strong></td>
+<td style="text-align: center;"><strong>14</strong></td>
+<td style="text-align: left;"><strong>10 univariate (1D)</strong> distances (<code>Wasserstein</code>, <code>KS</code>, <code>MAD</code>, <code>MAE</code>, <code>RMSE</code>, <code>Bhattacharyya</code>, <code>KDE_ISE</code>, <code>Runs_Statistic</code>, <code>NN_Mismatch</code>, <code>Between_Dataset_Silh_Global</code>) and <strong>4 bivariate (2D)</strong> distances (<code>Fasano_Franceschini_2D_KS</code>, <code>EMD_2D</code>, <code>NN_Mismatch_2D</code>, <code>Between_Dataset_Silh_2D_Global</code>) evaluated across <strong>18 empirical properties</strong>: 7 cell-level (<code>library_size</code>, <code>log_library_size</code>, <code>tmm_factor</code>, <code>zero_fraction_cell</code>, <code>detection_freq_cell</code>, <code>cell_cor</code>, <code>pca_dist</code>), 7 feature-level (<code>mean_expression</code>, <code>variance</code>, <code>scaled_variance</code>, <code>cv</code>, <code>zero_fraction_feature</code>, <code>dispersion</code>, <code>gene_cor</code>), and 4 bivariate pairs (<code>lib_vs_cellzero</code>, <code>mean_vs_sd</code>, <code>mean_vs_featzero</code>, <code>mean_vs_dispersion</code>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>II</strong></td>
+<td style="text-align: left;"><strong>Sparsity &amp; Zero-Inflation Dynamics</strong></td>
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: left;">Parametric logistic dropout kinetics <math display="inline"><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>zero</mtext><mo>∣</mo><msub><mi>μ</mi><mi>g</mi></msub><mo stretchy="false">)</mo><mo>=</mo><msup><mrow><mo stretchy="false">[</mo><mn>1</mn><mo>+</mo><mi>exp</mi><mo stretchy="false">(</mo><mo>−</mo><mi>k</mi><mo stretchy="false">(</mo><msub><mi>μ</mi><mi>g</mi></msub><mo>−</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo stretchy="false">]</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow></math> (<code>midpoint_error</code> <math display="inline"><mrow><mo stretchy="false">|</mo><mi>Δ</mi><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">|</mo></mrow></math>, <code>slope_error</code> <math display="inline"><mrow><mo stretchy="false">|</mo><mi>Δ</mi><mi>k</mi><mo stretchy="false">|</mo></mrow></math>, goodness-of-fit <code>r2_discrepancy</code>), scATAC-seq quadratic accessibility-sparsity curve residual error (<code>curve_rmse</code>), and technical excess zero-inflation weight divergence (<code>excess_zero_weight_discrepancy</code>).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>III</strong></td>
+<td style="text-align: left;"><strong>Cellular Manifold &amp; Clustering Concordance</strong></td>
+<td style="text-align: center;"><strong>8</strong></td>
+<td style="text-align: left;">High-dimensional topology and unsupervised clustering fidelity: multi-scale RBF kernel Maximum Mean Discrepancy (<code>MMD</code>), <em>k</em>-NN manifold support <code>Generative_Precision</code> (penalizes hallucinated states) and <code>Generative_Recall</code> (penalizes mode collapse), cell-type Average Silhouette Width (<code>silhouette_sim</code>), penalized likelihood Clustering Deviation Index (<code>cdi</code>), local <em>k</em>-NN <code>neighborhood_purity</code>, Adjusted Rand Index (<code>ari</code>), and Normalized Mutual Information (<code>nmi</code>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>IV</strong></td>
+<td style="text-align: left;"><strong>Technical Variation &amp; Batch Mixing Dynamics</strong></td>
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: left;">Technical batch confounder preservation and local neighborhood intermixing: <code>batch_silhouette</code>, Principal Component Regression variance explained (<code>pcr_r2</code>), Cell-Specific Mixing Score (<code>cms</code>; Lütge et al., <em>Life Sci. Alliance</em> 2021), Local Inverse Simpson's Index (<code>isi</code>; Korsunsky et al., <em>Nat. Methods</em> 2019), and held-out <code>cross_batch_F1</code> transfer classification.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>V</strong></td>
+<td style="text-align: left;"><strong>Biological Signal &amp; Differential Fidelity</strong></td>
+<td style="text-align: center;"><strong>12</strong></td>
+<td style="text-align: left;">Replicate-aware cell-type × batch pseudobulk aggregation (<code>to_pseudobulk()</code>) followed by negative binomial quasi-likelihood F-testing (<code>edgeR::glmQLFit</code> / <code>glmQLFTest</code>; Squair et al., <em>Nat. Commun.</em> 2021; Duo et al., <em>Genome Biol.</em> 2024; Teo et al., <em>Nat. Commun.</em> 2024). Evaluates <strong>6 scRNA-seq DE</strong> and <strong>6 binarized scATAC-seq DA</strong> metrics: null <em>p</em>-value uniformity (<code>pval_dist_score</code>), binary <code>accuracy</code>, <code>precision</code>, <code>recall</code>, harmonic <code>f1_score</code>, and threshold-free ranking <code>auc</code> (ROC-AUC).</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>VI</strong></td>
+<td style="text-align: left;"><strong>Multiomics Integration &amp; Alignment</strong></td>
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: left;">Cross-modal joint latent space alignment (<code>scib</code>, <code>scMultiSim</code>, <code>scCross</code>, <code>Matilda</code>, <code>scMoMtF</code>): Cross-Modal <code>batch_asw</code>, Joint <code>cell_type_asw</code>, <em>k</em>-NN <code>graph_connectivity</code>, <code>integration_ari</code>, and <code>integration_nmi</code>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>VII</strong></td>
+<td style="text-align: left;"><strong>Trajectory &amp; Lineage Topology</strong></td>
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: left;">HVG-filtered <code>dynverse</code> milestone network inference on scRNA-seq (Saelens et al., <em>Nat. Biotechnol.</em> 2019): Hamming–Ipsen–Mikhailov graph topology similarity (<code>him</code>), <code>edge_flip</code> graph edit similarity, pairwise pseudotime <code>geodesic_correlation</code>, branch assignment <code>F1_branches</code>, and Ranger Random Forest driver gene importance weighted correlation (<code>wcor_features</code>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>VIII</strong></td>
+<td style="text-align: left;"><strong>Computational Scalability &amp; Efficiency</strong></td>
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: left;">Hardware-normalized computational cost across heterogeneous CPU allocations: Cumulative CPU execution work <math display="inline"><mrow><mtext>Core-Seconds</mtext><mo>=</mo><msub><mi>T</mi><mtext>elapsed</mtext></msub><mo>×</mo><msub><mi>N</mi><mtext>cores</mtext></msub></mrow></math> (<code>core_seconds</code>) and per-core resident memory footprint <math display="inline"><mrow><mtext>Peak RAM per Core</mtext><mo>=</mo><msub><mi>M</mi><mtext>peak, MiB</mtext></msub><mo>/</mo><msub><mi>N</mi><mtext>cores</mtext></msub></mrow></math> (<code>memory_per_core_mib</code>).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="section level2">
+<h2 id="direction-aware-mathematical-score-normalization-hierarchical-aggregation">3. Direction-Aware Mathematical Score Normalization &amp; Hierarchical Aggregation<a class="anchor" aria-label="anchor" href="#direction-aware-mathematical-score-normalization-hierarchical-aggregation"></a>
+</h2>
+<p>Raw evaluation measures span incompatible physical units and optimization directions (e.g., unbounded transport distances and core-seconds where lower values are superior, zero-centered statistics such as Wald–Wolfowitz Runs and Batch Silhouette where <math display="inline"><mrow><mn>0</mn></mrow></math> is ideal, and bounded concordance indices such as ARI, NMI, and ROC-AUC where <math display="inline"><mrow><mn>1</mn></mrow></math> is optimal). <code>scSimEvalStudio</code> transforms every raw measurement (<code>Score_Raw</code>) through a two-stage direction-aware normalization pipeline (<code><a href="https://kabilanbio.github.io/scSimEval/reference/normalize_bubble_scores.html" class="external-link">scSimEval::normalize_bubble_scores()</a></code>):</p>
+
+<div class="figure">
+<img src="score_normalization_workflow.png" alt="Two-Stage Direction-Aware Score Normalization and Hierarchical Aggregation Pipeline" width="100%">
+<p class="caption"><strong>Figure 2 | Two-Stage Direction-Aware Mathematical Normalization &amp; Hierarchical Aggregation Pipeline.</strong> Raw measurements (<code>Score_Raw</code>) are direction-aligned and scaled onto a unified [0.00, 1.00] fidelity scale (where 1.00 denotes optimal empirical reference concordance), aggregated into category means, and combined into the composite Overall Score.</p>
+</div>
+
+<ol>
+<li>
+<p><strong>Direction Alignment &amp; <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math> Fidelity Scaling</strong>: For simulator <math display="inline"><mrow><mi>m</mi><mo>∈</mo><mo stretchy="false">{</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>M</mi><mo stretchy="false">}</mo></mrow></math> and metric <math display="inline"><mrow><mi>j</mi></mrow></math> with raw value <math display="inline"><mrow><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math>:</p>
+<ul>
+<li>For <strong>zero-targeted statistics</strong> (<code>Runs_Statistic</code>, <code>Between_Dataset_Silh_Global</code>, <code>Between_Dataset_Silh_2D_Global</code>, <code>batch_silhouette</code>), divergence magnitude is first taken as <math display="inline"><mrow><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mo stretchy="false">|</mo><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false">|</mo></mrow></math>.</li>
+<li>For <strong>lower-is-better distance, error, and computational cost measures</strong> (<math display="inline"><mrow><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math> or <math display="inline"><mrow><mo stretchy="false">|</mo><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false">|</mo></mrow></math>), scores are inverted and min-max normalized across the evaluated simulator cohort:
+<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>+</mo><mi>ε</mi></mrow></mfrac><mo>∈</mo><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></p>
+</li>
+<li>For <strong>higher-is-better similarity and classification fidelity measures</strong> (e.g., <code>ari</code>, <code>nmi</code>, <code>auc</code>, <code>f1_score</code>, <code>him</code>, <code>cms</code>, <code>isi</code>), values are scaled directly so that higher fidelity maps toward <math display="inline"><mrow><mn>1.00</mn></mrow></math>:
+<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub></mrow><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>+</mo><mi>ε</mi></mrow></mfrac><mo>∈</mo><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Category-Level &amp; Overall Composite Aggregation</strong>:</p>
+<ul>
+<li>In Category I, property-level normalized scores across the 18 empirical distributions are averaged per metric to yield 14 consolidated distributional metric scores.</li>
+<li>Within each active category <math display="inline"><mrow><mi>k</mi><mo>∈</mo><mo stretchy="false">{</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>K</mi><mo stretchy="false">}</mo></mrow></math> containing <math display="inline"><mrow><msub><mi>ℳ</mi><mi>k</mi></msub></mrow></math> evaluated measures, the category fidelity score is the arithmetic mean:
+<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>S</mi><mrow><mtext>cat</mtext><mo>,</mo><mi>m</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false">|</mo><msub><mi>ℳ</mi><mi>k</mi></msub><mo stretchy="false">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><msub><mi>ℳ</mi><mi>k</mi></msub></mrow></munder><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math></p>
+</li>
+<li>The unweighted <strong>Overall Composite Score</strong> (<math display="inline"><mrow><msub><mi>S</mi><mrow><mtext>overall</mtext><mo>,</mo><mi>m</mi></mrow></msub></mrow></math>) weights each active biological and computational dimension equally across all <math display="inline"><mrow><mi>K</mi></mrow></math> active categories (<math display="inline"><mrow><mi>K</mi><mo>=</mo><mn>7</mn></mrow></math> for scRNA-seq, <math display="inline"><mrow><mi>K</mi><mo>=</mo><mn>6</mn></mrow></math> for scATAC-seq, <math display="inline"><mrow><mi>K</mi><mo>=</mo><mn>8</mn></mrow></math> for paired/unpaired multiomics):
+<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>S</mi><mrow><mtext>overall</mtext><mo>,</mo><mi>m</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mi>K</mi></mfrac><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><msub><mi>S</mi><mrow><mtext>cat</mtext><mo>,</mo><mi>m</mi><mo>,</mo><mi>k</mi></mrow></msub></mrow></math></p>
+</li>
+</ul>
+</li>
+</ol>
+<p>Both the unnormalized physical measurement (<code>Score_Raw</code>) and the normalized <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math> fidelity score (<code>Score</code>) are preserved in all interactive tables and downloadable archives.</p>
+</div>
+
+<div class="section level2">
+<h2 id="overview-of-the-8-interactive-modules-in-scsimevalstudio">4. Overview of the 8 Interactive Modules in <code>scSimEvalStudio</code><a class="anchor" aria-label="anchor" href="#overview-of-the-8-interactive-modules-in-scsimevalstudio"></a>
+</h2>
+<p>Launching <code><a href="reference/launch_scSimEval_app.html">scSimEvalStudio::launch_scSimEval_app()</a></code> opens a modern Bootstrap 5 (<code>bslib</code> Flatly + high-contrast Dark Mode) analytical workspace organized into <strong>8 top-level navigation tabs</strong>:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Tab #</th>
+<th style="text-align: left;">Module Name</th>
+<th style="text-align: left;">Core Analytical &amp; Diagnostic Capabilities</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: left;"><strong>Home</strong></td>
+<td style="text-align: left;">Executive KPI ribbon (56 measures, 8 categories, 3 modality classes, [0.0, 1.0] scale), 8-category overview grid, and 3-stage pipeline quick-jump controls.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: left;"><strong>Data Hub</strong></td>
+<td style="text-align: left;"><strong>4 Ingestion Modes</strong>: (1) <code>scRNA-seq</code>, (2) <code>scATAC-seq</code>, (3) <code>Paired &amp; Unpaired Multiomics</code>, and (4) <code>Upload Saved Results (.rds / .csv)</code>. Includes 1-click <em>Oryza sativa</em> Rice Bud (6 simulators) and <em>Glycine max</em> Soybean Root (3 simulators) empirical benchmarks, custom <code>.rds</code> upload (<code>SingleCellExperiment</code> or auto-converted <code>Seurat</code>), per-simulator runtime/RAM/core inputs, incremental benchmark appending, and a <strong>1-Click Standalone HPC/Workstation R Script Generator</strong>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>3</strong></td>
+<td style="text-align: left;"><strong>Comparative Bubble Matrix</strong></td>
+<td style="text-align: left;"><strong>Sub-Tab 1</strong>: Flagship dual-encoded Bubble Matrix (<code>plot_benchmark_bubble_matrix()</code>) combining left-hand summary bars (Overall + Category I–VIII means) with right-hand metric circles (area ∝ score, bold outline = top method), dataset/modality filters, custom metric pickers, 600 DPI JPEG/PDF export, and standalone R script download. <strong>Sub-Tab 2</strong>: Interactive <strong>Fidelity Leaderboard</strong> (<code>compute_method_leaderboard()</code>) with CSV export.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>4</strong></td>
+<td style="text-align: left;"><strong>Visualizations (8 Sub-Panels)</strong></td>
+<td style="text-align: left;"><strong>(1) Evaluation Summary</strong> (category bars &amp; radar profiles); <strong>(2) Distribution QC</strong> (Q-Q &amp; 1D/2D kernel density plots across all 18 properties); <strong>(3) Metric Heatmap</strong> (normalized [0, 1] or raw metric thermal matrix); <strong>(4) Metric Plots</strong> (individual metric bars &amp; category boxplots); <strong>(5) PCA Ordination</strong> (dual-panel simulator ordination &amp; metric loading biplot anchored to the <strong>Ideal Reference Anchor</strong> <strong>1</strong>); <strong>(6) MDS Metric Space</strong> (Euclidean MDS topology map); <strong>(7) Cell Embeddings</strong> (faceted/overlaid UMAP, t-SNE &amp; PCA projections with automated ASW, ARI &amp; library-depth table); and <strong>(8) Scalability Benchmark</strong> (4-panel runtime, peak RAM, Pareto trade-off &amp; resource cost across <code>core_seconds</code> and <code>MiB/core</code>). All figures include an interactive <strong>25%–400% Step-Zoom, Drag-to-Pan &amp; 600% Fullscreen Lightbox</strong> viewer.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>5</strong></td>
+<td style="text-align: left;"><strong>Benchmark Results &amp; Export</strong></td>
+<td style="text-align: left;">Complete reproducible session <code>.rds</code> archive download, searchable <code>DT</code> master table displaying both <code>Score_Raw</code> and normalized <code>Score</code>, and multi-sheet Excel (<code>.xlsx</code>) and <code>.csv</code> report exports.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>6</strong></td>
+<td style="text-align: left;"><strong>Help &amp; Getting Started</strong></td>
+<td style="text-align: left;">Interactive zoomable workflow diagrams, S4 <code>SingleCellExperiment</code> data preparation recipes, and the <strong>Dynamic Multi-Core Scheduling Table</strong> detailing <code>BiocParallel</code> CPU allocation across Categories I–VIII.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>7</strong></td>
+<td style="text-align: left;"><strong>Logs</strong></td>
+<td style="text-align: left;">Real-time WebSocket diagnostic terminal (<code>sc_live_log</code>) streaming <code>INFO</code>, <code>NOTE</code>, <code>WARNING</code>, <code>ERROR</code>, and <code>SUCCESS</code> events with live KPI counters, level filters, full-text search, clipboard copy, and <code>.txt</code> export.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>8</strong></td>
+<td style="text-align: left;"><strong>Contact</strong></td>
+<td style="text-align: left;">Institutional attribution, research team directory at the Division of Agricultural Bioinformatics, ICAR-IASRI, New Delhi, and GitHub issue links.</td>
+</tr>
+</tbody>
+</table>
+<p>For an in-depth walkthrough of every module, mathematical formula, and visualization panel, see the <strong><a href="articles/scSimEvalStudio-workflow.html">Architecture &amp; Interactive Studio Guide</a></strong>.</p>
+</div>
+
+<div class="section level2">
+<h2 id="installation-quick-start">5. Installation &amp; Quick Start<a class="anchor" aria-label="anchor" href="#installation-quick-start"></a>
+</h2>
+<div class="section level3">
+<h3 id="install-from-bioconductor">Install from Bioconductor<a class="anchor" aria-label="anchor" href="#install-from-bioconductor"></a>
+</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"scSimEvalStudio"</span><span class="op">)</span></span></code></pre></div>
-<p>To install the development version from GitHub:</p>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scSimEval"</span>, <span class="st">"scSimEvalStudio"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+
+<div class="section level3">
+<h3 id="install-development-version-from-github">Install Development Version from GitHub<a class="anchor" aria-label="anchor" href="#install-development-version-from-github"></a>
+</h3>
 <div class="sourceCode" id="cb1b"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
@@ -73,24 +325,47 @@
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kabilanbio/scSimEval"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kabilanbio/scSimEvalStudio"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
-</h2>
+
+<div class="section level3">
+<h3 id="launch-the-interactive-benchmarking-studio">Launch the Interactive Benchmarking Studio<a class="anchor" aria-label="anchor" href="#launch-the-interactive-benchmarking-studio"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kabilanbio.github.io/scSimEvalStudio/">scSimEvalStudio</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Launches the Shiny studio on a local port with a 10 GiB upload limit</span></span>
 <span><span class="fu"><a href="reference/launch_scSimEval_app.html">launch_scSimEval_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
+
+<div class="section level3">
+<h3 id="programmatic-inspection-of-the-bundled-6-simulator-benchmark-database">Programmatic Inspection of the Bundled 6-Simulator Benchmark Database<a class="anchor" aria-label="anchor" href="#programmatic-inspection-of-the-bundled-6-simulator-benchmark-database"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kabilanbio.github.io/scSimEvalStudio/">scSimEvalStudio</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">app_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shiny"</span>, <span class="st">"scSimEvalApp"</span>, package <span class="op">=</span> <span class="st">"scSimEvalStudio"</span><span class="op">)</span></span>
+<span><span class="va">demo_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">app_dir</span>, <span class="st">"data"</span>, <span class="st">"demo_benchmark_data.rds"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Inspect evaluated simulator methods and canonical categories</span></span>
+<span><span class="va">demo_obj</span><span class="op">$</span><span class="va">methods</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">demo_obj</span><span class="op">$</span><span class="va">benchmark_summary_table</span><span class="op">$</span><span class="va">Category</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+
 <div class="section level2">
-<h2 id="development--support">Development &amp; Support<a class="anchor" aria-label="anchor" href="#development--support"></a>
+<h2 id="development-citation-support">6. Development, Citation &amp; Support<a class="anchor" aria-label="anchor" href="#development-citation-support"></a>
 </h2>
+<p><code>scSimEvalStudio</code> and <code>scSimEval</code> are developed and maintained at the <strong>Division of Agricultural Bioinformatics, ICAR-Indian Agricultural Statistics Research Institute (ICAR-IASRI), New Delhi, India</strong>.</p>
 <ul>
 <li>
 <strong>Maintainer:</strong> Kabilan Sakthivel (<code>kabilan151414@gmail.com</code>)</li>
 <li>
-<strong>Documentation:</strong> <a href="https://kabilanbio.github.io/scSimEvalStudio/">https://kabilanbio.github.io/scSimEvalStudio/</a>
+<strong>Studio Documentation (<code>scSimEvalStudio</code>):</strong> <a href="https://kabilanbio.github.io/scSimEvalStudio/">https://kabilanbio.github.io/scSimEvalStudio/</a>
 </li>
 <li>
-<strong>Issues:</strong> <a href="https://github.com/kabilanbio/scSimEvalStudio/issues" class="external-link">https://github.com/kabilanbio/scSimEvalStudio/issues</a>
+<strong>Core Engine Documentation (<code>scSimEval</code>):</strong> <a href="https://kabilanbio.github.io/scSimEval/" class="external-link">https://kabilanbio.github.io/scSimEval/</a>
+</li>
+<li>
+<strong>Source Code &amp; Issue Tracker:</strong> <a href="https://github.com/kabilanbio/scSimEvalStudio/issues" class="external-link">https://github.com/kabilanbio/scSimEvalStudio/issues</a>
 </li>
 </ul>
 </div>
@@ -100,6 +375,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/kabilanbio/scSimEvalStudio/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/kabilanbio/scSimEvalStudio/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://kabilanbio.github.io/scSimEval/" class="external-link">scSimEval Core Docs (v0.99.12)</a></li>
 </ul>
 </div>
 
@@ -143,7 +419,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Kabilan Sakthivel, Dr Dwijesh Chandra Mishra, Dr Shashi Bhushan Lal, Dr Ulavappa Angadi, Dr Sudhir Srivastava, Dr Neeraj Budhlakoti, Dr Krishna Kumar Chaturvedi, Dr Ranjeet Ranjan Kumar, Dr Navin Chandra Gupta.</p>
+  <p>Division of Agricultural Bioinformatics, ICAR-IASRI, New Delhi</p>
 </div>
 
 <div class="pkgdown-footer-right">
@@ -155,7 +431,435 @@
 
 
 
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  // Hide citation block on authors page if present
+  const citationHeader = document.getElementById("citation");
+  if (citationHeader && citationHeader.closest(".section")) {
+    citationHeader.closest(".section").remove();
+  }
+  const authorsH1 = document.querySelector(".template-citation-authors h1");
+  if (authorsH1 && authorsH1.textContent.includes("Citation")) {
+    authorsH1.textContent = "Authors";
+  }
+  // Custom search placeholder
+  const searchInput = document.getElementById("search-input");
+  if (searchInput) {
+    searchInput.placeholder = "Search docs... (Press /)";
+  }
 
+  // On this page (TOC) Hide / Show Toggle Feature
+  const tocNav = document.getElementById("toc");
+  if (tocNav) {
+    const tocAside = tocNav.closest("aside") || tocNav.closest(".col-md-3");
+    const mainEl = document.getElementById("main");
+    const tocH2 = tocNav.querySelector("h2");
 
-  </body>
+    if (tocAside && mainEl && tocH2) {
+      // Add hide button to TOC header
+      if (!document.getElementById("btn-hide-toc")) {
+        const hideBtn = document.createElement("button");
+        hideBtn.id = "btn-hide-toc";
+        hideBtn.type = "button";
+        hideBtn.className = "btn btn-sm btn-outline-secondary float-end toc-toggle-btn";
+        hideBtn.title = "Hide 'On this page' sidebar";
+        hideBtn.setAttribute("aria-label", "Hide Table of Contents");
+        hideBtn.innerHTML = '<span class="fa fa-angle-right me-1"></span>Hide';
+        tocH2.appendChild(hideBtn);
+
+        hideBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          setTocState(false);
+        });
+      }
+
+      // Create floating show button
+      let showBtn = document.getElementById("btn-show-toc");
+      if (!showBtn) {
+        showBtn = document.createElement("button");
+        showBtn.id = "btn-show-toc";
+        showBtn.type = "button";
+        showBtn.className = "btn btn-sm btn-primary toc-floating-show-btn shadow-sm d-none";
+        showBtn.title = "Show 'On this page' sidebar";
+        showBtn.setAttribute("aria-label", "Show Table of Contents");
+        showBtn.innerHTML = '<span class="fa fa-list-ul me-1"></span> On this page';
+        document.body.appendChild(showBtn);
+
+        showBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          setTocState(true);
+        });
+      }
+
+      function setTocState(visible) {
+        const container = mainEl.closest(".container") || mainEl.closest(".container-fluid") || document.querySelector(".container.template-article") || document.querySelector(".container");
+        if (visible) {
+          document.body.classList.remove("toc-collapsed");
+          if (container) container.classList.remove("container-fullwidth");
+          tocAside.classList.remove("d-none");
+          tocAside.style.display = "";
+          mainEl.classList.remove("col-md-12", "main-expanded");
+          mainEl.classList.add("col-md-9");
+          mainEl.style.width = "";
+          mainEl.style.maxWidth = "";
+          mainEl.style.flex = "";
+          if (showBtn) showBtn.classList.add("d-none");
+          localStorage.setItem("scSimEval_toc_hidden", "false");
+        } else {
+          document.body.classList.add("toc-collapsed");
+          if (container) container.classList.add("container-fullwidth");
+          tocAside.classList.add("d-none");
+          tocAside.style.display = "none";
+          mainEl.classList.remove("col-md-9");
+          mainEl.classList.add("col-md-12", "main-expanded");
+          mainEl.style.width = "100%";
+          mainEl.style.maxWidth = "100%";
+          mainEl.style.flex = "0 0 100%";
+          if (showBtn) showBtn.classList.remove("d-none");
+          localStorage.setItem("scSimEval_toc_hidden", "true");
+        }
+      }
+
+      // Restore user preference
+      if (localStorage.getItem("scSimEval_toc_hidden") === "true") {
+        setTocState(false);
+      }
+    }
+  }
+
+  /* ===== FULLSCREEN IMAGE VIEWER LIGHTBOX (MICROSOFT PHOTOS STYLE) ===== */
+  window.scOpenLightbox = function(imgSrc) {
+    if (!imgSrc) return;
+    var existing = document.getElementById("sc_lightbox_overlay");
+    if (existing) existing.remove();
+
+    var overlay = document.createElement("div");
+    overlay.id = "sc_lightbox_overlay";
+    overlay.className = "sc-lightbox-overlay";
+
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "sc-lightbox-close";
+    closeBtn.type = "button";
+    closeBtn.title = "Close Viewer (Esc)";
+    closeBtn.setAttribute("aria-label", "Close Fullscreen Viewer");
+    closeBtn.innerHTML = "&times;";
+
+    var canvas = document.createElement("div");
+    canvas.className = "sc-lightbox-canvas";
+
+    var img = document.createElement("img");
+    img.className = "sc-lightbox-img";
+    img.src = imgSrc;
+    canvas.appendChild(img);
+
+    var bar = document.createElement("div");
+    bar.className = "sc-lightbox-bar";
+    bar.innerHTML =
+      '<button type="button" id="sc_lb_out" title="Zoom Out (-)"><i class="fa fa-search-minus"></i></button>' +
+      '<input type="range" id="sc_lb_slider" min="10" max="600" step="5" value="100">' +
+      '<button type="button" id="sc_lb_in" title="Zoom In (+)"><i class="fa fa-search-plus"></i></button>' +
+      '<span id="sc_lb_pct" style="font-family:monospace;min-width:48px;text-align:center;font-weight:700;">100%</span>' +
+      '<button type="button" id="sc_lb_fit" title="Fit to Window (0)">Fit</button>' +
+      '<button type="button" id="sc_lb_100" title="Actual Size (1)">100%</button>' +
+      '<span class="d-none d-md-inline" style="font-size:0.74rem;opacity:0.75;margin-left:4px;">Wheel: Zoom • Drag: Pan • Esc: Close</span>';
+
+    overlay.appendChild(closeBtn);
+    overlay.appendChild(canvas);
+    overlay.appendChild(bar);
+    document.body.appendChild(overlay);
+
+    var state = { scale: 1, tx: 0, ty: 0, dragging: false, sx: 0, sy: 0, stx: 0, sty: 0 };
+    var lbSlider = document.getElementById("sc_lb_slider");
+    var lbPct = document.getElementById("sc_lb_pct");
+
+    function applyTransform() {
+      img.style.transform = "translate3d(" + state.tx + "px," + state.ty + "px,0) scale(" + state.scale + ")";
+      var p = Math.round(state.scale * 100);
+      lbPct.innerText = p + "%";
+      lbSlider.value = Math.max(10, Math.min(600, p));
+    }
+
+    function fitImage() {
+      var nw = img.naturalWidth || img.width || 900;
+      var nh = img.naturalHeight || img.height || 600;
+      var vw = window.innerWidth * 0.90;
+      var vh = (window.innerHeight - 90) * 0.92;
+      state.scale = Math.max(0.1, Math.min(4, Math.min(vw / nw, vh / nh)));
+      state.tx = 0;
+      state.ty = 0;
+      applyTransform();
+    }
+
+    function zoomAt(newScale, clientX, clientY) {
+      newScale = Math.max(0.10, Math.min(6.0, newScale));
+      var cx = window.innerWidth / 2;
+      var cy = window.innerHeight / 2;
+      var dx = (typeof clientX === "number") ? (clientX - cx) : 0;
+      var dy = (typeof clientY === "number") ? (clientY - cy) : 0;
+      var ratio = newScale / state.scale;
+      state.tx = dx - (dx - state.tx) * ratio;
+      state.ty = dy - (dy - state.ty) * ratio;
+      state.scale = newScale;
+      applyTransform();
+    }
+
+    if (img.complete) fitImage(); else img.onload = fitImage;
+
+    canvas.addEventListener("wheel", function(e) {
+      e.preventDefault();
+      var mult = e.deltaY < 0 ? 1.12 : (1 / 1.12);
+      zoomAt(state.scale * mult, e.clientX, e.clientY);
+    }, { passive: false });
+
+    canvas.addEventListener("mousedown", function(e) {
+      if (e.button !== 0) return;
+      state.dragging = true;
+      state.sx = e.clientX; state.sy = e.clientY;
+      state.stx = state.tx; state.sty = state.ty;
+      canvas.classList.add("sc-panning");
+    });
+
+    function onLbMove(e) {
+      if (!state.dragging) return;
+      state.tx = state.stx + (e.clientX - state.sx);
+      state.ty = state.sty + (e.clientY - state.sy);
+      applyTransform();
+    }
+
+    function onLbUp() {
+      if (!state.dragging) return;
+      state.dragging = false;
+      canvas.classList.remove("sc-panning");
+    }
+
+    window.addEventListener("mousemove", onLbMove);
+    window.addEventListener("mouseup", onLbUp);
+
+    canvas.addEventListener("dblclick", function(e) {
+      if (Math.abs(state.scale - 2.0) < 0.15) {
+        fitImage();
+      } else {
+        zoomAt(2.0, e.clientX, e.clientY);
+      }
+    });
+
+    document.getElementById("sc_lb_out").onclick = function() { zoomAt(state.scale / 1.15); };
+    document.getElementById("sc_lb_in").onclick = function() { zoomAt(state.scale * 1.15); };
+    document.getElementById("sc_lb_fit").onclick = fitImage;
+    document.getElementById("sc_lb_100").onclick = function() { state.scale = 1; state.tx = 0; state.ty = 0; applyTransform(); };
+    lbSlider.oninput = function() { zoomAt(Number(this.value) / 100); };
+
+    function closeLightbox() {
+      window.removeEventListener("mousemove", onLbMove);
+      window.removeEventListener("mouseup", onLbUp);
+      window.removeEventListener("keydown", onLbKey);
+      if (overlay && overlay.parentNode) overlay.remove();
+    }
+
+    function onLbKey(e) {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "+" || e.key === "=") zoomAt(state.scale * 1.15);
+      else if (e.key === "-") zoomAt(state.scale / 1.15);
+      else if (e.key === "0") fitImage();
+      else if (e.key === "1") { state.scale = 1; state.tx = 0; state.ty = 0; applyTransform(); }
+    }
+    window.addEventListener("keydown", onLbKey);
+    closeBtn.onclick = closeLightbox;
+    overlay.addEventListener("click", function(e) {
+      if (e.target === overlay || e.target === canvas) closeLightbox();
+    });
+  };
+
+  /* ===== IN-ARTICLE FIGURE ZOOM & PAN COMPONENT ===== */
+  function initDocPlotZoom() {
+    var images = document.querySelectorAll(
+      "#main .figure img, #main figure img, #main img.r-plt, #main p > img:not(.logo), .template-article .figure img, .template-article figure img"
+    );
+    images.forEach(function(img, idx) {
+      if (img.closest(".sc-doc-zoom-wrapper")) return;
+      if (img.classList.contains("logo") || (img.src && (img.src.indexOf("shields.io") !== -1 || img.src.indexOf("badge") !== -1))) return;
+      if (img.naturalWidth > 0 && img.naturalWidth < 120) return;
+
+      var id = "doc_zoom_" + idx;
+      var wrapper = document.createElement("div");
+      wrapper.className = "sc-doc-zoom-wrapper";
+      wrapper.id = "wrap_" + id;
+
+      var toolbar = document.createElement("div");
+      toolbar.className = "sc-doc-zoom-toolbar";
+      toolbar.innerHTML =
+        '<span class="d-none d-md-inline-flex align-items-center gap-1 sc-doc-zoom-hint">' +
+          '<i class="fa fa-hand text-secondary"></i>' +
+          '<span>Drag to pan • Ctrl+Wheel or Slider to zoom</span>' +
+        '</span>' +
+        '<div class="d-flex align-items-center flex-wrap gap-1 ms-auto">' +
+          '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 sc-btn-out" title="Zoom Out (-10%)"><i class="fa fa-search-minus"></i></button>' +
+          '<input type="range" class="sc-zoom-slider" min="25" max="400" step="5" value="100" title="Slide to Zoom (25% - 400%)">' +
+          '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 sc-btn-in" title="Zoom In (+10%)"><i class="fa fa-search-plus"></i></button>' +
+          '<span class="badge bg-white text-dark border px-2 py-1 ms-1 sc-doc-zoom-badge">100%</span>' +
+          '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 ms-1 sc-btn-fit" title="Fit Plot to Viewport"><i class="fa fa-compress"></i> Fit</button>' +
+          '<button type="button" class="btn btn-outline-primary btn-sm py-0 px-2 sc-btn-reset" title="Reset to 100% Actual View">100%</button>' +
+          '<button type="button" class="btn btn-primary btn-sm py-0 px-2 ms-1 sc-btn-full" title="Open Fullscreen Image Viewer (Mouse Wheel Zoom + Drag Pan)"><i class="fa fa-expand"></i> Full View</button>' +
+        '</div>';
+
+      var container = document.createElement("div");
+      container.className = "sc-doc-zoom-container";
+      container.id = "container_" + id;
+
+      var stage = document.createElement("div");
+      stage.className = "sc-doc-zoom-stage";
+      stage.id = "stage_" + id;
+
+      var target = document.createElement("div");
+      target.className = "sc-doc-zoom-target";
+      target.id = "target_" + id;
+
+      img.parentNode.insertBefore(wrapper, img);
+      target.appendChild(img);
+      stage.appendChild(target);
+      container.appendChild(stage);
+      wrapper.appendChild(toolbar);
+      wrapper.appendChild(container);
+
+      var curZoom = 100;
+      var slider = toolbar.querySelector(".sc-zoom-slider");
+      var badge = toolbar.querySelector(".sc-doc-zoom-badge");
+      var btnOut = toolbar.querySelector(".sc-btn-out");
+      var btnIn = toolbar.querySelector(".sc-btn-in");
+      var btnFit = toolbar.querySelector(".sc-btn-fit");
+      var btnReset = toolbar.querySelector(".sc-btn-reset");
+      var btnFull = toolbar.querySelector(".sc-btn-full");
+
+      function setZoom(next, anchorX, anchorY) {
+        next = Math.max(25, Math.min(400, Math.round(next)));
+        var prev = curZoom;
+        curZoom = next;
+        slider.value = next;
+        badge.innerText = next + "%";
+
+        if (next === 100) {
+          target.style.transform = "";
+          target.style.position = "relative";
+          target.style.top = "";
+          target.style.left = "";
+          target.style.width = "100%";
+          target.style.height = "";
+          stage.style.width = "100%";
+          stage.style.height = "";
+          stage.style.overflow = "visible";
+          container.classList.remove("sc-pannable");
+          return;
+        }
+
+        if (!target.dataset.baseW) {
+          var bw = img.offsetWidth || 800;
+          var bh = img.offsetHeight || 500;
+          if (bw > 40 && bh > 40) {
+            target.dataset.baseW = String(bw);
+            target.dataset.baseH = String(bh);
+          }
+        }
+
+        var baseW = Number(target.dataset.baseW) || 800;
+        var baseH = Number(target.dataset.baseH) || 500;
+        var prevFactor = prev / 100;
+        var factor = next / 100;
+
+        var rect = container.getBoundingClientRect();
+        var relX = (typeof anchorX === "number") ? (anchorX - rect.left) : (container.clientWidth / 2);
+        var relY = (typeof anchorY === "number") ? (anchorY - rect.top) : (container.clientHeight / 2);
+        var contentX = (container.scrollLeft + relX) / (prevFactor || 1);
+        var contentY = (container.scrollTop + relY) / (prevFactor || 1);
+
+        stage.style.width = Math.round(baseW * factor) + "px";
+        stage.style.height = Math.round(baseH * factor) + "px";
+        stage.style.overflow = "hidden";
+
+        target.style.position = "absolute";
+        target.style.top = "0px";
+        target.style.left = "0px";
+        target.style.width = baseW + "px";
+        target.style.height = baseH + "px";
+        target.style.transformOrigin = "0 0";
+        target.style.transform = "scale(" + factor + ")";
+
+        container.scrollLeft = Math.max(0, Math.round(contentX * factor - relX));
+        container.scrollTop = Math.max(0, Math.round(contentY * factor - relY));
+
+        if (container.scrollWidth > container.clientWidth + 2 || container.scrollHeight > container.clientHeight + 2 || next > 100) {
+          container.classList.add("sc-pannable");
+        } else {
+          container.classList.remove("sc-pannable");
+        }
+      }
+
+      slider.addEventListener("input", function() { setZoom(Number(this.value)); });
+      btnOut.addEventListener("click", function() { setZoom(curZoom - 10); });
+      btnIn.addEventListener("click", function() { setZoom(curZoom + 10); });
+      btnReset.addEventListener("click", function() {
+        setZoom(100);
+        container.scrollLeft = 0;
+        container.scrollTop = 0;
+      });
+      btnFit.addEventListener("click", function() {
+        setZoom(100);
+        var bw = Number(target.dataset.baseW) || img.offsetWidth || 800;
+        var bh = Number(target.dataset.baseH) || img.offsetHeight || 500;
+        var availW = Math.max(120, container.clientWidth - 20);
+        var availH = Math.max(120, container.clientHeight - 20);
+        var fitScale = Math.min(availW / bw, availH / bh);
+        var fitPct = Math.max(25, Math.min(100, Math.floor(fitScale * 100)));
+        setZoom(fitPct);
+      });
+      btnFull.addEventListener("click", function() {
+        window.scOpenLightbox(img.src);
+      });
+
+      img.addEventListener("dblclick", function(e) {
+        if (curZoom > 100) {
+          setZoom(100);
+        } else {
+          setZoom(175, e.clientX, e.clientY);
+        }
+      });
+
+      container.addEventListener("wheel", function(e) {
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+        var delta = e.deltaY < 0 ? 15 : -15;
+        setZoom(curZoom + delta, e.clientX, e.clientY);
+      }, { passive: false });
+
+      var isDragging = false;
+      var startX = 0, startY = 0, startSL = 0, startST = 0;
+      container.addEventListener("mousedown", function(e) {
+        if (e.button !== 0) return;
+        if (container.scrollWidth <= container.clientWidth && container.scrollHeight <= container.clientHeight && curZoom <= 100) return;
+        isDragging = true;
+        container.classList.add("sc-panning");
+        startX = e.clientX;
+        startY = e.clientY;
+        startSL = container.scrollLeft;
+        startST = container.scrollTop;
+      });
+
+      window.addEventListener("mousemove", function(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        container.scrollLeft = startSL - (e.clientX - startX);
+        container.scrollTop = startST - (e.clientY - startY);
+      });
+
+      window.addEventListener("mouseup", function() {
+        if (isDragging) {
+          isDragging = false;
+          container.classList.remove("sc-panning");
+        }
+      });
+    });
+  }
+  initDocPlotZoom();
+});
+</script>
+</body>
 </html>
