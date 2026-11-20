@@ -1,101 +1,35 @@
-# Interactive Single-Cell & Multiomics Simulation Benchmarking with scSimEvalStudio
+# Beginner's Guide to scSimEvalStudio
 
-## 1. Scientific Motivation & Multiomics Experimental Design Coverage
+## 1. Welcome to `scSimEvalStudio`
 
-Single-cell and multiomics simulation algorithms are foundational to computational biology: they enable method developers and applied bioinformaticians to benchmark clustering, batch integration, differential expression/accessibility, trajectory inference, and cross-modal alignment algorithms under controlled ground-truth conditions. However, any *in silico* benchmark is only as trustworthy as the biological realism of its underlying synthetic datasets. A simulator that reproduces marginal gene means while distorting zero-inflation kinetics, collapsing rare cell manifolds, inflating false-positive differential markers, or decoupling chromatin accessibility from transcription can systematically mislead downstream tool selection.
+**`scSimEvalStudio`** (version `0.99.3`) is a **point-and-click Shiny
+web app** built to make single-cell and multiomics simulation
+benchmarking simple and accessible—even if you are brand new to R.
 
-**`scSimEvalStudio`** (version `0.99.3`) is the interactive Shiny graphical studio companion to **[`scSimEval`](https://kabilanbio.github.io/scSimEval/)** (version `0.99.12`). Together, they establish a rigorous, reference-based benchmarking framework that compares one or more simulated datasets ($\mathcal{D}_{\text{sim}}^{(1)}, \dots, \mathcal{D}_{\text{sim}}^{(M)}$) against an empirical biological reference dataset ($\mathcal{D}_{\text{ref}}$) across **56 curated evaluation measures** organized into **8 canonical biological and computational categories**.
+Instead of writing scripts to run metrics and format dozens of plots,
+`scSimEvalStudio` gives you a clean browser workspace where you can:
 
-### Bioconductor Ecosystem Integration & S4 Data Structures
+- Try **1-click example datasets** immediately to learn how the app
+  works.
+- Upload your own **scRNA-seq**, **scATAC-seq**, or **multiomics**
+  `.rds` datasets (`SingleCellExperiment` or `Seurat`).
+- Compare simulators visually on an easy **0 to 1 scale** (where
+  **1.0 = best match** to your real dataset).
+- Zoom, pan, customize, and download **600 DPI figures**, **Excel
+  workbooks**, and **reproducible R scripts**.
 
-`scSimEvalStudio` is engineered directly around Bioconductor S4 data representations and statistical infrastructure:
+> **Want the full metric definitions, statistical details, or R
+> programming tutorials?** All underlying evaluation methods are
+> documented separately on the **[scSimEval Core Package
+> Documentation](https://kabilanbio.github.io/scSimEval/)**.
 
-- **Core S4 Container (`SingleCellExperiment`)**: All evaluation workflows operate natively on [`SingleCellExperiment`](https://bioconductor.org/packages/SingleCellExperiment/) objects storing raw count matrices in `assay(sce, "counts")` (supporting memory-efficient sparse `dgCMatrix` representations from the `Matrix` package) and cell-level biological annotations (`cell_type` and `batch`) in `SummarizedExperiment::colData(sce)`.
-- **Multi-Modal Co-Assay Representation (`altExp`)**: Paired multiomics datasets (`scRNA-seq + scATAC-seq` profiled across identical cell barcodes) are represented either as a single `SingleCellExperiment` containing the secondary chromatin accessibility assay in `altExp(sce, "ATAC")` or as a named list `list(RNA = rna_sce, ATAC = atac_sce)`.
-- **Automatic `Seurat` Interoperability**: Users working with `Seurat` objects can convert them in one line via `Seurat::as.SingleCellExperiment(seurat_obj)` prior to saving, or upload `.rds` files containing `Seurat` objects directly into `scSimEvalStudio` for automatic on-the-fly S4 conversion.
-- **Statistical & Parallel Backends**: Integrates with `BiocParallel` for dynamic multi-core task scheduling, `edgeR` for replicate-aware pseudobulk quasi-likelihood differential testing (`glmQLFit` / `glmQLFTest`), `CDI` for penalized likelihood Clustering Deviation Index computation, `CellMixS` for cell-specific batch mixing, and `scater` / `scuttle` for single-cell normalization and quality control.
-
-### Coverage Across Four Experimental Designs
-
-| Experimental Design | S4 Input Representation | `colData` Metadata | Active Categories | Curated Measures Evaluated |
-|:---|:---|:---|:---:|:---:|
-| **1. Unimodal `scRNA-seq`** | Gene $\times$ cell raw UMI/read count matrix in `assay(sce, "counts")` | `cell_type` (Cat III, V) & `batch` (Cat IV, V) | **7 Categories** (I–V, VII, VIII) | **44 Measures** (Cat I: 14, Cat II: 4, Cat III: 8, Cat IV: 5, Cat V: 6 DE, Cat VII: 5 Trajectory, Cat VIII: 2 Scalability) |
-| **2. Unimodal `scATAC-seq`** | Peak/bin $\times$ cell raw fragment/insertion count matrix in `assay(sce, "counts")` with TF-IDF latent semantic indexing | `cell_type` (Cat III, V) & `batch` (Cat IV, V) | **6 Categories** (I–V, VIII) | **38 Measures** (Cat I: 14, Cat II: 3, Cat III: 8, Cat IV: 5, Cat V: 6 DA, Cat VIII: 2 Scalability; Cat VII skipped for ATAC) |
-| **3. Paired Co-Assay Multiomics** | Joint `scRNA-seq + scATAC-seq` across identical cells (1-to-1 barcode correspondence via `altExp(sce, "ATAC")` or `list(RNA = rna_sce, ATAC = atac_sce)`) | Shared `cell_type` & `batch` | **All 8 Categories** (I–VIII) | **56 Measures** *(rendered as 50 unique columns in the Comparative Bubble Matrix)* |
-| **4. Unpaired Multiomics** | Independent `scRNA-seq` and `scATAC-seq` `SingleCellExperiment` objects from the same tissue without shared barcodes | Modality-specific `cell_type` & `batch` | **All 8 Categories** (I–VIII) | **56 Measures** *(Cat VI evaluated on joint stacked latent embeddings; 50 Bubble Matrix columns)* |
-
-------------------------------------------------------------------------
-
-## 2. End-to-End Architecture & The 8-Category / 56-Measure Taxonomy
-
-The benchmarking engine underlying `scSimEvalStudio` executes a four-stage scientific pipeline:
-
-![Figure 1 | The 4-Stage scSimEval & scSimEvalStudio Benchmarking Architecture.](../workflow_diagram.png)
-
-### Detailed Scientific Breakdown of Categories I–VIII
-
-#### Category I: Distributional Properties (14 Measures Across 18 Empirical Properties)
-
-Category I evaluates whether synthetic count matrices reproduce both marginal (1D) and joint (2D) statistical distributions of real cells and features across **18 empirical summary properties**:
-
-- **7 Univariate Cell-Level Properties (`extract_cell_properties()`)**: `library_size`, `log_library_size`, `tmm_factor`, `zero_fraction_cell`, `detection_freq_cell`, `cell_cor`, and `pca_dist`.
-- **7 Univariate Feature-Level Properties (`extract_feature_properties()`)**: `mean_expression`, `variance`, `scaled_variance`, `cv`, `zero_fraction_feature`, `dispersion`, and `gene_cor`.
-- **4 Bivariate Property Couplings**: `lib_vs_cellzero`, `mean_vs_sd`, `mean_vs_featzero`, and `mean_vs_dispersion`.
-
-Across the 14 univariate properties, `scSimEval` computes **10 complementary 1D divergence measures**: `Wasserstein`, `KS`, `MAD`, `MAE`, `RMSE`, `Bhattacharyya`, `KDE_ISE`, `Runs_Statistic`, `NN_Mismatch`, and `Between_Dataset_Silh_Global`. Across the 4 bivariate pairs, it computes **4 two-dimensional divergence measures**: `Fasano_Franceschini_2D_KS`, `EMD_2D`, `NN_Mismatch_2D`, and `Between_Dataset_Silh_2D_Global`.
-
-#### Category II: Sparsity & Zero-Inflation Dynamics (5 Measures)
-
-Evaluates logistic dropout probability kinetics $P(\text{zero}_g \mid \mu_g) = [1 + \exp(-k(\mu_g - x_0))]^{-1}$ (`midpoint_error`, `slope_error`, `r2_discrepancy`), scATAC-seq quadratic accessibility-sparsity curve residual error (`curve_rmse`), and technical excess zero-inflation weight divergence (`excess_zero_weight_discrepancy`).
-
-#### Category III: Cellular Manifold & Clustering Concordance (8 Measures)
-
-Evaluates high-dimensional latent manifold geometry and clustering fidelity via multi-scale RBF kernel Maximum Mean Discrepancy (`MMD`), $k$-NN manifold support `Generative_Precision` and `Generative_Recall`, cell-type Average Silhouette Width (`silhouette_sim`), Clustering Deviation Index (`cdi`), local $k$-NN `neighborhood_purity`, Adjusted Rand Index (`ari`), and Normalized Mutual Information (`nmi`).
-
-#### Category IV: Technical Variation & Batch Mixing Dynamics (5 Measures)
-
-Quantifies technical batch confounder preservation and local neighborhood intermixing via `batch_silhouette`, Principal Component Regression variance explained (`pcr_r2`), Cell-Specific Mixing Score (`cms`), Local Inverse Simpson's Index (`isi`), and held-out `cross_batch_F1` transfer classification.
-
-#### Category V: Biological Signal & Differential Fidelity (12 Measures: 6 scRNA-seq DE + 6 scATAC-seq DA)
-
-Aggregates single cells into biological replicate **cell-type $\times$ batch pseudobulks** (`to_pseudobulk()`) and fits negative binomial quasi-likelihood models (`edgeR::glmQLFit` / `glmQLFTest`) with cellular detection rate covariates (`run_edger_qlf_detrate()` for scRNA-seq; binarized peak accessibility `binarize_matrix()` + `run_edger_qlf_da()` for scATAC-seq). Computes 6 scRNA-seq DE and 6 scATAC-seq DA measures: `pval_dist_score`, `accuracy`, `precision`, `recall`, `f1_score`, and `auc` (ROC-AUC).
-
-#### Category VI: Multiomics Integration & Alignment (5 Measures)
-
-Evaluates cross-modal alignment in joint RNA + ATAC latent space via Cross-Modal Batch ASW (`batch_asw`), Joint Cell-Type ASW (`cell_type_asw`), $k$-NN Graph Connectivity (`graph_connectivity`), Integration ARI (`ari`), and Integration NMI (`nmi`).
-
-#### Category VII: Trajectory & Lineage Topology (5 Measures)
-
-Executes HVG-filtered `dynverse` milestone trajectory inference on scRNA-seq (`preprocess_trajectory_hvgs()`, `infer_dynverse_trajectory()`) and evaluates Hamming–Ipsen–Mikhailov graph topology similarity (`him`), `edge_flip` graph edit similarity, pairwise pseudotime `geodesic_correlation`, branch assignment `F1_branches`, and Ranger Random Forest driver gene importance weighted correlation (`wcor_features`).
-
-#### Category VIII: Computational Scalability & Efficiency (2 Hardware-Normalized Measures)
-
-Standardizes computational resource consumption across heterogeneous CPU allocations via **Cumulative Core-Seconds** ($\text{Core-Seconds} = T_{\text{elapsed, seconds}} \times N_{\text{cores}}$, `core_seconds`) and **Peak RAM per Allocated Core** ($\text{Peak RAM per Core} = M_{\text{peak, MiB}} / N_{\text{cores}}$, `memory_per_core_mib`).
+![Overview of the 4 simple stages inside scSimEvalStudio](../workflow_diagram.png)
 
 ------------------------------------------------------------------------
 
-## 3. Direction-Aware Score Normalization & Hierarchical Aggregation
+## 2. Step 1 — Install and Open the App
 
-![Figure 2 | Two-Stage Direction-Aware Mathematical Normalization & Hierarchical Aggregation Pipeline.](../score_normalization_workflow.png)
-
-`scSimEvalStudio` normalizes raw measurements (`Score_Raw`) via `scSimEval::normalize_bubble_scores()` onto a direction-aligned $[0, 1]$ fidelity scale ($1.00 =$ ideal biological reference concordance), averages constituent metrics within each active category $k$ ($S_{\text{cat}, m, k} = \frac{1}{|\mathcal{M}_k|}\sum_{j \in \mathcal{M}_k} s_{m,j}$), and computes the unweighted **Overall Composite Score** ($S_{\text{overall}, m} = \frac{1}{K}\sum_{k=1}^{K} S_{\text{cat}, m, k}$).
-
-------------------------------------------------------------------------
-
-## 4. Detailed Guide to All 8 Interactive Modules in `scSimEvalStudio`
-
-1. **Module 1 (`Home`)**: Executive KPI ribbon (56 measures, 8 categories, 3 modality classes, $[0.0, 1.0]$ scale), 8-category overview grid, and 3-stage pipeline navigation.
-2. **Module 2 (`Data Hub`)**: Four isolated ingestion modes (`scRNA-seq`, `scATAC-seq`, `Paired & Unpaired Multiomics`, and `Upload Saved Results [.rds / .csv]`), 1-click *Oryza sativa* Rice Bud (6 simulators) and *Glycine max* Soybean Root (3 simulators) empirical benchmarks, custom `.rds` evaluation, incremental benchmark appending, and a **1-Click Standalone HPC/Workstation R Script Generator**.
-3. **Module 3 (`Comparative Bubble Matrix`)**: Flagship dual-encoded Bubble Matrix (`plot_benchmark_bubble_matrix()`) and interactive **Fidelity Leaderboard** (`compute_method_leaderboard()`).
-4. **Module 4 (`Visualizations` — 8 Diagnostic Sub-Panels)**: (1) Evaluation Summary, (2) Distribution QC across all 18 properties, (3) Metric Heatmap, (4) Metric Plots, (5) PCA Ordination anchored to the Ideal Reference Anchor $\mathbf{1}$, (6) MDS Metric Space, (7) Cell Embeddings (UMAP, t-SNE & PCA with ASW & ARI quality table), and (8) Scalability Benchmark (`core_seconds` and `MiB/core`), all equipped with the **25%–400% Step-Zoom, Drag-to-Pan & 600% Fullscreen Lightbox** viewer.
-5. **Module 5 (`Benchmark Results & Export`)**: Reproducible `.rds` session export, filterable `DT` master table (`Score_Raw` and `Score`), and multi-sheet Excel (`.xlsx`) and `.csv` downloads.
-6. **Module 6 (`Help & Getting Started`)**: Interactive workflow diagrams, S4 `SingleCellExperiment` preparation recipes, and the **Dynamic Multi-Core Scheduling Table**.
-7. **Module 7 (`Logs`)**: Live WebSocket diagnostic terminal (`sc_live_log`) streaming `INFO`, `NOTE`, `WARNING`, `ERROR`, and `SUCCESS` events with search, filtering, and `.txt` export.
-8. **Module 8 (`Contact`)**: Institutional attribution and research team directory at the Division of Agricultural Bioinformatics, ICAR-IASRI, New Delhi.
-
-------------------------------------------------------------------------
-
-## 5. Installation, Launching & Programmatic Verification
+### Install from Bioconductor
 
 ``` r
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
@@ -104,14 +38,117 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 BiocManager::install(c("scSimEval", "scSimEvalStudio"))
 ```
 
-Launch the Shiny studio:
+### Or Install from GitHub
+
+``` r
+if (!requireNamespace("remotes", quietly = TRUE)) {
+    install.packages("remotes")
+}
+remotes::install_github("kabilanbio/scSimEval")
+remotes::install_github("kabilanbio/scSimEvalStudio")
+```
+
+### Launch the Shiny Studio
 
 ``` r
 library(scSimEvalStudio)
 launch_scSimEval_app()
 ```
 
-Verify application initialization and inspect the bundled 6-simulator benchmark database:
+Your default web browser will open automatically. By default, the app
+allows uploads up to **10 GiB** so large single-cell `.rds` files can be
+loaded locally without errors.
+
+------------------------------------------------------------------------
+
+## 3. Step 2 — Load Data in the Data Hub Tab
+
+When the app opens, click **Data Hub** in the top bar. You have **4 easy
+options**:
+
+1. **Try a 1-Click Example Dataset (Recommended for Beginners)** —
+   Choose an included empirical benchmark (Rice Bud with 6 simulators or
+   Soybean Root with 3 simulators) to populate every chart and table in
+   seconds.
+2. **Upload Your Own Single-Cell Data (`scRNA-seq` or `scATAC-seq`)** —
+   Upload your real reference `.rds` file along with one or more
+   simulated `.rds` files. Both `SingleCellExperiment` and `Seurat`
+   `.rds` files are accepted (`Seurat` objects are converted
+   automatically).
+3. **Upload Multiomics Data (RNA + ATAC)** — Choose **Paired** (same
+   cells) or **Unpaired** (separate cells from the same tissue), upload
+   your `.rds` files, and click **Run**.
+4. **Reload Previously Saved Results (`.rds` or `.csv`)** — Upload any
+   previously saved benchmark archive to explore and customize plots
+   instantly without waiting for calculations to run again.
+
+> **Tip for Very Large Datasets:** After configuring your files in
+> **Data Hub**, click **Download R Script** to save a ready-to-run
+> script for a lab workstation or HPC server, then upload the saved
+> `.rds` output back into **Data Hub**.
+
+------------------------------------------------------------------------
+
+## 4. Step 3 — Compare Simulators at a Glance
+
+Open the **Comparative Bubble Matrix** tab to see how your simulators
+rank:
+
+- **How to Read the Scores:** Every metric is shown on a simple **0.0 to
+  1.0 scale**, where **closer to 1.0 means a closer match** to your real
+  biological dataset.
+- **Comparative Bubble Matrix Figure:** The left bars show overall and
+  category averages; the right grid shows individual metrics as circles.
+  **Bigger circles = better scores**, and a **bold black outline**
+  highlights the top-performing simulator for each metric.
+- **Fidelity Leaderboard:** Switch to the second sub-tab for a clean,
+  sortable ranking table that you can download as a `.csv` file.
+- **Easy Filtering:** Filter by dataset, modality, simulators, or
+  categories, and adjust width and height before downloading.
+
+------------------------------------------------------------------------
+
+## 5. Step 4 — Explore Interactive Charts (Visualizations Tab)
+
+The **Visualizations** tab provides **8 focused chart views**:
+
+| Sub-Tab | What It Helps You See |
+|:---|:---|
+| **1. Evaluation Summary** | Overall and category-level bar charts and radar profiles comparing all simulators side by side. |
+| **2. Distribution QC** | Visual checks showing whether simulated library sizes, gene/peak averages, and zero counts match your real data. |
+| **3. Metric Heatmap** | Color-coded matrix displaying all simulator scores together in one view (switch between 0–1 scores and raw values). |
+| **4. Metric Plots** | Zoom in on any single metric bar chart or compare simulator spread across a category using boxplots. |
+| **5. PCA Ordination** | Simple 2D map showing which simulators sit closest to the **Ideal Reference** target. |
+| **6. MDS Metric Space** | Visual map grouping simulators that behave similarly across evaluation metrics. |
+| **7. Cell Embeddings (UMAP, t-SNE & PCA)** | Side-by-side or overlaid 2D cell plots colored by cell type, batch, or library size, plus a clean cluster quality summary table. |
+| **8. Scalability Benchmark** | Compare simulator speed (runtime) and memory usage (RAM) with selectable units (seconds, minutes, MB, GB, or per-core). |
+
+### Interactive Zoom, Pan & Publication Downloads
+
+- **Zoom & Pan Toolbar:** Zoom smoothly from **25% to 400%**, drag to
+  pan around large figures, or click **Full View** for fullscreen
+  inspection.
+- **High-Resolution Downloads:** Save any chart as a **600 DPI JPEG** or
+  **Vector PDF**.
+- **1-Click R Script Export:** Download a standalone `ggplot2` R script
+  for any figure to customize colors or labels in R later.
+
+------------------------------------------------------------------------
+
+## 6. Step 5 — Export Results, Monitor Progress & Get Help
+
+- **Benchmark Results & Export:** Search and filter the master results
+  table, and download a formatted **Excel workbook (`.xlsx`)**,
+  **`.csv`** table, or full **`.rds`** session backup.
+- **Logs:** Watch live progress messages (`INFO`, `WARNING`, `SUCCESS`)
+  while benchmarks run, filter messages by type, or download a `.txt`
+  log file.
+- **Help & Contact:** Quick in-app tips, file format checklists, and
+  contact details for the development team at ICAR-IASRI, New Delhi.
+
+------------------------------------------------------------------------
+
+## 7. Quick Verification (For Package Testing)
 
 ``` r
 library(scSimEvalStudio)
@@ -126,18 +163,6 @@ class(app)
 
 demo_file <- file.path(app_dir, "data", "demo_benchmark_data.rds")
 demo_obj <- readRDS(demo_file)
-names(demo_obj)
-#> [1] "benchmark_df"            "benchmark_summary_table"
-#> [3] "dataset_summary_df"      "methods"
 demo_obj$methods
-#> [1] "scMultiSim" "scDesign3"  "MOSim"      "scCross"    "scMoMtF"   
-#> [6] "Matilda"
-head(demo_obj$benchmark_summary_table[, c("Method", "Category", "Metric", "Score")], 6)
-#>                  Method                      Category         Metric     Score
-#> scMultiSim.1 scMultiSim (I) Distributional Properties    Wasserstein 0.7190470
-#> scMultiSim.2 scMultiSim (I) Distributional Properties             KS 0.5516079
-#> scMultiSim.3 scMultiSim (I) Distributional Properties            MAD 0.0000000
-#> scMultiSim.4 scMultiSim (I) Distributional Properties  Bhattacharyya 0.5304023
-#> scMultiSim.5 scMultiSim (I) Distributional Properties Runs_Statistic 0.7451238
-#> scMultiSim.6 scMultiSim (I) Distributional Properties    NN_Mismatch 0.6441069
+#> [1] "scMultiSim" "scDesign3"  "MOSim"      "scCross"    "scMoMtF"    "Matilda"
 ```

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Interactive Single-Cell &amp; Multiomics Simulation Benchmarking with scSimEvalStudio • scSimEvalStudio</title>
+<title>Beginner's Guide to scSimEvalStudio • scSimEvalStudio</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Interactive Single-Cell &amp; Multiomics Simulation Benchmarking with scSimEvalStudio">
+<meta property="og:title" content="Beginner's Guide to scSimEvalStudio">
 <meta property="og:image" content="https://kabilanbio.github.io/scSimEvalStudio/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,560 +67,41 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Interactive Single-Cell &amp; Multiomics Simulation Benchmarking with scSimEvalStudio</h1>
+      <h1>Beginner's Guide to scSimEvalStudio</h1>
       <small class="dont-index">Source: <a href="https://github.com/kabilanbio/scSimEvalStudio/blob/HEAD/vignettes/scSimEvalStudio-workflow.Rmd" class="external-link"><code>vignettes/scSimEvalStudio-workflow.Rmd</code></a></small>
       <div class="d-none name"><code>scSimEvalStudio-workflow.Rmd</code></div>
     </div>
 
 <div class="section level2">
-<h2 id="scientific-motivation-multiomics-experimental-design-coverage">1. Scientific Motivation &amp; Multiomics Experimental Design Coverage<a class="anchor" aria-label="anchor" href="#scientific-motivation-multiomics-experimental-design-coverage"></a>
+<h2 id="welcome-to-scsimevalstudio">1. Welcome to <code>scSimEvalStudio</code><a class="anchor" aria-label="anchor" href="#welcome-to-scsimevalstudio"></a>
 </h2>
-<p>Single-cell and multiomics simulation algorithms are foundational to computational biology: they enable method developers and applied bioinformaticians to benchmark clustering, batch integration, differential expression/accessibility, trajectory inference, and cross-modal alignment algorithms under controlled ground-truth conditions. However, any <em>in silico</em> benchmark is only as trustworthy as the biological realism of its underlying synthetic datasets. A simulator that reproduces marginal gene means while distorting zero-inflation kinetics, collapsing rare cell manifolds, inflating false-positive differential markers, or decoupling chromatin accessibility from transcription can systematically mislead downstream tool selection.</p>
-<p><strong><code>scSimEvalStudio</code></strong> (version <code>0.99.3</code>) is the interactive Shiny graphical studio companion to <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link"><code>scSimEval</code></a></strong> (version <code>0.99.12</code>). Together, they establish a rigorous, reference-based benchmarking framework that compares one or more simulated datasets (<math display="inline"><mrow><msubsup><mi>𝒟</mi><mtext>sim</mtext><mrow><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup><mo>,</mo><mo>…</mo><mo>,</mo><msubsup><mi>𝒟</mi><mtext>sim</mtext><mrow><mo stretchy="false">(</mo><mi>M</mi><mo stretchy="false">)</mo></mrow></msubsup></mrow></math>) against an empirical biological reference dataset (<math display="inline"><mrow><msub><mi>𝒟</mi><mtext>ref</mtext></msub></mrow></math>) across <strong>56 curated evaluation measures</strong> organized into <strong>8 canonical biological and computational categories</strong>.</p>
-
-<div class="section level3">
-<h3 id="bioconductor-ecosystem-integration-s4-data-structures">Bioconductor Ecosystem Integration &amp; S4 Data Structures<a class="anchor" aria-label="anchor" href="#bioconductor-ecosystem-integration-s4-data-structures"></a>
-</h3>
-<p><code>scSimEvalStudio</code> is engineered directly around Bioconductor S4 data representations and statistical infrastructure:</p>
+<p><strong><code>scSimEvalStudio</code></strong> (version <code>0.99.3</code>) is a <strong>point-and-click Shiny web app</strong> built to make single-cell and multiomics simulation benchmarking simple and accessible—even if you are brand new to R.</p>
+<p>Instead of writing scripts to run metrics and format dozens of plots, <code>scSimEvalStudio</code> gives you a clean browser workspace where you can:</p>
 <ul>
-<li>
-<strong>Core S4 Container (<code>SingleCellExperiment</code>)</strong>: All evaluation workflows operate natively on <a href="https://bioconductor.org/packages/SingleCellExperiment/" class="external-link"><code>SingleCellExperiment</code></a> objects storing raw count matrices in <code>assay(sce, "counts")</code> (supporting memory-efficient sparse <code>dgCMatrix</code> representations from the <code>Matrix</code> package) and cell-level biological annotations (<code>cell_type</code> and <code>batch</code>) in <code>SummarizedExperiment::colData(sce)</code>.</li>
-<li>
-<strong>Multi-Modal Co-Assay Representation (<code>altExp</code>)</strong>: Paired multiomics datasets (<code>scRNA-seq + scATAC-seq</code> profiled across identical cell barcodes) are represented either as a single <code>SingleCellExperiment</code> containing the secondary chromatin accessibility assay in <code>altExp(sce, "ATAC")</code> or as a named list <code>list(RNA = rna_sce, ATAC = atac_sce)</code>.</li>
-<li>
-<strong>Automatic <code>Seurat</code> Interoperability</strong>: Users working with <code>Seurat</code> objects can convert them in one line via <code>Seurat::as.SingleCellExperiment(seurat_obj)</code> prior to saving, or upload <code>.rds</code> files containing <code>Seurat</code> objects directly into <code>scSimEvalStudio</code> for automatic on-the-fly S4 conversion.</li>
-<li>
-<strong>Statistical &amp; Parallel Backends</strong>: Integrates with <code>BiocParallel</code> for dynamic multi-core task scheduling, <code>edgeR</code> for replicate-aware pseudobulk quasi-likelihood differential testing (<code>glmQLFit</code> / <code>glmQLFTest</code>), <code>CDI</code> for penalized likelihood Clustering Deviation Index computation, <code>CellMixS</code> for cell-specific batch mixing, and <code>scater</code> / <code>scuttle</code> for single-cell normalization and quality control.</li>
+<li>Try <strong>1-click example datasets</strong> immediately to learn how the app works.</li>
+<li>Upload your own <strong>scRNA-seq</strong>, <strong>scATAC-seq</strong>, or <strong>multiomics</strong> <code>.rds</code> datasets (<code>SingleCellExperiment</code> or <code>Seurat</code>).</li>
+<li>Compare simulators visually on an easy <strong>0 to 1 scale</strong> (where <strong>1.0 = best match</strong> to your real dataset).</li>
+<li>Zoom, pan, customize, and download <strong>600 DPI figures</strong>, <strong>Excel workbooks</strong>, and <strong>reproducible R scripts</strong>.</li>
 </ul>
-</div>
-
-<div class="section level3">
-<h3 id="coverage-across-four-experimental-designs">Coverage Across Four Experimental Designs<a class="anchor" aria-label="anchor" href="#coverage-across-four-experimental-designs"></a>
-</h3>
-<p>Depending on the experimental modality and available metadata annotations, <code>scSimEvalStudio</code> automatically activates the appropriate subset of the 56-measure evaluation suite:</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Experimental Design</th>
-<th style="text-align: left;">S4 Input Representation</th>
-<th style="text-align: left;"><code>colData</code> Metadata</th>
-<th style="text-align: center;">Active Categories</th>
-<th style="text-align: center;">Curated Measures Evaluated</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong>1. Unimodal <code>scRNA-seq</code></strong></td>
-<td style="text-align: left;">Gene × cell raw UMI/read count matrix in <code>assay(sce, "counts")</code></td>
-<td style="text-align: left;"><code>cell_type</code> (Cat III, V) &amp; <code>batch</code> (Cat IV, V)</td>
-<td style="text-align: center;"><strong>7 Categories</strong> (I–V, VII, VIII)</td>
-<td style="text-align: center;"><strong>44 Measures</strong> (Cat I: 14, Cat II: 4, Cat III: 8, Cat IV: 5, Cat V: 6 DE, Cat VII: 5 Trajectory, Cat VIII: 2 Scalability)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>2. Unimodal <code>scATAC-seq</code></strong></td>
-<td style="text-align: left;">Peak/bin × cell raw fragment/insertion count matrix in <code>assay(sce, "counts")</code> with TF-IDF latent semantic indexing</td>
-<td style="text-align: left;"><code>cell_type</code> (Cat III, V) &amp; <code>batch</code> (Cat IV, V)</td>
-<td style="text-align: center;"><strong>6 Categories</strong> (I–V, VIII)</td>
-<td style="text-align: center;"><strong>38 Measures</strong> (Cat I: 14, Cat II: 3, Cat III: 8, Cat IV: 5, Cat V: 6 DA, Cat VIII: 2 Scalability; Cat VII skipped for ATAC)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>3. Paired Co-Assay Multiomics</strong></td>
-<td style="text-align: left;">Joint <code>scRNA-seq + scATAC-seq</code> across identical cells (1-to-1 barcode correspondence via <code>altExp(sce, "ATAC")</code> or <code>list(RNA = rna_sce, ATAC = atac_sce)</code>)</td>
-<td style="text-align: left;">Shared <code>cell_type</code> &amp; <code>batch</code></td>
-<td style="text-align: center;"><strong>All 8 Categories</strong> (I–VIII)</td>
-<td style="text-align: center;"><strong>56 Measures</strong> <em>(rendered as 50 unique columns in the Comparative Bubble Matrix)</em></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>4. Unpaired Multiomics</strong></td>
-<td style="text-align: left;">Independent <code>scRNA-seq</code> and <code>scATAC-seq</code> <code>SingleCellExperiment</code> objects from the same tissue without shared barcodes</td>
-<td style="text-align: left;">Modality-specific <code>cell_type</code> &amp; <code>batch</code></td>
-<td style="text-align: center;"><strong>All 8 Categories</strong> (I–VIII)</td>
-<td style="text-align: center;"><strong>56 Measures</strong> <em>(Cat VI evaluated on joint stacked latent embeddings; 50 Bubble Matrix columns)</em></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<div class="section level2">
-<h2 id="end-to-end-architecture-the-8-category-56-measure-taxonomy">2. End-to-End Architecture &amp; The 8-Category / 56-Measure Taxonomy<a class="anchor" aria-label="anchor" href="#end-to-end-architecture-the-8-category-56-measure-taxonomy"></a>
-</h2>
-<p>The benchmarking engine underlying <code>scSimEvalStudio</code> executes a four-stage scientific pipeline:</p>
-
+<blockquote>
+<p><strong>Want the full metric definitions, statistical details, or R programming tutorials?</strong><br>
+All underlying evaluation methods are documented separately on the <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link">scSimEval Core Package Documentation</a></strong>.</p>
+</blockquote>
 <div class="figure">
-<img src="../workflow_diagram.png" alt="scSimEval &amp; scSimEvalStudio 4-Stage Benchmarking Workflow Architecture" width="100%">
-<p class="caption"><strong>Figure 1 | The 4-Stage scSimEval &amp; scSimEvalStudio Benchmarking Architecture.</strong> (1) Multi-modal data ingestion and S4 validation; (2) parallel metric extraction across 56 curated evaluation measures in 8 canonical categories; (3) direction-aware normalization onto a unified [0.00, 1.00] fidelity scale; and (4) interactive visual analytics, multidimensional ordinations, and reproducible exports.</p>
+<img src="../workflow_diagram.png" alt="Overview of the 4 simple stages inside scSimEvalStudio" width="100%">
+<p class="caption"><strong>Figure 1.</strong> Overview of the 4 simple stages inside <code>scSimEvalStudio</code>: Load Data, Run Evaluation, Compare Rankings, and Explore &amp; Export Results.</p>
 </div>
-
-<div class="section level3">
-<h3 id="detailed-scientific-breakdown-of-categories-iviii">Detailed Scientific Breakdown of Categories I–VIII<a class="anchor" aria-label="anchor" href="#detailed-scientific-breakdown-of-categories-iviii"></a>
-</h3>
-
-<div class="section level4">
-<h4 id="category-i-distributional-properties-14-measures-across-18-empirical-properties">Category I: Distributional Properties (14 Measures Across 18 Empirical Properties)<a class="anchor" aria-label="anchor" href="#category-i-distributional-properties-14-measures-across-18-empirical-properties"></a>
-</h4>
-<p>Category I evaluates whether synthetic count matrices reproduce both marginal (1D) and joint (2D) statistical distributions of real cells and features. First, 18 empirical summary distributions are extracted from <math display="inline"><mrow><msub><mi>𝒟</mi><mtext>ref</mtext></msub></mrow></math> and <math display="inline"><mrow><msub><mi>𝒟</mi><mtext>sim</mtext></msub></mrow></math>:</p>
-<ul>
-<li>
-<strong>7 Univariate Cell-Level Properties (<code><a href="https://kabilanbio.github.io/scSimEval/reference/extract_cell_properties.html" class="external-link">extract_cell_properties()</a></code>)</strong>:
-<ol>
-<li><code>library_size</code>: Total UMI/read or fragment count per cell (<math display="inline"><mrow><msub><mi>L</mi><mi>c</mi></msub><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>g</mi><mo>=</mo><mn>1</mn></mrow><mi>G</mi></msubsup><msub><mi>Y</mi><mrow><mi>g</mi><mo>,</mo><mi>c</mi></mrow></msub></mrow></math>).</li>
-<li><code>log_library_size</code>: Log-transformed total library depth (<math display="inline"><mrow><msub><mi>log</mi><mn>10</mn></msub><mo stretchy="false">(</mo><msub><mi>L</mi><mi>c</mi></msub><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></math>).</li>
-<li><code>tmm_factor</code>: Trimmed Mean of M-values normalization size factor capturing compositional bias.</li>
-<li><code>zero_fraction_cell</code>: Cellular sparsity / dropout fraction (<math display="inline"><mrow><msub><mi>f</mi><mrow><mn>0</mn><mo>,</mo><mi>c</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mi>G</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>g</mi><mo>=</mo><mn>1</mn></mrow><mi>G</mi></msubsup><mi>𝕀</mi><mo stretchy="false">(</mo><msub><mi>Y</mi><mrow><mi>g</mi><mo>,</mo><mi>c</mi></mrow></msub><mo>=</mo><mn>0</mn><mo stretchy="false">)</mo></mrow></math>).</li>
-<li><code>detection_freq_cell</code>: Proportion of expressed genes or accessible peaks per cell (<math display="inline"><mrow><mn>1</mn><mo>−</mo><msub><mi>f</mi><mrow><mn>0</mn><mo>,</mo><mi>c</mi></mrow></msub></mrow></math>).</li>
-<li><code>cell_cor</code>: Pairwise cell-to-cell Pearson correlation distribution across top highly variable features.</li>
-<li><code>pca_dist</code>: Euclidean distance of each cell to the centroid in top principal component space.</li>
-</ol>
-</li>
-<li>
-<strong>7 Univariate Feature-Level Properties (<code><a href="https://kabilanbio.github.io/scSimEval/reference/extract_feature_properties.html" class="external-link">extract_feature_properties()</a></code>)</strong>:
-<ol>
-<li><code>mean_expression</code>: Empirical feature mean across cells (<math display="inline"><mrow><msub><mi>μ</mi><mi>g</mi></msub><mo>=</mo><mfrac><mn>1</mn><mi>C</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></msubsup><msub><mi>Y</mi><mrow><mi>g</mi><mo>,</mo><mi>c</mi></mrow></msub></mrow></math>).</li>
-<li><code>variance</code>: Empirical feature variance (<math display="inline"><mrow><msubsup><mi>σ</mi><mi>g</mi><mn>2</mn></msubsup></mrow></math>).</li>
-<li><code>scaled_variance</code>: Variance standardized by mean expression (<math display="inline"><mrow><msubsup><mi>σ</mi><mi>g</mi><mn>2</mn></msubsup><mo>/</mo><msub><mi>μ</mi><mi>g</mi></msub></mrow></math>, Fano factor).</li>
-<li><code>cv</code>: Coefficient of variation (<math display="inline"><mrow><msub><mi>σ</mi><mi>g</mi></msub><mo>/</mo><msub><mi>μ</mi><mi>g</mi></msub></mrow></math>).</li>
-<li><code>zero_fraction_feature</code>: Feature-wise dropout fraction (<math display="inline"><mrow><msub><mi>f</mi><mrow><mn>0</mn><mo>,</mo><mi>g</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mi>C</mi></mfrac><msubsup><mo>∑</mo><mrow><mi>c</mi><mo>=</mo><mn>1</mn></mrow><mi>C</mi></msubsup><mi>𝕀</mi><mo stretchy="false">(</mo><msub><mi>Y</mi><mrow><mi>g</mi><mo>,</mo><mi>c</mi></mrow></msub><mo>=</mo><mn>0</mn><mo stretchy="false">)</mo></mrow></math>).</li>
-<li><code>dispersion</code>: Negative binomial overdispersion parameter (<math display="inline"><mrow><msub><mi>ϕ</mi><mi>g</mi></msub></mrow></math> satisfying <math display="inline"><mrow><msubsup><mi>σ</mi><mi>g</mi><mn>2</mn></msubsup><mo>=</mo><msub><mi>μ</mi><mi>g</mi></msub><mo>+</mo><msub><mi>ϕ</mi><mi>g</mi></msub><msubsup><mi>μ</mi><mi>g</mi><mn>2</mn></msubsup></mrow></math>).</li>
-<li><code>gene_cor</code>: Pairwise feature-to-feature Pearson co-expression or co-accessibility correlation distribution.</li>
-</ol>
-</li>
-<li>
-<strong>4 Bivariate Property Couplings</strong>:
-<ol>
-<li><code>lib_vs_cellzero</code>: Joint cell-level distribution of library size (<math display="inline"><mrow><msub><mi>L</mi><mi>c</mi></msub></mrow></math>) versus cell zero fraction (<math display="inline"><mrow><msub><mi>f</mi><mrow><mn>0</mn><mo>,</mo><mi>c</mi></mrow></msub></mrow></math>).</li>
-<li><code>mean_vs_sd</code>: Joint feature-level distribution of mean expression (<math display="inline"><mrow><msub><mi>μ</mi><mi>g</mi></msub></mrow></math>) versus standard deviation (<math display="inline"><mrow><msub><mi>σ</mi><mi>g</mi></msub></mrow></math>).</li>
-<li><code>mean_vs_featzero</code>: Joint feature-level mean–dropout coupling (<math display="inline"><mrow><msub><mi>μ</mi><mi>g</mi></msub></mrow></math> versus <math display="inline"><mrow><msub><mi>f</mi><mrow><mn>0</mn><mo>,</mo><mi>g</mi></mrow></msub></mrow></math>).</li>
-<li><code>mean_vs_dispersion</code>: Joint feature-level mean–overdispersion relationship (<math display="inline"><mrow><msub><mi>μ</mi><mi>g</mi></msub></mrow></math> versus <math display="inline"><mrow><msub><mi>ϕ</mi><mi>g</mi></msub></mrow></math>).</li>
-</ol>
-</li>
-</ul>
-<p>Across the 14 univariate properties, <code>scSimEval</code> computes <strong>10 complementary 1D divergence measures</strong>: 1D Wasserstein optimal transport distance (<code>Wasserstein</code>), two-sample Kolmogorov–Smirnov statistic (<code>KS</code>), quantile Median Absolute Deviation (<code>MAD</code>), Mean Absolute Error (<code>MAE</code>), Root Mean Squared Error (<code>RMSE</code>), histogram Bhattacharyya distance (<code>Bhattacharyya</code>), Gaussian Kernel Density Integrated Squared Error (<code>KDE_ISE</code>), Wald–Wolfowitz Runs randomness statistic (<code>Runs_Statistic</code>), 1D <em>k</em>-Nearest-Neighbor source mismatch (<code>NN_Mismatch</code>), and 1D Inter-Dataset Silhouette width (<code>Between_Dataset_Silh_Global</code>). Across the 4 bivariate pairs, it computes <strong>4 two-dimensional divergence measures</strong>: 2D Fasano–Franceschini Kolmogorov–Smirnov distance (<code>Fasano_Franceschini_2D_KS</code>), 2D Earth Mover's Distance (<code>EMD_2D</code>), 2D Nearest-Neighbor Mismatch (<code>NN_Mismatch_2D</code>), and 2D Inter-Dataset Silhouette width (<code>Between_Dataset_Silh_2D_Global</code>).</p>
-</div>
-
-<div class="section level4">
-<h4 id="category-ii-sparsity-zero-inflation-dynamics-5-measures">Category II: Sparsity &amp; Zero-Inflation Dynamics (5 Measures)<a class="anchor" aria-label="anchor" href="#category-ii-sparsity-zero-inflation-dynamics-5-measures"></a>
-</h4>
-<p>Single-cell technologies exhibit characteristic non-linear dropout and sparsity curves:</p>
-<ul>
-<li>
-<strong>Logistic Dropout Probability Curve (<code>scRNA-seq</code>, 3 measures)</strong>: Models feature dropout probability as a logistic function of log-mean expression <math display="inline"><mrow><msub><mi>μ</mi><mi>g</mi></msub></mrow></math>:
-<p style="text-align: center; margin: 0.6em 0;"><math display="block"><mrow><mi>P</mi><mo stretchy="false">(</mo><msub><mtext>zero</mtext><mi>g</mi></msub><mo>∣</mo><msub><mi>μ</mi><mi>g</mi></msub><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><mi>exp</mi><mo stretchy="false">(</mo><mo>−</mo><mi>k</mi><mo stretchy="false">(</mo><msub><mi>μ</mi><mi>g</mi></msub><mo>−</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></mfrac></mrow></math></p>
-comparing reference and simulated inflection midpoints (<code>midpoint_error</code> <math display="inline"><mrow><mo>=</mo><mo stretchy="false">|</mo><msub><mi>x</mi><mrow><mn>0</mn><mo>,</mo><mtext>ref</mtext></mrow></msub><mo>−</mo><msub><mi>x</mi><mrow><mn>0</mn><mo>,</mo><mtext>sim</mtext></mrow></msub><mo stretchy="false">|</mo></mrow></math>), transition slopes (<code>slope_error</code> <math display="inline"><mrow><mo>=</mo><mo stretchy="false">|</mo><msub><mi>k</mi><mtext>ref</mtext></msub><mo>−</mo><msub><mi>k</mi><mtext>sim</mtext></msub><mo stretchy="false">|</mo></mrow></math>), and curve goodness-of-fit (<code>r2_discrepancy</code> <math display="inline"><mrow><mo>=</mo><mo stretchy="false">|</mo><msubsup><mi>R</mi><mtext>ref</mtext><mn>2</mn></msubsup><mo>−</mo><msubsup><mi>R</mi><mtext>sim</mtext><mn>2</mn></msubsup><mo stretchy="false">|</mo></mrow></math>).</li>
-<li>
-<strong>Chromatin Accessibility Sparsity Curve (<code>scATAC-seq</code>, 2 measures)</strong>: Models the quadratic trend between mean peak accessibility and non-zero cell fraction, quantifying residual Root Mean Squared Error (<code>curve_rmse</code>) and fit discrepancy (<code>r2_discrepancy</code>).</li>
-<li>
-<strong>Excess Zero-Inflation Weight (<code>excess_zero_weight_discrepancy</code>, 1 measure)</strong>: Estimates the discrepancy in technical zero-inflation weights beyond negative binomial sampling expectation.</li>
-</ul>
-</div>
-
-<div class="section level4">
-<h4 id="category-iii-cellular-manifold-clustering-concordance-8-measures">Category III: Cellular Manifold &amp; Clustering Concordance (8 Measures)<a class="anchor" aria-label="anchor" href="#category-iii-cellular-manifold-clustering-concordance-8-measures"></a>
-</h4>
-<p>Evaluates whether simulated cells preserve the high-dimensional latent geometry (PCA for <code>scRNA-seq</code>; TF-IDF + SVD latent semantic indexing for <code>scATAC-seq</code>) and discrete cell-type cluster structure of <math display="inline"><mrow><msub><mi>𝒟</mi><mtext>ref</mtext></msub></mrow></math>:</p>
-<ul>
-<li>
-<strong>Point-Cloud Manifold Alignment</strong>: Multi-scale Radial Basis Function (RBF) kernel Maximum Mean Discrepancy (<code>MMD</code>), along with <em>k</em>-NN manifold support <code>Generative_Precision</code> (fraction of simulated cells falling within the real reference manifold support, penalizing hallucinated cell states) and <code>Generative_Recall</code> (fraction of real cell states covered by the simulator, penalizing mode collapse).</li>
-<li>
-<strong>Cluster Separation &amp; Assignment Concordance</strong>: Cell-type Average Silhouette Width (<code>silhouette_sim</code>), penalized negative log-likelihood Clustering Deviation Index (<code>cdi</code>; Fang et al., <em>Genome Biol.</em> 2022), local <em>k</em>-NN <code>neighborhood_purity</code>, Adjusted Rand Index (<code>ari</code>), and Normalized Mutual Information (<code>nmi</code>).</li>
-</ul>
-</div>
-
-<div class="section level4">
-<h4 id="category-iv-technical-variation-batch-mixing-dynamics-5-measures">Category IV: Technical Variation &amp; Batch Mixing Dynamics (5 Measures)<a class="anchor" aria-label="anchor" href="#category-iv-technical-variation-batch-mixing-dynamics-5-measures"></a>
-</h4>
-<p>When multi-batch or multi-replicate annotations (<code>colData(sce)$batch</code>) are present, Category IV quantifies how faithfully technical batch effects and local inter-batch mixing are reproduced:</p>
-<ul>
-<li><code>batch_silhouette</code>: Global batch silhouette width (values near 0 indicate natural batch intermixing without artificial batch segregation).</li>
-<li><code>pcr_r2</code>: Principal Component Regression <math display="inline"><mrow><msup><mi>R</mi><mn>2</mn></msup></mrow></math>, measuring the proportion of total variance in the top principal components attributable to technical batch labels.</li>
-<li><code>cms</code>: Cell-Specific Mixing Score (Lütge et al., <em>Life Sci. Alliance</em> 2021), testing whether local <em>k</em>-NN neighborhoods reflect global batch proportions.</li>
-<li><code>isi</code>: Local Inverse Simpson's Index (LISI; Korsunsky et al., <em>Nat. Methods</em> 2019), measuring the effective number of batches represented in each cell's local neighborhood.</li>
-<li><code>cross_batch_F1</code>: Macro-<math display="inline"><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow></math> accuracy of a cell-type classifier trained on one batch and evaluated on held-out batches.</li>
-</ul>
-</div>
-
-<div class="section level4">
-<h4 id="category-v-biological-signal-differential-fidelity-12-measures-6-scrna-seq-de-6-scatac-seq-da">Category V: Biological Signal &amp; Differential Fidelity (12 Measures: 6 scRNA-seq DE + 6 scATAC-seq DA)<a class="anchor" aria-label="anchor" href="#category-v-biological-signal-differential-fidelity-12-measures-6-scrna-seq-de-6-scatac-seq-da"></a>
-</h4>
-<p>To avoid the false-positive inflation inherent to single-cell Wilcoxon or <em>t</em>-tests (Squair et al., <em>Nat. Commun.</em> 2021; Duo et al., <em>Genome Biol.</em> 2024; Teo et al., <em>Nat. Commun.</em> 2024), Category V aggregates single cells into biological replicate <strong>cell-type × batch pseudobulks</strong> (<code><a href="https://kabilanbio.github.io/scSimEval/reference/to_pseudobulk.html" class="external-link">to_pseudobulk()</a></code>) and fits negative binomial quasi-likelihood generalized linear models (<code>edgeR::glmQLFit</code> and <code>edgeR::glmQLFTest</code>) with cellular detection rate covariates (<code><a href="https://kabilanbio.github.io/scSimEval/reference/run_edger_qlf_detrate.html" class="external-link">run_edger_qlf_detrate()</a></code> for scRNA-seq; binarized peak accessibility <code><a href="https://kabilanbio.github.io/scSimEval/reference/binarize_matrix.html" class="external-link">binarize_matrix()</a></code> + <code><a href="https://kabilanbio.github.io/scSimEval/reference/run_edger_qlf_da.html" class="external-link">run_edger_qlf_da()</a></code> for scATAC-seq). Treating empirical reference DEGs/DARs (<math display="inline"><mrow><mtext>FDR</mtext><mo>&lt;</mo><mn>0.05</mn></mrow></math>) as ground truth, it computes <strong>6 scRNA-seq Differential Expression (DE)</strong> measures and <strong>6 scATAC-seq Differential Accessibility (DA)</strong> measures:</p>
-<ol>
-<li><code>pval_dist_score</code>: Null <em>p</em>-value uniformity score under permuted null comparisons (verifies Type I error calibration).</li>
-<li><code>accuracy</code>: Overall binary classification accuracy for recovering reference DEGs / DARs.</li>
-<li><code>precision</code>: Positive predictive value (<math display="inline"><mrow><mtext>TP</mtext><mo>/</mo><mo stretchy="false">(</mo><mtext>TP</mtext><mo>+</mo><mtext>FP</mtext><mo stretchy="false">)</mo></mrow></math>).</li>
-<li><code>recall</code>: Statistical sensitivity / power (<math display="inline"><mrow><mtext>TP</mtext><mo>/</mo><mo stretchy="false">(</mo><mtext>TP</mtext><mo>+</mo><mtext>FN</mtext><mo stretchy="false">)</mo></mrow></math>).</li>
-<li><code>f1_score</code>: Harmonic mean of differential recovery precision and recall.</li>
-<li><code>auc</code>: Threshold-free Area Under the Receiver Operating Characteristic curve (ROC-AUC) ranking true markers above background features.</li>
-</ol>
-</div>
-
-<div class="section level4">
-<h4 id="category-vi-multiomics-integration-alignment-5-measures">Category VI: Multiomics Integration &amp; Alignment (5 Measures)<a class="anchor" aria-label="anchor" href="#category-vi-multiomics-integration-alignment-5-measures"></a>
-</h4>
-<p>For paired co-assay and unpaired multiomics datasets, Category VI projects RNA and ATAC modalities into a joint latent embedding and evaluates cross-modal alignment using gold-standard <code>scib</code> / <code>scMultiSim</code> / <code>scCross</code> / <code>Matilda</code> / <code>scMoMtF</code> metrics: Cross-Modal Batch ASW (<code>batch_asw</code>), Joint Cell-Type ASW (<code>cell_type_asw</code>), <em>k</em>-NN Graph Connectivity (<code>graph_connectivity</code>), Joint Integration ARI (<code>ari</code>), and Joint Integration NMI (<code>nmi</code>).</p>
-</div>
-
-<div class="section level4">
-<h4 id="category-vii-trajectory-lineage-topology-5-measures">Category VII: Trajectory &amp; Lineage Topology (5 Measures)<a class="anchor" aria-label="anchor" href="#category-vii-trajectory-lineage-topology-5-measures"></a>
-</h4>
-<p>Following the <strong><code>dynverse</code></strong> trajectory benchmarking framework (Saelens et al., <em>Nat. Biotechnol.</em> 2019), Category VII filters for top highly variable genes (<code><a href="https://kabilanbio.github.io/scSimEval/reference/preprocess_trajectory_hvgs.html" class="external-link">preprocess_trajectory_hvgs()</a></code>), infers minimum-spanning-tree milestone networks and geodesic pseudotimes (<code><a href="https://kabilanbio.github.io/scSimEval/reference/infer_dynverse_trajectory.html" class="external-link">infer_dynverse_trajectory()</a></code>), and compares reference and simulated differentiation topologies across 5 measures:</p>
-<ol>
-<li><code>him</code>: Hamming–Ipsen–Mikhailov graph topology similarity combining local adjacency and global Laplacian spectra.</li>
-<li><code>edge_flip</code>: Graph edit similarity measuring the minimum edge additions/removals required to align milestone trees.</li>
-<li><code>geodesic_correlation</code>: Spearman/Pearson correlation of pairwise cell geodesic distances along the inferred lineage graph.</li>
-<li><code>F1_branches</code>: Harmonic <math display="inline"><mrow><msub><mi>F</mi><mn>1</mn></msub></mrow></math> concordance of cellular branch assignments across developmental trajectories.</li>
-<li><code>wcor_features</code>: Weighted Pearson correlation of Ranger Random Forest trajectory driver gene importance scores.</li>
-</ol>
-</div>
-
-<div class="section level4">
-<h4 id="category-viii-computational-scalability-efficiency-2-hardware-normalized-measures">Category VIII: Computational Scalability &amp; Efficiency (2 Hardware-Normalized Measures)<a class="anchor" aria-label="anchor" href="#category-viii-computational-scalability-efficiency-2-hardware-normalized-measures"></a>
-</h4>
-<p>Because benchmark experiments often execute simulators across heterogeneous workstation or HPC core allocations (<math display="inline"><mrow><msub><mi>N</mi><mtext>cores</mtext></msub></mrow></math>), raw wall-clock runtime and total resident RAM are confounded by parallelism. Category VIII standardizes computational cost into two hardware-normalized measures (<code><a href="https://kabilanbio.github.io/scSimEval/reference/benchmark_resource_usage.html" class="external-link">benchmark_resource_usage()</a></code>):</p>
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><mtext>Core-Seconds (core</mtext><mo>⋅</mo><mtext>s)</mtext><mo>=</mo><msub><mi>T</mi><mtext>elapsed, seconds</mtext></msub><mo>×</mo><msub><mi>N</mi><mtext>cores</mtext></msub><mo>,</mo><mspace width="2em"></mspace><mtext>Peak RAM per Core (MiB/core)</mtext><mo>=</mo><mfrac><msub><mi>M</mi><mtext>peak, MiB</mtext></msub><msub><mi>N</mi><mtext>cores</mtext></msub></mfrac></mrow></math></p>
-</div>
-</div>
-
-<div class="section level3">
-<h3 id="complete-master-reference-table-of-all-56-evaluation-measures">Complete Master Reference Table of All 56 Evaluation Measures<a class="anchor" aria-label="anchor" href="#complete-master-reference-table-of-all-56-evaluation-measures"></a>
-</h3>
-<table class="table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">#</th>
-<th style="text-align: left;">Metric ID</th>
-<th style="text-align: left;">Display Name</th>
-<th style="text-align: left;">Category</th>
-<th style="text-align: center;">Modalities</th>
-<th style="text-align: center;">Optimization Direction</th>
-<th style="text-align: left;">Scientific &amp; Statistical Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd"><td style="text-align: center;">1</td><td><code>Wasserstein</code></td><td>1D Wasserstein Distance</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Earth mover's L1 transport distance across 14 1D properties.</td></tr>
-<tr class="even"><td style="text-align: center;">2</td><td><code>KS</code></td><td>Kolmogorov–Smirnov Distance</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Supremum ECDF vertical divergence between reference and simulated distributions.</td></tr>
-<tr class="odd"><td style="text-align: center;">3</td><td><code>MAD</code></td><td>Median Absolute Deviation</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Outlier-robust median absolute quantile discrepancy.</td></tr>
-<tr class="even"><td style="text-align: center;">4</td><td><code>MAE</code></td><td>Mean Absolute Error</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Mean absolute quantile discrepancy across cell and feature properties.</td></tr>
-<tr class="odd"><td style="text-align: center;">5</td><td><code>RMSE</code></td><td>Root Mean Squared Error</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Tail-sensitive root mean squared quantile error.</td></tr>
-<tr class="even"><td style="text-align: center;">6</td><td><code>Bhattacharyya</code></td><td>Bhattacharyya Distance</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Information-geometric density overlap divergence across empirical histograms.</td></tr>
-<tr class="odd"><td style="text-align: center;">7</td><td><code>KDE_ISE</code></td><td>Kernel Density Error</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Integrated squared error between Gaussian kernel density curves.</td></tr>
-<tr class="even"><td style="text-align: center;">8</td><td><code>Runs_Statistic</code></td><td>Wald–Wolfowitz Runs</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Closer to 0 is better</td><td>Standardized Z-statistic testing random interleaving of pooled values.</td></tr>
-<tr class="odd"><td style="text-align: center;">9</td><td><code>NN_Mismatch</code></td><td>1D Nearest-Neighbor Mismatch</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Deviation of local 1D k-NN source label proportions from balanced mixing.</td></tr>
-<tr class="even"><td style="text-align: center;">10</td><td><code>Between_Dataset_Silh_Global</code></td><td>1D Inter-Dataset Silhouette</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Closer to 0 is better</td><td>Global silhouette width between reference and simulated labels along 1D axes.</td></tr>
-<tr class="odd"><td style="text-align: center;">11</td><td><code>Fasano_Franceschini_2D_KS</code></td><td>2D Kolmogorov–Smirnov</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Four-quadrant bivariate extension of the KS supremum test across 4 2D pairs.</td></tr>
-<tr class="even"><td style="text-align: center;">12</td><td><code>EMD_2D</code></td><td>2D Earth Mover's Distance</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Two-dimensional optimal transport distance across binned bivariate density surfaces.</td></tr>
-<tr class="odd"><td style="text-align: center;">13</td><td><code>NN_Mismatch_2D</code></td><td>2D Nearest-Neighbor Mismatch</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Local k-NN source mixing discrepancy in standardized 2D property space.</td></tr>
-<tr class="even"><td style="text-align: center;">14</td><td><code>Between_Dataset_Silh_2D_Global</code></td><td>2D Inter-Dataset Silhouette</td><td>I. Distributional</td><td style="text-align: center;">All</td><td style="text-align: center;">Closer to 0 is better</td><td>Inter-dataset silhouette width in 2D bivariate property space.</td></tr>
-<tr class="odd"><td style="text-align: center;">15</td><td><code>midpoint_error</code></td><td>Dropout Midpoint Error</td><td>II. Sparsity</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Lower is better</td><td>Absolute error in the 50% logistic dropout inflection expression level (x0).</td></tr>
-<tr class="even"><td style="text-align: center;">16</td><td><code>slope_error</code></td><td>Dropout Slope Error</td><td>II. Sparsity</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Lower is better</td><td>Absolute error in the logistic dropout transition steepness parameter (k).</td></tr>
-<tr class="odd"><td style="text-align: center;">17</td><td><code>r2_discrepancy</code></td><td>Sparsity Fit Discrepancy</td><td>II. Sparsity</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Discrepancy in parametric sparsity curve coefficient of determination (R2).</td></tr>
-<tr class="even"><td style="text-align: center;">18</td><td><code>curve_rmse</code></td><td>Accessibility Sparsity RMSE</td><td>II. Sparsity</td><td style="text-align: center;">ATAC, Multi</td><td style="text-align: center;">Lower is better</td><td>RMSE between reference and simulated quadratic chromatin accessibility-sparsity curves.</td></tr>
-<tr class="odd"><td style="text-align: center;">19</td><td><code>excess_zero_weight_discrepancy</code></td><td>Excess Zero Discrepancy</td><td>II. Sparsity</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Absolute divergence in technical zero-inflation mixture weight beyond sampling expectation.</td></tr>
-<tr class="even"><td style="text-align: center;">20</td><td><code>MMD</code></td><td>Maximum Mean Discrepancy</td><td>III. Manifold</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Multi-scale Gaussian RBF kernel distance in top principal / LSI latent space.</td></tr>
-<tr class="odd"><td style="text-align: center;">21</td><td><code>Generative_Precision</code></td><td>Generative Precision</td><td>III. Manifold</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Fraction of simulated cells falling within the k-NN manifold support of real cells.</td></tr>
-<tr class="even"><td style="text-align: center;">22</td><td><code>Generative_Recall</code></td><td>Generative Recall</td><td>III. Manifold</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Fraction of real reference cells covered by the k-NN manifold support of simulated cells.</td></tr>
-<tr class="odd"><td style="text-align: center;">23</td><td><code>silhouette_sim</code></td><td>Cluster Silhouette (ASW)</td><td>III. Manifold</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Mean cell-type silhouette width measuring intra-cluster cohesion vs. separation.</td></tr>
-<tr class="even"><td style="text-align: center;">24</td><td><code>cdi</code></td><td>Clustering Deviation Index</td><td>III. Manifold</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Penalized negative log-likelihood quantifying deviation from true cell-type partitions.</td></tr>
-<tr class="odd"><td style="text-align: center;">25</td><td><code>neighborhood_purity</code></td><td>Neighborhood Purity</td><td>III. Manifold</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Mean fraction of each cell's k nearest neighbors sharing the same biological cell_type.</td></tr>
-<tr class="even"><td style="text-align: center;">26</td><td><code>ari</code></td><td>Adjusted Rand Index</td><td>III. Manifold</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Chance-corrected agreement between unsupervised clusters and ground-truth cell_type labels.</td></tr>
-<tr class="odd"><td style="text-align: center;">27</td><td><code>nmi</code></td><td>Normalized Mutual Info</td><td>III. Manifold</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Normalized mutual information between unsupervised clusters and ground-truth cell_type labels.</td></tr>
-<tr class="even"><td style="text-align: center;">28</td><td><code>batch_silhouette</code></td><td>Batch Silhouette</td><td>IV. Technical Batch</td><td style="text-align: center;">All</td><td style="text-align: center;">Closer to 0 is better</td><td>Silhouette width with respect to batch labels (0 indicates ideal batch intermixing).</td></tr>
-<tr class="odd"><td style="text-align: center;">29</td><td><code>pcr_r2</code></td><td>PC Regression R2</td><td>IV. Technical Batch</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Variance in top principal components explained by technical batch covariates.</td></tr>
-<tr class="even"><td style="text-align: center;">30</td><td><code>cms</code></td><td>Cell-Specific Mixing Score</td><td>IV. Technical Batch</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Local test score evaluating uniform batch mixing in k-NN cellular neighborhoods.</td></tr>
-<tr class="odd"><td style="text-align: center;">31</td><td><code>isi</code></td><td>Inverse Simpson Index (LISI)</td><td>IV. Technical Batch</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Effective number of batches represented in local Gaussian-weighted neighborhoods.</td></tr>
-<tr class="even"><td style="text-align: center;">32</td><td><code>cross_batch_F1</code></td><td>Cross-Batch Classification F1</td><td>IV. Technical Batch</td><td style="text-align: center;">All</td><td style="text-align: center;">Higher is better</td><td>Macro-F1 score of cell-type prediction across held-out technical batches.</td></tr>
-<tr class="odd"><td style="text-align: center;">33</td><td><code>pval_dist_score</code> (scRNA)</td><td>DE Null P-Value Uniformity</td><td>V. Bio-Signal (DE)</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Null p-value calibration score 1 - D_KS(p_null, Uniform[0,1]) for pseudobulk edgeR-QLF DE.</td></tr>
-<tr class="even"><td style="text-align: center;">34</td><td><code>pval_dist_score</code> (scATAC)</td><td>DA Null P-Value Uniformity</td><td>V. Bio-Signal (DA)</td><td style="text-align: center;">ATAC, Multi</td><td style="text-align: center;">Higher is better</td><td>Null p-value calibration score 1 - D_KS(p_null, Uniform[0,1]) for pseudobulk edgeR-QLF DA.</td></tr>
-<tr class="odd"><td style="text-align: center;">35</td><td><code>accuracy</code> (scRNA)</td><td>DE Detection Accuracy</td><td>V. Bio-Signal (DE)</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Binary accuracy (TP+TN)/G in recovering reference pseudobulk edgeR-QLF DEGs.</td></tr>
-<tr class="even"><td style="text-align: center;">36</td><td><code>accuracy</code> (scATAC)</td><td>DA Detection Accuracy</td><td>V. Bio-Signal (DA)</td><td style="text-align: center;">ATAC, Multi</td><td style="text-align: center;">Higher is better</td><td>Binary accuracy (TP+TN)/P in recovering reference pseudobulk edgeR-QLF DARs.</td></tr>
-<tr class="odd"><td style="text-align: center;">37</td><td><code>precision</code> (scRNA)</td><td>DE Detection Precision</td><td>V. Bio-Signal (DE)</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Proportion of simulated DEGs (FDR &lt; 0.05) that are true reference DEGs.</td></tr>
-<tr class="even"><td style="text-align: center;">38</td><td><code>precision</code> (scATAC)</td><td>DA Detection Precision</td><td>V. Bio-Signal (DA)</td><td style="text-align: center;">ATAC, Multi</td><td style="text-align: center;">Higher is better</td><td>Proportion of simulated DARs (FDR &lt; 0.05) that are true reference DARs.</td></tr>
-<tr class="odd"><td style="text-align: center;">39</td><td><code>recall</code> (scRNA)</td><td>DE Detection Recall</td><td>V. Bio-Signal (DE)</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Proportion of true reference DEGs successfully recovered in simulated pseudobulk DE testing.</td></tr>
-<tr class="even"><td style="text-align: center;">40</td><td><code>recall</code> (scATAC)</td><td>DA Detection Recall</td><td>V. Bio-Signal (DA)</td><td style="text-align: center;">ATAC, Multi</td><td style="text-align: center;">Higher is better</td><td>Proportion of true reference DARs successfully recovered in simulated pseudobulk DA testing.</td></tr>
-<tr class="odd"><td style="text-align: center;">41</td><td><code>f1_score</code> (scRNA)</td><td>DE Detection F1-Score</td><td>V. Bio-Signal (DE)</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Harmonic mean of precision and recall for scRNA-seq DEGs.</td></tr>
-<tr class="even"><td style="text-align: center;">42</td><td><code>f1_score</code> (scATAC)</td><td>DA Detection F1-Score</td><td>V. Bio-Signal (DA)</td><td style="text-align: center;">ATAC, Multi</td><td style="text-align: center;">Higher is better</td><td>Harmonic mean of precision and recall for scATAC-seq DARs.</td></tr>
-<tr class="odd"><td style="text-align: center;">43</td><td><code>auc</code> (scRNA)</td><td>DE Ranking ROC-AUC</td><td>V. Bio-Signal (DE)</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Threshold-independent ROC-AUC evaluating gene ranking concordance in pseudobulk edgeR-QLF.</td></tr>
-<tr class="even"><td style="text-align: center;">44</td><td><code>auc</code> (scATAC)</td><td>DA Ranking ROC-AUC</td><td>V. Bio-Signal (DA)</td><td style="text-align: center;">ATAC, Multi</td><td style="text-align: center;">Higher is better</td><td>Threshold-independent ROC-AUC evaluating peak ranking concordance in pseudobulk edgeR-QLF.</td></tr>
-<tr class="odd"><td style="text-align: center;">45</td><td><code>batch_asw</code></td><td>Cross-Modal Batch ASW</td><td>VI. Multiomics</td><td style="text-align: center;">Multiomics</td><td style="text-align: center;">Higher is better</td><td>Modality mixing ASW scaled to [0, 1] within cell types in joint RNA + ATAC space.</td></tr>
-<tr class="even"><td style="text-align: center;">46</td><td><code>cell_type_asw</code></td><td>Joint Cell-Type ASW</td><td>VI. Multiomics</td><td style="text-align: center;">Multiomics</td><td style="text-align: center;">Higher is better</td><td>Cell-type separation ASW scaled to [0, 1] in joint multiomics latent space.</td></tr>
-<tr class="odd"><td style="text-align: center;">47</td><td><code>graph_connectivity</code></td><td>Graph Connectivity</td><td>VI. Multiomics</td><td style="text-align: center;">Multiomics</td><td style="text-align: center;">Higher is better</td><td>Mean largest connected component fraction per cell type in the joint multiomics k-NN graph.</td></tr>
-<tr class="even"><td style="text-align: center;">48</td><td><code>ari</code> (Integration)</td><td>Integration ARI</td><td>VI. Multiomics</td><td style="text-align: center;">Multiomics</td><td style="text-align: center;">Higher is better</td><td>Adjusted Rand Index of joint multiomics graph clustering against ground-truth cell types.</td></tr>
-<tr class="odd"><td style="text-align: center;">49</td><td><code>nmi</code> (Integration)</td><td>Integration NMI</td><td>VI. Multiomics</td><td style="text-align: center;">Multiomics</td><td style="text-align: center;">Higher is better</td><td>Normalized Mutual Information of joint multiomics clustering against ground-truth cell types.</td></tr>
-<tr class="even"><td style="text-align: center;">50</td><td><code>him</code></td><td>HIM Topology Similarity</td><td>VII. Trajectory</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Hamming–Ipsen–Mikhailov metric comparing reference and simulated milestone network graphs.</td></tr>
-<tr class="odd"><td style="text-align: center;">51</td><td><code>edge_flip</code></td><td>Edge Flip Similarity</td><td>VII. Trajectory</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Normalized graph edit similarity between reference and simulated trajectory topologies.</td></tr>
-<tr class="even"><td style="text-align: center;">52</td><td><code>geodesic_correlation</code></td><td>Geodesic Distance Corr.</td><td>VII. Trajectory</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Correlation between reference and simulated pairwise cell geodesic pseudotime distances.</td></tr>
-<tr class="odd"><td style="text-align: center;">53</td><td><code>F1_branches</code></td><td>Branch Assignment F1</td><td>VII. Trajectory</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Macro-F1 recovery of cellular developmental branch memberships.</td></tr>
-<tr class="even"><td style="text-align: center;">54</td><td><code>wcor_features</code></td><td>Driver Gene Importance Corr.</td><td>VII. Trajectory</td><td style="text-align: center;">RNA, Multi</td><td style="text-align: center;">Higher is better</td><td>Weighted correlation of Ranger Random Forest trajectory feature importance profiles.</td></tr>
-<tr class="odd"><td style="text-align: center;">55</td><td><code>core_seconds</code></td><td>Cumulative Core-Seconds</td><td>VIII. Scalability</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Hardware-normalized total CPU execution work: T_elapsed × N_cores.</td></tr>
-<tr class="even"><td style="text-align: center;">56</td><td><code>memory_per_core_mib</code></td><td>Peak RAM per Core (MiB)</td><td>VIII. Scalability</td><td style="text-align: center;">All</td><td style="text-align: center;">Lower is better</td><td>Hardware-normalized resident memory footprint: M_peak,MiB / N_cores.</td></tr>
-</tbody>
-</table>
-</div>
+<hr>
 </div>
 
 <div class="section level2">
-<h2 id="direction-aware-score-normalization-hierarchical-aggregation">3. Direction-Aware Score Normalization &amp; Hierarchical Aggregation<a class="anchor" aria-label="anchor" href="#direction-aware-score-normalization-hierarchical-aggregation"></a>
-</h2>
-<p>To compare simulators fairly across all 56 heterogeneous measures, <code>scSimEvalStudio</code> delegates score standardization to <code><a href="https://kabilanbio.github.io/scSimEval/reference/normalize_bubble_scores.html" class="external-link">scSimEval::normalize_bubble_scores()</a></code>, implementing a two-stage direction-aware transformation:</p>
-
-<div class="figure">
-<img src="../score_normalization_workflow.png" alt="Two-Stage Direction-Aware Score Normalization and Hierarchical Aggregation Pipeline" width="100%">
-<p class="caption"><strong>Figure 2 | Two-Stage Direction-Aware Mathematical Normalization &amp; Hierarchical Aggregation Pipeline.</strong> Raw measurements (<code>Score_Raw</code>) are direction-aligned, mapped onto a unified [0.00, 1.00] fidelity scale, averaged within each canonical category, and aggregated into the composite Overall Score.</p>
-</div>
-
-<div class="section level3">
-<h3 id="stage-1-direction-alignment-0-1-fidelity-transformation">Stage 1: Direction Alignment &amp; [0, 1] Fidelity Transformation<a class="anchor" aria-label="anchor" href="#stage-1-direction-alignment-0-1-fidelity-transformation"></a>
-</h3>
-<p>Let <math display="inline"><mrow><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math> denote the raw value (<code>Score_Raw</code>) of simulator <math display="inline"><mrow><mi>m</mi><mo>∈</mo><mo stretchy="false">{</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>M</mi><mo stretchy="false">}</mo></mrow></math> on metric <math display="inline"><mrow><mi>j</mi></mrow></math>:</p>
-<ol>
-<li>
-<strong>Zero-Targeted Statistics</strong> (<math display="inline"><mrow><msub><mi>𝒥</mi><mtext>zero</mtext></msub><mo>=</mo><mo stretchy="false">{</mo><mtext>Runs_Statistic</mtext><mo>,</mo><mtext>Between_Dataset_Silh_Global</mtext><mo>,</mo><mtext>Between_Dataset_Silh_2D_Global</mtext><mo>,</mo><mtext>batch_silhouette</mtext><mo stretchy="false">}</mo></mrow></math>):
-Because <math display="inline"><mrow><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mn>0</mn></mrow></math> corresponds to indistinguishable reference/simulated distributions or ideal batch mixing, raw values are first mapped to non-negative divergence magnitudes <math display="inline"><mrow><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mo stretchy="false">|</mo><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false">|</mo></mrow></math>.</li>
-<li>
-<strong>Lower-is-Better Error, Divergence, and Cost Metrics</strong> (<math display="inline"><mrow><msub><mi>𝒥</mi><mtext>low</mtext></msub></mrow></math>, including <math display="inline"><mrow><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math> from <math display="inline"><mrow><msub><mi>𝒥</mi><mtext>zero</mtext></msub></mrow></math>, distributional distances, sparsity errors, <code>MMD</code>, <code>cdi</code>, <code>pcr_r2</code>, <code>core_seconds</code>, and <code>memory_per_core_mib</code>):
-Values are inverted so that smaller errors or resource costs yield higher fidelity scores in <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math>:
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>+</mo><mi>ε</mi></mrow></mfrac><mo>∈</mo><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></p>
-When only a single simulator (<math display="inline"><mrow><mi>M</mi><mo>=</mo><mn>1</mn></mrow></math>) is evaluated or all methods tie, bounded monotonic reference transforms (<math display="inline"><mrow><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></mfrac></mrow></math>) ensure well-defined scores in <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math>.</li>
-<li>
-<strong>Higher-is-Better Concordance &amp; Classification Metrics</strong> (<math display="inline"><mrow><msub><mi>𝒥</mi><mtext>high</mtext></msub></mrow></math>, including <code>Generative_Precision</code>, <code>Generative_Recall</code>, <code>silhouette_sim</code>, <code>neighborhood_purity</code>, <code>ari</code>, <code>nmi</code>, <code>cms</code>, <code>isi</code>, <code>cross_batch_F1</code>, Category V DE/DA scores, Category VI integration scores, and Category VII trajectory scores):
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub></mrow><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>+</mo><mi>ε</mi></mrow></mfrac><mo>∈</mo><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></p>
-</li>
-</ol>
-</div>
-
-<div class="section level3">
-<h3 id="stage-2-hierarchical-category-overall-composite-aggregation">Stage 2: Hierarchical Category &amp; Overall Composite Aggregation<a class="anchor" aria-label="anchor" href="#stage-2-hierarchical-category-overall-composite-aggregation"></a>
-</h3>
-<ol>
-<li>
-<strong>Category I Property Consolidation</strong>: For each of the 14 distributional measures in Category I, normalized scores are averaged across its constituent empirical properties (14 univariate properties for 1D metrics; 4 bivariate pairs for 2D metrics) so that each distributional test contributes a single consolidated metric column.</li>
-<li>
-<strong>Category Fidelity Means (<math display="inline"><mrow><msub><mi>S</mi><mrow><mtext>cat</mtext><mo>,</mo><mi>m</mi><mo>,</mo><mi>k</mi></mrow></msub></mrow></math>)</strong>: For each active category <math display="inline"><mrow><mi>k</mi><mo>∈</mo><mo stretchy="false">{</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>K</mi><mo stretchy="false">}</mo></mrow></math> with evaluated metric set <math display="inline"><mrow><msub><mi>ℳ</mi><mi>k</mi></msub></mrow></math>:
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>S</mi><mrow><mtext>cat</mtext><mo>,</mo><mi>m</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false">|</mo><msub><mi>ℳ</mi><mi>k</mi></msub><mo stretchy="false">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><msub><mi>ℳ</mi><mi>k</mi></msub></mrow></munder><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math></p>
-</li>
-<li>
-<strong>Unweighted Overall Composite Score (<math display="inline"><mrow><msub><mi>S</mi><mrow><mtext>overall</mtext><mo>,</mo><mi>m</mi></mrow></msub></mrow></math>)</strong>: By default, <code>scSimEvalStudio</code> computes an unweighted arithmetic mean across all <math display="inline"><mrow><mi>K</mi></mrow></math> active categories so that categories with more constituent measures (e.g., Category I with 14 measures or Category V with 12 measures) do not dominate categories with fewer measures (e.g., Category VIII with 2 measures):
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>S</mi><mrow><mtext>overall</mtext><mo>,</mo><mi>m</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mi>K</mi></mfrac><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><msub><mi>S</mi><mrow><mtext>cat</mtext><mo>,</mo><mi>m</mi><mo>,</mo><mi>k</mi></mrow></msub></mrow></math></p>
-</li>
-</ol>
-</div>
-</div>
-
-<div class="section level2">
-<h2 id="detailed-guide-to-all-8-interactive-modules-in-scsimevalstudio">4. Detailed Guide to All 8 Interactive Modules in <code>scSimEvalStudio</code><a class="anchor" aria-label="anchor" href="#detailed-guide-to-all-8-interactive-modules-in-scsimevalstudio"></a>
+<h2 id="step-1-install-and-open-the-app">2. Step 1 — Install and Open the App<a class="anchor" aria-label="anchor" href="#step-1-install-and-open-the-app"></a>
 </h2>
 
 <div class="section level3">
-<h3 id="module-1-home-executive-overview-taxonomy-dashboard">Module 1: <code>Home</code> — Executive Overview &amp; Taxonomy Dashboard<a class="anchor" aria-label="anchor" href="#module-1-home-executive-overview-taxonomy-dashboard"></a>
+<h3 id="install-from-bioconductor">Install from Bioconductor<a class="anchor" aria-label="anchor" href="#install-from-bioconductor"></a>
 </h3>
-<p>The <strong><code>Home</code></strong> tab presents an executive overview of the evaluation studio:</p>
-<ul>
-<li>
-<strong>KPI Metrics Ribbon</strong>: Displays the 4 core pillars of the framework (<code>56 Evaluation Measures</code>, <code>8 Biological Dimensions</code>, <code>3 Modality Classes [RNA / ATAC / Co-Assay]</code>, and <code>0.0 – 1.0 Normalized Fidelity Scale</code>).</li>
-<li>
-<strong>8-Category Evaluation Grid</strong>: Summarizes the constituent tests and measure counts for Categories I–VIII.</li>
-<li>
-<strong>3-Stage Interactive Pipeline Card</strong>: Guides users through (1) Data Ingestion, (2) Evaluation &amp; Ranking, and (3) Visual Analytics &amp; Export, with a direct <code>Go to Data Hub →</code> action trigger.</li>
-</ul>
-</div>
-
-<div class="section level3">
-<h3 id="module-2-data-hub-multi-modal-ingestion-custom-evaluation-standalone-hpc-script-generator">Module 2: <code>Data Hub</code> — Multi-Modal Ingestion, Custom Evaluation &amp; Standalone HPC Script Generator<a class="anchor" aria-label="anchor" href="#module-2-data-hub-multi-modal-ingestion-custom-evaluation-standalone-hpc-script-generator"></a>
-</h3>
-<p>The <strong><code>Data Hub</code></strong> tab manages dataset loading, metadata validation, multi-core benchmark execution, and offline script generation across <strong>4 dedicated ingestion modes</strong> (each maintaining an isolated reactive data cache so switching modes never overwrites active results):</p>
-<ol>
-<li>
-<strong>Mode 1 (<code>1. scRNA-seq datasets</code>)</strong>:
-<ul>
-<li><em>1-Click Empirical Benchmark</em>: Loads the <strong>Rice Bud (<em>Oryza sativa</em>)</strong> <code>SingleCellExperiment</code> scRNA-seq dataset (<code>100</code> balanced cells across <code>8</code> cell types, top <code>100</code> HVGs, <code>2</code> biological batches: <code>Bud_21</code> and <code>Bud_45</code>) evaluated across <strong>6 simulators</strong> (<code>scMultiSim</code>, <code>scDesign3</code>, <code>MOSim</code>, <code>scCross</code>, <code>scMoMtF</code>, <code>Matilda</code>).</li>
-<li><em>Custom Evaluation</em>: Upload 1 reference <code>SingleCellExperiment</code> <code>.rds</code> (or <code>Seurat</code> <code>.rds</code>) and 1–10 simulated <code>.rds</code> files across up to 50 datasets, specify per-simulator elapsed runtime (<code>seconds</code> or <code>minutes</code>), peak RAM (<code>MiB</code> or <code>MB</code>), and allocated simulation CPU cores (<code>sim_cores</code>), and click <strong>Calculate scRNA-seq Metrics</strong>.</li>
-</ul>
-</li>
-<li>
-<strong>Mode 2 (<code>2. scATAC-seq datasets</code>)</strong>:
-<ul>
-<li><em>1-Click Empirical Benchmark</em>: Loads the <strong>Rice Bud (<em>Oryza sativa</em>)</strong> <code>SingleCellExperiment</code> scATAC-seq chromatin accessibility dataset (<code>100</code> balanced cells across <code>8</code> cell types, top <code>100</code> highly variable peaks [HVPs], <code>2</code> batches) evaluated across the same 6 simulators.</li>
-<li><em>Custom Evaluation</em>: Upload reference and simulated peak-by-cell <code>SingleCellExperiment</code> <code>.rds</code> files and execute the 38-measure scATAC-seq pipeline.</li>
-</ul>
-</li>
-<li>
-<strong>Mode 3 (<code>3. Single-Cell Multiomics datasets</code>)</strong>:
-<ul>
-<li>Supports toggling between <strong>Paired (Same Cells, 10x / SHARE-seq)</strong> and <strong>Unpaired (Independent Cells)</strong> co-assay designs:
-<ul>
-<li><em>Paired Example</em>: Loads the <strong>Rice Bud (<em>Oryza sativa</em>)</strong> paired <code>SingleCellExperiment</code> dataset (<code>100</code> cells × <code>100</code> HVGs + <code>100</code> HVPs in <code>altExp(sce, "ATAC")</code>, <code>8</code> cell types, <code>2</code> batches) across <strong>6 simulators</strong> (<code>scMultiSim</code>, <code>scDesign3</code>, <code>MOSim</code>, <code>scCross</code>, <code>scMoMtF</code>, <code>Matilda</code>).</li>
-<li><em>Unpaired Example</em>: Loads the <strong>Soybean Root (<em>Glycine max</em>)</strong> unpaired <code>SingleCellExperiment</code> dataset (<code>100</code> balanced RNA cells × <code>100</code> HVGs + <code>100</code> balanced ATAC cells × <code>100</code> HVPs across <code>8</code> cell types) evaluated across <strong>3 simulators</strong> (<code>scMultiSim</code>, <code>scDesign3</code>, <code>scCross</code>).</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<strong>Mode 4 (<code>4. Upload Saved Results (.rds / .csv)</code>)</strong>:
-<ul>
-<li>Restores any previously exported <code>scSimEval</code> or <code>scSimEvalStudio</code> session (<code>.rds</code> or <code>.csv</code>)—or loads the pre-computed Rice Bud Paired Multiomics <code>.rds</code> archive—for instant visualization without recalculating metrics.</li>
-<li><strong>Incremental Benchmark Appending</strong>: Checking <code>Add to current benchmark results</code> merges newly evaluated or uploaded simulators/datasets into the active session via <code><a href="https://kabilanbio.github.io/scSimEval/reference/combine_benchmark_results.html" class="external-link">combine_benchmark_results()</a></code>.</li>
-</ul>
-</li>
-<li>
-<strong>1-Click Standalone HPC / Workstation R Script Generator</strong>:
-<ul>
-<li>For large-scale single-cell datasets (&gt;10,000 cells) best executed on high-memory compute clusters, <code>Data Hub</code> dynamically generates a self-contained, commented R script pre-populated with the user's exact dataset paths, simulator names, modality settings, runtime/RAM parameters, and <code>BiocParallel</code> thread counts.</li>
-</ul>
-</li>
-</ol>
-</div>
-
-<div class="section level3">
-<h3 id="module-3-comparative-bubble-matrix-flagship-visual-ranking-fidelity-leaderboard">Module 3: <code>Comparative Bubble Matrix</code> — Flagship Visual Ranking &amp; Fidelity Leaderboard<a class="anchor" aria-label="anchor" href="#module-3-comparative-bubble-matrix-flagship-visual-ranking-fidelity-leaderboard"></a>
-</h3>
-<p>Organized into two sub-tabs:</p>
-<ul>
-<li>
-<strong>Sub-Tab 1 (<code>Comparative Bubble Matrix Figure</code>)</strong>: Renders <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_benchmark_bubble_matrix.html" class="external-link">scSimEval::plot_benchmark_bubble_matrix()</a></code>, a publication-grade composite visualization inspired by <code>scib</code> and <code>dynverse</code> benchmarks:
-<ul>
-<li><em>Left Panel (Summary Horizontal Bars)</em>: Displays the ranked <strong>Overall Score</strong> alongside the category mean bars for Categories I–VIII.</li>
-<li><em>Right Panel (Metric Bubble Grid)</em>: Displays individual evaluation metrics grouped and color-coded by canonical category, where bubble area scales proportionally with normalized fidelity score (<math display="inline"><mrow><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>∈</mo><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math>) and a bold black border highlights the top-scoring simulator for each metric.</li>
-<li><em>Interactive Controls</em>: Supports multi-dataset averaging vs. single-dataset pill navigation, modality filtering (<code>Combined Multiomics</code>, <code>scRNA-seq Layer</code>, <code>scATAC-seq Layer</code>), custom category/metric checklists, simulator subsetting, dynamic width/height sliders (<code>800–3200 px</code>), <strong>600 DPI JPEG</strong>, <strong>Vector PDF</strong>, and <strong>Standalone R Script</strong> downloads.</li>
-</ul>
-</li>
-<li>
-<strong>Sub-Tab 2 (<code>Fidelity Leaderboard</code>)</strong>: Renders an interactive <code>DT</code> ranking table (<code><a href="https://kabilanbio.github.io/scSimEval/reference/compute_method_leaderboard.html" class="external-link">compute_method_leaderboard()</a></code>) reporting each simulator's Overall Score and category-by-category scores in <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0.00</mn><mo>,</mo><mn>1.00</mn><mo stretchy="false">]</mo></mrow></math>, with 1-click CSV export.</li>
-</ul>
-</div>
-
-<div class="section level3">
-<h3 id="module-4-visualizations-the-8-diagnostic-sub-panels-interactive-zoomlightbox-engine">Module 4: <code>Visualizations</code> — The 8 Diagnostic Sub-Panels &amp; Interactive Zoom/Lightbox Engine<a class="anchor" aria-label="anchor" href="#module-4-visualizations-the-8-diagnostic-sub-panels-interactive-zoomlightbox-engine"></a>
-</h3>
-<p>All 8 diagnostic visualization panels render at <strong>2x Retina pixel density</strong> (144 DPI on-screen canvas) and are wrapped in <code>scSimEvalStudio</code>'s <strong>Interactive Step-Zoom, Drag-to-Pan &amp; Fullscreen Lightbox Component</strong> (25%–400% inline slider and <code>Ctrl+Wheel</code> zoom, click-and-drag panning, double-click 200% toggle, and a 10%–600% fullscreen lightbox modal). Every panel provides dedicated <strong>600 DPI JPEG</strong>, <strong>Vector PDF</strong>, and <strong>Reproducible R Script</strong> download buttons:</p>
-<ol>
-<li>
-<strong>Sub-Panel 1 (<code>1. Evaluation Summary</code> — <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_evaluation_summary.html" class="external-link">plot_evaluation_summary()</a></code>)</strong>:
-Horizontal grouped bar charts and multi-axis radar/spider profiles comparing simulators across Overall Score and all active evaluation categories, with optional score value labels and raw vs. normalized <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math> toggle.</li>
-<li>
-<strong>Sub-Panel 2 (<code>2. Distribution QC</code> — <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_distribution_qc.html" class="external-link">plot_distribution_qc()</a></code>)</strong>:
-Compares empirical reference versus simulated distributions across all <strong>18 Category I properties</strong> (7 cell-level, 7 feature-level, and 4 bivariate property pairs). Users can switch between <strong>Quantile–Quantile (Q-Q) Plots</strong> and <strong>1D/2D Kernel Density Overlays</strong>, and inspect either full property groups or individual properties.</li>
-<li>
-<strong>Sub-Panel 3 (<code>3. Metric Heatmap</code> — <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_metric_heatmap.html" class="external-link">plot_metric_heatmap()</a></code>)</strong>:
-High-contrast thermal matrix of Simulators × Metrics with cell value annotations, category facet headers, adjustable pixel dimensions, and a toggle between <strong>Normalized Fidelity <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></strong> and <strong>Raw Metric Values (<code>Score_Raw</code>)</strong>.</li>
-<li>
-<strong>Sub-Panel 4 (<code>4. Metric Plots</code> — <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_individual_metric_bar.html" class="external-link">plot_individual_metric_bar()</a></code> &amp; <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_metric_boxplots.html" class="external-link">plot_metric_boxplots()</a></code>)</strong>:
-<ul>
-<li><em>View Individual Metric</em>: Ranked bar charts comparing simulators on any single metric (either normalized <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math> or raw physical units).</li>
-<li><em>View by Category Group</em>: Multi-metric boxplot and jittered point distributions summarizing simulator spread across each canonical category.</li>
-</ul>
-</li>
-<li>
-<strong>Sub-Panel 5 (<code>5. PCA Ordination</code> — <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_metric_pca.html" class="external-link">plot_metric_pca()</a></code>)</strong>:
-Performs Principal Component Analysis on the normalized simulator × metric score matrix anchored against the theoretical <strong>Ideal Reference Anchor</strong> <math display="inline"><mrow><mn mathvariant="bold">1</mn><mo>=</mo><msup><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>,</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><mo>⊤</mo></msup></mrow></math> (a synthetic reference point achieving <math display="inline"><mrow><mn>1.00</mn></mrow></math> across all metrics). Supports 3 panel modes: <em>Both (Simulators &amp; Metric Loadings)</em>, <em>Simulator Ordination Only</em>, and <em>Metric Loadings Only</em> (with configurable top <em>k</em> loading arrows).</li>
-<li>
-<strong>Sub-Panel 6 (<code>6. MDS Metric Space</code> — <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_metric_mds.html" class="external-link">plot_metric_mds()</a></code>)</strong>:
-Computes classical Euclidean Multidimensional Scaling (<code>cmdscale</code>) on the normalized benchmark matrix to map pairwise similarity distances either <strong>By Simulators</strong> (relative to the Ideal Reference Anchor <math display="inline"><mrow><mn mathvariant="bold">1</mn></mrow></math>) or <strong>By Metric Summaries</strong>.</li>
-<li>
-<strong>Sub-Panel 7 (<code>7. Cell Embeddings</code> — <code><a href="https://kabilanbio.github.io/scSimEval/reference/compute_dataset_embeddings.html" class="external-link">compute_dataset_embeddings()</a></code> &amp; <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_dataset_embeddings.html" class="external-link">plot_dataset_embeddings()</a></code>)</strong>:
-Computes joint 2D cellular embeddings (<strong>UMAP</strong>, <strong>t-SNE</strong>, or <strong>PCA</strong>) across the reference dataset and selected simulators (<code>Faceted Grid</code> or <code>Overlaid Reference vs. Simulator</code> layout), colored by <strong>Cell Type (<code>cell_type</code>)</strong>, <strong>Technical Batch (<code>batch</code>)</strong>, <strong>Dataset Source</strong>, or <strong>Log10 Library Size</strong>. Below the figure, an automated <strong>Cluster Separation and Quality Metrics Table</strong> (<code><a href="https://kabilanbio.github.io/scSimEval/reference/compute_embedding_quality_metrics.html" class="external-link">compute_embedding_quality_metrics()</a></code>) reports each dataset's empirical cell count, feature count, mean library size, <strong>Cluster Silhouette (ASW)</strong>, and <strong>Adjusted Rand Index (ARI)</strong>.</li>
-<li>
-<strong>Sub-Panel 8 (<code>8. Scalability Benchmark</code> — <code><a href="https://kabilanbio.github.io/scSimEval/reference/plot_scalability_benchmark.html" class="external-link">plot_scalability_benchmark()</a></code>)</strong>:
-Visualizes Category VIII computational cost across 5 selectable views (<em>All 4 Panels Combined</em>, <em>Runtime</em>, <em>Peak RAM Memory</em>, <em>Runtime vs. Memory Trade-Off</em>, and <em>Overall Resource Cost</em>), with on-the-fly unit conversion across runtime units (<code>Core-Seconds [core·s]</code>, <code>Seconds [s]</code>, <code>Minutes [min]</code>, <code>Hours [h]</code>) and memory units (<code>MiB/core</code>, <code>GiB/core</code>, <code>MiB</code>, <code>GiB</code>, <code>MB</code>, <code>GB</code>).</li>
-</ol>
-</div>
-
-<div class="section level3">
-<h3 id="module-5-benchmark-results-export-reproducible-session-archives-multi-sheet-workbooks">Module 5: <code>Benchmark Results &amp; Export</code> — Reproducible Session Archives &amp; Multi-Sheet Workbooks<a class="anchor" aria-label="anchor" href="#module-5-benchmark-results-export-reproducible-session-archives-multi-sheet-workbooks"></a>
-</h3>
-<ul>
-<li>
-<strong>Benchmark Session Archive (<code>.rds</code>)</strong>: Exports the complete reactive session state (<code>benchmark_df</code>, <code>benchmark_summary_table</code>, <code>dataset_summary_df</code>, <code>methods</code>) as a single <code>.rds</code> file that can be reloaded in Mode 4 of <code>Data Hub</code> or analyzed programmatically in R.</li>
-<li>
-<strong>Master Benchmark Scores Table (<code>DT</code>)</strong>: Interactive table with per-column dropdown filters, global search, and sorting, displaying both raw statistical/computational measurements (<code>Score_Raw</code>) and normalized <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math> fidelity scores (<code>Score</code>).</li>
-<li>
-<strong>Multi-Sheet Excel (<code>.xlsx</code>) &amp; CSV Exports</strong>: Exports a formatted multi-sheet Excel workbook containing up to 4 worksheets: <code>All_Benchmark_Metrics</code>, <code>Dataset_Properties</code>, <code>Method_Rankings</code>, and <code>Scalability_Metrics</code>, alongside a flat <code>.csv</code> export.</li>
-</ul>
-</div>
-
-<div class="section level3">
-<h3 id="module-6-help-getting-started-interactive-workflow-diagrams-dynamic-multi-core-scheduling">Module 6: <code>Help &amp; Getting Started</code> — Interactive Workflow Diagrams &amp; Dynamic Multi-Core Scheduling<a class="anchor" aria-label="anchor" href="#module-6-help-getting-started-interactive-workflow-diagrams-dynamic-multi-core-scheduling"></a>
-</h3>
-<p>Provides a self-contained tutorial inside the Shiny studio, complete with interactive zoomable diagrams (Figures 1 &amp; 2), copy-paste <code>SingleCellExperiment</code> preparation snippets, and the <strong>Intelligent Dynamic Multi-Core Scheduling Table</strong> describing how <code>scSimEval</code> allocates <math display="inline"><mrow><mi>N</mi></mrow></math> user-selected CPU cores across mathematical tasks via <code>BiocParallel</code>:</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Pipeline Step / Evaluation Category</th>
-<th style="text-align: center;">Allocated Cores</th>
-<th style="text-align: left;">Computational &amp; Mathematical Rationale</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong>Property Extraction</strong> (<code>extract_*_properties()</code>)</td>
-<td style="text-align: center;"><math display="inline"><mrow><mi>min</mi><mo stretchy="false">(</mo><mi>N</mi><mo>,</mo><mn>4</mn><mo stretchy="false">)</mo></mrow></math></td>
-<td style="text-align: left;">Parallelizes across the 4 summary property matrices (Reference/Simulated Cells &amp; Features).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>(I) Distributional Properties</strong></td>
-<td style="text-align: center;"><strong>All <math display="inline"><mrow><mi>N</mi></mrow></math> Cores</strong></td>
-<td style="text-align: left;">Distributes 140+ univariate and bivariate property–metric combinations evenly across all <math display="inline"><mrow><mi>N</mi></mrow></math> workers.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>(II &amp; III) Sparsity &amp; Cellular Manifold</strong></td>
-<td style="text-align: center;"><math display="inline"><mrow><mi>min</mi><mo stretchy="false">(</mo><mi>N</mi><mo>,</mo><mn>5</mn><mo stretchy="false">)</mo></mrow></math></td>
-<td style="text-align: left;">Executes 5 independent parametric dropout, RBF-MMD, and clustering models concurrently.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>(IV) Technical Batch Mixing Dynamics</strong></td>
-<td style="text-align: center;"><math display="inline"><mrow><mi>B</mi><mo stretchy="false">(</mo><mi>B</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></math> Cores</td>
-<td style="text-align: left;">Cross-batch cell-type transfer classification scales with the number of batch pairs <math display="inline"><mrow><mi>B</mi><mo stretchy="false">(</mo><mi>B</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></math>.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>(V) Biological Signal (<code>edgeR-QLF</code> DE &amp; DA)</strong></td>
-<td style="text-align: center;"><strong>All <math display="inline"><mrow><mi>N</mi></mrow></math> Cores</strong></td>
-<td style="text-align: left;">Parallelizes pseudobulk negative binomial quasi-likelihood fitting and null permutations across all <math display="inline"><mrow><mi>N</mi></mrow></math> cores.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>(VI) Multiomics Integration &amp; Alignment</strong></td>
-<td style="text-align: center;"><strong>Up to <math display="inline"><mrow><mi>N</mi></mrow></math> Cores</strong></td>
-<td style="text-align: left;">Joint SVD/LSI projection, parallel silhouette evaluation across <math display="inline"><mrow><mi>N</mi></mrow></math> cores, and C++ <code>RANN</code> <em>k</em>-NN search.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>(VII) Trajectory &amp; Lineage Topology</strong></td>
-<td style="text-align: center;"><strong>All <math display="inline"><mrow><mi>N</mi></mrow></math> Cores</strong></td>
-<td style="text-align: left;">Multi-threaded <code>ranger</code> Random Forest importance and pairwise geodesic distance matrices scale across all <math display="inline"><mrow><mi>N</mi></mrow></math> cores.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>(VIII) Computational Scalability Benchmark</strong></td>
-<td style="text-align: center;"><strong>1 Core</strong></td>
-<td style="text-align: left;">Computes deterministic hardware-normalized <code>core_seconds</code> and <code>memory_per_core_mib</code>.</td>
-</tr>
-</tbody>
-</table>
-</div>
-
-<div class="section level3">
-<h3 id="module-7-logs-real-time-reactive-diagnostic-console">Module 7: <code>Logs</code> — Real-Time Reactive Diagnostic Console<a class="anchor" aria-label="anchor" href="#module-7-logs-real-time-reactive-diagnostic-console"></a>
-</h3>
-<p>The <strong><code>Logs</code></strong> tab embeds a live WebSocket terminal (<code>sc_live_log</code>) that intercepts all R <code>message()</code> and <code>warning()</code> streams via <code>withCallingHandlers()</code> during long-running evaluations:</p>
-<ul>
-<li>
-<strong>5 Semantic Severity Levels</strong>: <code>INFO</code> (user actions, pipeline stage transitions), <code>NOTE</code> (sparse <code>dgCMatrix</code> conversions, metadata unlock events), <code>WARNING</code> (missing optional metadata, boundary fallbacks), <code>ERROR</code> (dimension mismatches, execution interrupts), and <code>SUCCESS</code> (completed evaluations).</li>
-<li>
-<strong>Interactive Console Controls</strong>: Real-time KPI event counters, severity level radio filters, live substring search box, auto-scroll lock, 1-click clipboard copy, log clear, and timestamped <code>.txt</code> diagnostic log download.</li>
-</ul>
-</div>
-
-<div class="section level3">
-<h3 id="module-8-contact-institutional-profile-research-team-directory">Module 8: <code>Contact</code> — Institutional Profile &amp; Research Team Directory<a class="anchor" aria-label="anchor" href="#module-8-contact-institutional-profile-research-team-directory"></a>
-</h3>
-<p>Displays institutional attribution for the <strong>Division of Agricultural Bioinformatics, ICAR-Indian Agricultural Statistics Research Institute (ICAR-IASRI), New Delhi, India</strong>, author profiles and contact emails for all 10 package contributors, and direct links to the <code>scSimEval</code> and <code>scSimEvalStudio</code> GitHub repositories.</p>
-</div>
-</div>
-
-<div class="section level2">
-<h2 id="installation-launching-programmatic-verification">5. Installation, Launching &amp; Programmatic Verification<a class="anchor" aria-label="anchor" href="#installation-launching-programmatic-verification"></a>
-</h2>
-<div class="section level3">
-<h3 id="installing-scsimeval-and-scsimevalstudio">Installing <code>scSimEval</code> and <code>scSimEvalStudio</code><a class="anchor" aria-label="anchor" href="#installing-scsimeval-and-scsimevalstudio"></a>
-</h3>
-<p>Install from Bioconductor:</p>
-<div class="sourceCode" id="cb0"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -635,20 +116,134 @@ Visualizes Category VIII computational cost across 5 selectable views (<em>All 4
 </div>
 
 <div class="section level3">
-<h3 id="launching-the-interactive-studio">Launching the Interactive Studio<a class="anchor" aria-label="anchor" href="#launching-the-interactive-studio"></a>
+<h3 id="or-install-from-github">Or Install from GitHub<a class="anchor" aria-label="anchor" href="#or-install-from-github"></a>
 </h3>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kabilanbio/scSimEval"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kabilanbio/scSimEvalStudio"</span><span class="op">)</span></span></code></pre></div>
+</div>
+
+<div class="section level3">
+<h3 id="launch-the-shiny-studio">Launch the Shiny Studio<a class="anchor" aria-label="anchor" href="#launch-the-shiny-studio"></a>
+</h3>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kabilanbio.github.io/scSimEvalStudio/">scSimEvalStudio</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Configures shiny.maxRequestSize = 10 GiB by default for large multiomics .rds archives</span></span>
 <span><span class="fu"><a href="../reference/launch_scSimEval_app.html">launch_scSimEval_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Your default web browser will open automatically. By default, the app allows uploads up to <strong>10 GiB</strong> so large single-cell <code>.rds</code> files can be loaded locally without errors.</p>
+<hr>
+</div>
 </div>
 
+<div class="section level2">
+<h2 id="step-2-load-data-in-the-data-hub-tab">3. Step 2 — Load Data in the Data Hub Tab<a class="anchor" aria-label="anchor" href="#step-2-load-data-in-the-data-hub-tab"></a>
+</h2>
+<p>When the app opens, click <strong>Data Hub</strong> in the top bar. You have <strong>4 easy options</strong>:</p>
+<ol>
+<li><strong>Try a 1-Click Example Dataset (Recommended for Beginners):</strong> Choose an included empirical benchmark—such as <strong>Rice Bud</strong> (6 simulators) or <strong>Soybean Root</strong> (3 simulators)—to populate every chart and table in seconds.</li>
+<li><strong>Upload Your Own Single-Cell Data (<code>scRNA-seq</code> or <code>scATAC-seq</code>):</strong> Upload your real reference <code>.rds</code> file along with one or more simulated <code>.rds</code> files. Both <code>SingleCellExperiment</code> and <code>Seurat</code> <code>.rds</code> files are accepted (<code>Seurat</code> objects are converted automatically). If your files contain <code>cell_type</code> and <code>batch</code> columns, extra clustering, batch, and biological signal checks unlock automatically.</li>
+<li><strong>Upload Multiomics Data (RNA + ATAC):</strong> Choose <strong>Paired</strong> (RNA and ATAC measured in the same cells) or <strong>Unpaired</strong> (measured in separate cells from the same tissue), upload your <code>.rds</code> files, and click <strong>Run</strong>.</li>
+<li><strong>Reload Previously Saved Results (<code>.rds</code> or <code>.csv</code>):</strong> Already ran a benchmark earlier? Upload your saved <code>.rds</code> archive or <code>.csv</code> table to view and customize plots instantly without waiting for calculations to run again.</li>
+</ol>
+<blockquote>
+<p><strong>Tip for Very Large Datasets:</strong> After configuring your files in <strong>Data Hub</strong>, click <strong>Download R Script</strong> to save a ready-to-run script that you can execute on a lab workstation or HPC server, then upload the saved <code>.rds</code> output back into <strong>Data Hub</strong> to explore the plots.</p>
+</blockquote>
+<hr>
+</div>
+
+<div class="section level2">
+<h2 id="step-3-compare-simulators-at-a-glance">4. Step 3 — Compare Simulators at a Glance<a class="anchor" aria-label="anchor" href="#step-3-compare-simulators-at-a-glance"></a>
+</h2>
+<p>Open the <strong>Comparative Bubble Matrix</strong> tab to see how your simulators rank:</p>
+<ul>
+<li><strong>How to Read the Scores:</strong> Every metric is shown on a simple <strong>0.0 to 1.0 scale</strong>, where <strong>closer to 1.0 means a closer match</strong> to your real biological dataset.</li>
+<li><strong>Comparative Bubble Matrix Figure:</strong> The left bars show overall and category averages; the right grid shows individual metrics as circles. <strong>Bigger circles = better scores</strong>, and a <strong>bold black outline</strong> highlights the top-performing simulator for each metric.</li>
+<li><strong>Fidelity Leaderboard:</strong> Switch to the second sub-tab for a clean, sortable ranking table that you can download as a <code>.csv</code> file.</li>
+<li><strong>Easy Filtering:</strong> Use the sidebar controls to filter by dataset, modality (<code>scRNA-seq</code>, <code>scATAC-seq</code>, or <code>Combined</code>), specific simulators, or specific categories, and adjust figure width and height before downloading.</li>
+</ul>
+<hr>
+</div>
+
+<div class="section level2">
+<h2 id="step-4-explore-interactive-charts-visualizations-tab">5. Step 4 — Explore Interactive Charts (Visualizations Tab)<a class="anchor" aria-label="anchor" href="#step-4-explore-interactive-charts-visualizations-tab"></a>
+</h2>
+<p>The <strong>Visualizations</strong> tab provides <strong>8 focused chart views</strong> so you can inspect your results from every angle:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Sub-Tab</th>
+<th style="text-align: left;">What It Helps You See</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>1. Evaluation Summary</strong></td>
+<td style="text-align: left;">Overall and category-level bar charts and radar profiles comparing all simulators side by side.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>2. Distribution QC</strong></td>
+<td style="text-align: left;">Visual checks showing whether simulated library sizes, gene/peak averages, and zero counts match your real data.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>3. Metric Heatmap</strong></td>
+<td style="text-align: left;">Color-coded matrix displaying all simulator scores together in one view (switch between 0–1 scores and raw values).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>4. Metric Plots</strong></td>
+<td style="text-align: left;">Zoom in on any single metric bar chart or compare simulator spread across a category using boxplots.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>5. PCA Ordination</strong></td>
+<td style="text-align: left;">Simple 2D map showing which simulators sit closest to the <strong>Ideal Reference</strong> target.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>6. MDS Metric Space</strong></td>
+<td style="text-align: left;">Visual map grouping simulators that behave similarly across evaluation metrics.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>7. Cell Embeddings (UMAP, t-SNE &amp; PCA)</strong></td>
+<td style="text-align: left;">Side-by-side or overlaid 2D cell plots colored by cell type, batch, or library size, plus a clean cluster quality summary table.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>8. Scalability Benchmark</strong></td>
+<td style="text-align: left;">Compare simulator speed (runtime) and memory usage (RAM) with selectable units (seconds, minutes, MB, GB, or per-core).</td>
+</tr>
+</tbody>
+</table>
+
 <div class="section level3">
-<h3 id="verifying-application-initialization-bundled-benchmark-database">Verifying Application Initialization &amp; Bundled Benchmark Database<a class="anchor" aria-label="anchor" href="#verifying-application-initialization-bundled-benchmark-database"></a>
+<h3 id="interactive-zoom-pan-publication-downloads">Interactive Zoom, Pan &amp; Publication Downloads<a class="anchor" aria-label="anchor" href="#interactive-zoom-pan-publication-downloads"></a>
 </h3>
-<p>In automated or non-interactive environments, you can verify that the bundled Shiny application object initializes cleanly and inspect the pre-computed 6-simulator demonstration benchmark database (<code>demo_benchmark_data.rds</code>):</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>Every plot panel inside <code>scSimEvalStudio</code> includes:</p>
+<ul>
+<li><strong>Zoom &amp; Pan Toolbar:</strong> Zoom smoothly from <strong>25% to 400%</strong>, drag to pan around large figures, or click <strong>Full View</strong> to inspect plots in fullscreen mode.</li>
+<li><strong>High-Resolution Downloads:</strong> Save any chart as a <strong>600 DPI JPEG</strong> or <strong>Vector PDF</strong> ready for papers, theses, and posters.</li>
+<li><strong>1-Click R Script Export:</strong> Download a standalone <code>ggplot2</code> R script for any figure if you want to fine-tune colors or labels in R later.</li>
+</ul>
+<hr>
+</div>
+</div>
+
+<div class="section level2">
+<h2 id="step-5-export-results-monitor-progress-get-help">6. Step 5 — Export Results, Monitor Progress &amp; Get Help<a class="anchor" aria-label="anchor" href="#step-5-export-results-monitor-progress-get-help"></a>
+</h2>
+<ul>
+<li><strong>Benchmark Results &amp; Export:</strong> Browse, search, and filter the master results table (showing both raw values and 0–1 scores), and download a formatted <strong>Excel workbook (<code>.xlsx</code>)</strong>, <strong><code>.csv</code></strong> table, or full <strong><code>.rds</code></strong> session backup.</li>
+<li><strong>Logs:</strong> Watch live progress messages (<code>INFO</code>, <code>WARNING</code>, <code>SUCCESS</code>) while benchmarks run, filter messages by type, or download a <code>.txt</code> log file for troubleshooting.</li>
+<li><strong>Help &amp; Contact:</strong> Access quick in-app tips, file format checklists, and contact details for the development team at ICAR-IASRI, New Delhi.</li>
+</ul>
+<hr>
+</div>
+
+<div class="section level2">
+<h2 id="quick-verification-for-package-testing">7. Quick Verification (For Package Testing)<a class="anchor" aria-label="anchor" href="#quick-verification-for-package-testing"></a>
+</h2>
+<p>You can confirm from R that the bundled Shiny app and demo dataset load properly:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kabilanbio.github.io/scSimEvalStudio/">scSimEvalStudio</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">app_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shiny"</span>, <span class="st">"scSimEvalApp"</span>, package <span class="op">=</span> <span class="st">"scSimEvalStudio"</span><span class="op">)</span></span>
@@ -661,46 +256,18 @@ Visualizes Category VIII computational cost across 5 selectable views (<em>All 4
 <span></span>
 <span><span class="va">demo_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">app_dir</span>, <span class="st">"data"</span>, <span class="st">"demo_benchmark_data.rds"</span><span class="op">)</span></span>
 <span><span class="va">demo_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">demo_file</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">demo_obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "benchmark_df"            "benchmark_summary_table"</span></span>
-<span><span class="co">#&gt; [3] "dataset_summary_df"      "methods"</span></span>
 <span><span class="va">demo_obj</span><span class="op">$</span><span class="va">methods</span></span>
-<span><span class="co">#&gt; [1] "scMultiSim" "scDesign3"  "MOSim"      "scCross"    "scMoMtF"   </span></span>
-<span><span class="co">#&gt; [6] "Matilda"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_obj</span><span class="op">$</span><span class="va">benchmark_summary_table</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Method"</span>, <span class="st">"Category"</span>, <span class="st">"Metric"</span>, <span class="st">"Score"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">6</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                  Method                      Category         Metric     Score</span></span>
-<span><span class="co">#&gt; scMultiSim.1 scMultiSim (I) Distributional Properties    Wasserstein 0.7190470</span></span>
-<span><span class="co">#&gt; scMultiSim.2 scMultiSim (I) Distributional Properties             KS 0.5516079</span></span>
-<span><span class="co">#&gt; scMultiSim.3 scMultiSim (I) Distributional Properties            MAD 0.0000000</span></span>
-<span><span class="co">#&gt; scMultiSim.4 scMultiSim (I) Distributional Properties  Bhattacharyya 0.5304023</span></span>
-<span><span class="co">#&gt; scMultiSim.5 scMultiSim (I) Distributional Properties Runs_Statistic 0.7451238</span></span>
-<span><span class="co">#&gt; scMultiSim.6 scMultiSim (I) Distributional Properties    NN_Mismatch 0.6441069</span></span></code></pre></div>
-</div>
+<span><span class="co">#&gt; [1] "scMultiSim" "scDesign3"  "MOSim"      "scCross"    "scMoMtF"    "Matilda"</span></span></code></pre></div>
 </div>
 
 <div class="section level2">
-<h2 id="session-information">6. Session Information<a class="anchor" aria-label="anchor" href="#session-information"></a>
+<h2 id="session-information">8. Session Information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.6.2 (2026-10-29)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
 <span><span class="co">#&gt; Running under: Ubuntu 24.04.5 LTS</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Matrix products: default</span></span>
-<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0 </span></span>
-<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.12.0  LAPACK version 3.12.0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; locale:</span></span>
-<span><span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
-<span><span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
-<span><span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
-<span><span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
-<span><span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
-<span><span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; time zone: Asia/Kolkata</span></span>
-<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attached base packages:</span></span>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
@@ -726,31 +293,182 @@ Visualizes Category VIII computational cost across 5 selectable views (<em>All 4
     </footer>
 </div>
 
-
-
-  <script>
+<script>
 document.addEventListener("DOMContentLoaded", function() {
-  // Hide citation block on authors page if present
-  const citationHeader = document.getElementById("citation");
-  if (citationHeader && citationHeader.closest(".section")) {
-    citationHeader.closest(".section").remove();
-  }
-  const authorsH1 = document.querySelector(".template-citation-authors h1");
-  if (authorsH1 && authorsH1.textContent.includes("Citation")) {
-    authorsH1.textContent = "Authors";
-  }
-  // Custom search placeholder
   const searchInput = document.getElementById("search-input");
   if (searchInput) {
     searchInput.placeholder = "Search docs... (Press /)";
   }
 
-  // On this page (TOC) Hide / Show Toggle Feature
   const tocNav = document.getElementById("toc");
   if (tocNav) {
     const tocAside = tocNav.closest("aside") || tocNav.closest(".col-md-3");
     const mainEl = document.getElementById("main");
     const tocH2 = tocNav.querySelector("h2");
+    if (tocAside && mainEl && tocH2) {
+      if (!document.getElementById("btn-hide-toc")) {
+        const hideBtn = document.createElement("button");
+        hideBtn.id = "btn-hide-toc";
+        hideBtn.type = "button";
+        hideBtn.className = "btn btn-sm btn-outline-secondary float-end toc-toggle-btn";
+        hideBtn.innerHTML = '<span class="fa fa-angle-right me-1"></span>Hide';
+        tocH2.appendChild(hideBtn);
+        hideBtn.addEventListener("click", function(e) { e.preventDefault(); setTocState(false); });
+      }
+      let showBtn = document.getElementById("btn-show-toc");
+      if (!showBtn) {
+        showBtn = document.createElement("button");
+        showBtn.id = "btn-show-toc";
+        showBtn.type = "button";
+        showBtn.className = "btn btn-sm btn-primary toc-floating-show-btn shadow-sm d-none";
+        showBtn.innerHTML = '<span class="fa fa-list-ul me-1"></span> On this page';
+        document.body.appendChild(showBtn);
+        showBtn.addEventListener("click", function(e) { e.preventDefault(); setTocState(true); });
+      }
+      function setTocState(visible) {
+        const container = mainEl.closest(".container");
+        if (visible) {
+          document.body.classList.remove("toc-collapsed");
+          if (container) container.classList.remove("container-fullwidth");
+          tocAside.classList.remove("d-none");
+          tocAside.style.display = "";
+          mainEl.classList.remove("col-md-12", "main-expanded");
+          mainEl.classList.add("col-md-9");
+          mainEl.style.width = "";
+          mainEl.style.maxWidth = "";
+          mainEl.style.flex = "";
+          if (showBtn) showBtn.classList.add("d-none");
+          localStorage.setItem("scSimEval_toc_hidden", "false");
+        } else {
+          document.body.classList.add("toc-collapsed");
+          if (container) container.classList.add("container-fullwidth");
+          tocAside.classList.add("d-none");
+          tocAside.style.display = "none";
+          mainEl.classList.remove("col-md-9");
+          mainEl.classList.add("col-md-12", "main-expanded");
+          mainEl.style.width = "100%";
+          mainEl.style.maxWidth = "100%";
+          mainEl.style.flex = "0 0 100%";
+          if (showBtn) showBtn.classList.remove("d-none");
+          localStorage.setItem("scSimEval_toc_hidden", "true");
+        }
+      }
+      if (localStorage.getItem("scSimEval_toc_hidden") === "true") {
+        setTocState(false);
+      }
+    }
+  }
+
+  window.scOpenLightbox = function(imgSrc) {
+    if (!imgSrc) return;
+    var existing = document.getElementById("sc_lightbox_overlay");
+    if (existing) existing.remove();
+    var overlay = document.createElement("div");
+    overlay.id = "sc_lightbox_overlay";
+    overlay.className = "sc-lightbox-overlay";
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "sc-lightbox-close";
+    closeBtn.type = "button";
+    closeBtn.innerHTML = "&times;";
+    var canvas = document.createElement("div");
+    canvas.className = "sc-lightbox-canvas";
+    var img = document.createElement("img");
+    img.className = "sc-lightbox-img";
+    img.src = imgSrc;
+    canvas.appendChild(img);
+    var bar = document.createElement("div");
+    bar.className = "sc-lightbox-bar";
+    bar.innerHTML =
+      '<button type="button" id="sc_lb_out"><i class="fa fa-search-minus"></i></button>' +
+      '<input type="range" id="sc_lb_slider" min="10" max="600" step="5" value="100">' +
+      '<button type="button" id="sc_lb_in"><i class="fa fa-search-plus"></i></button>' +
+      '<span id="sc_lb_pct" style="font-family:monospace;min-width:48px;text-align:center;font-weight:700;">100%</span>' +
+      '<button type="button" id="sc_lb_fit">Fit</button>' +
+      '<button type="button" id="sc_lb_100">100%</button>';
+    overlay.appendChild(closeBtn);
+    overlay.appendChild(canvas);
+    overlay.appendChild(bar);
+    document.body.appendChild(overlay);
+    var state = { scale: 1, tx: 0, ty: 0, dragging: false, sx: 0, sy: 0, stx: 0, sty: 0 };
+    var lbSlider = document.getElementById("sc_lb_slider");
+    var lbPct = document.getElementById("sc_lb_pct");
+    function applyTransform() {
+      img.style.transform = "translate3d(" + state.tx + "px," + state.ty + "px,0) scale(" + state.scale + ")";
+      var p = Math.round(state.scale * 100);
+      lbPct.innerText = p + "%";
+      lbSlider.value = Math.max(10, Math.min(600, p));
+    }
+    function fitImage() {
+      var nw = img.naturalWidth || img.width || 900;
+      var nh = img.naturalHeight || img.height || 600;
+      state.scale = Math.max(0.1, Math.min(4, Math.min((window.innerWidth * 0.90) / nw, ((window.innerHeight - 90) * 0.92) / nh)));
+      state.tx = 0; state.ty = 0; applyTransform();
+    }
+    function zoomAt(ns) { state.scale = Math.max(0.10, Math.min(6.0, ns)); applyTransform(); }
+    if (img.complete) fitImage(); else img.onload = fitImage;
+    document.getElementById("sc_lb_out").onclick = function() { zoomAt(state.scale / 1.15); };
+    document.getElementById("sc_lb_in").onclick = function() { zoomAt(state.scale * 1.15); };
+    document.getElementById("sc_lb_fit").onclick = fitImage;
+    document.getElementById("sc_lb_100").onclick = function() { state.scale = 1; state.tx = 0; state.ty = 0; applyTransform(); };
+    lbSlider.oninput = function() { zoomAt(Number(this.value) / 100); };
+    function closeLb() { window.removeEventListener("keydown", onKey); if (overlay.parentNode) overlay.remove(); }
+    function onKey(e) { if (e.key === "Escape") closeLb(); }
+    window.addEventListener("keydown", onKey);
+    closeBtn.onclick = closeLb;
+    overlay.addEventListener("click", function(e) { if (e.target === overlay || e.target === canvas) closeLb(); });
+  };
+
+  function initDocPlotZoom() {
+    var images = document.querySelectorAll("#main .figure img");
+    images.forEach(function(img, idx) {
+      if (img.closest(".sc-doc-zoom-wrapper")) return;
+      var wrapper = document.createElement("div");
+      wrapper.className = "sc-doc-zoom-wrapper";
+      var toolbar = document.createElement("div");
+      toolbar.className = "sc-doc-zoom-toolbar";
+      toolbar.innerHTML =
+        '<span class="d-none d-md-inline-flex align-items-center gap-1 sc-doc-zoom-hint"><i class="fa fa-hand text-secondary"></i><span>Drag to pan • Ctrl+Wheel or Slider to zoom</span></span>' +
+        '<div class="d-flex align-items-center flex-wrap gap-1 ms-auto">' +
+          '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 sc-btn-out"><i class="fa fa-search-minus"></i></button>' +
+          '<input type="range" class="sc-zoom-slider" min="25" max="400" step="5" value="100">' +
+          '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 sc-btn-in"><i class="fa fa-search-plus"></i></button>' +
+          '<span class="badge bg-white text-dark border px-2 py-1 ms-1 sc-doc-zoom-badge">100%</span>' +
+          '<button type="button" class="btn btn-outline-primary btn-sm py-0 px-2 sc-btn-reset">100%</button>' +
+          '<button type="button" class="btn btn-primary btn-sm py-0 px-2 ms-1 sc-btn-full"><i class="fa fa-expand"></i> Full View</button>' +
+        '</div>';
+      var container = document.createElement("div");
+      container.className = "sc-doc-zoom-container";
+      var stage = document.createElement("div");
+      stage.className = "sc-doc-zoom-stage";
+      var target = document.createElement("div");
+      target.className = "sc-doc-zoom-target";
+      img.parentNode.insertBefore(wrapper, img);
+      target.appendChild(img); stage.appendChild(target); container.appendChild(stage);
+      wrapper.appendChild(toolbar); wrapper.appendChild(container);
+      var curZoom = 100;
+      var slider = toolbar.querySelector(".sc-zoom-slider");
+      var badge = toolbar.querySelector(".sc-doc-zoom-badge");
+      function setZoom(next) {
+        next = Math.max(25, Math.min(400, Math.round(next)));
+        curZoom = next; slider.value = next; badge.innerText = next + "%";
+        if (next === 100) {
+          target.style.transform = ""; target.style.width = "100%"; stage.style.width = "100%"; stage.style.height = "";
+          return;
+        }
+        var factor = next / 100;
+        target.style.transformOrigin = "0 0";
+        target.style.transform = "scale(" + factor + ")";
+      }
+      slider.addEventListener("input", function() { setZoom(Number(this.value)); });
+      toolbar.querySelector(".sc-btn-out").addEventListener("click", function() { setZoom(curZoom - 10); });
+      toolbar.querySelector(".sc-btn-in").addEventListener("click", function() { setZoom(curZoom + 10); });
+      toolbar.querySelector(".sc-btn-reset").addEventListener("click", function() { setZoom(100); });
+      toolbar.querySelector(".sc-btn-full").addEventListener("click", function() { window.scOpenLightbox(img.src); });
+    });
+  }
+  initDocPlotZoom();
+});
+</script>
 
     if (tocAside && mainEl && tocH2) {
       // Add hide button to TOC header

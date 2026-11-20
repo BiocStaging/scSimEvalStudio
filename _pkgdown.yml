@@ -38,7 +38,6 @@ template:
           const tocH2 = tocNav.querySelector("h2");
 
           if (tocAside && mainEl && tocH2) {
-            // Add hide button to TOC header
             if (!document.getElementById("btn-hide-toc")) {
               const hideBtn = document.createElement("button");
               hideBtn.id = "btn-hide-toc";
@@ -55,7 +54,6 @@ template:
               });
             }
 
-            // Create floating show button
             let showBtn = document.getElementById("btn-show-toc");
             if (!showBtn) {
               showBtn = document.createElement("button");
@@ -102,14 +100,13 @@ template:
               }
             }
 
-            // Restore user preference
             if (localStorage.getItem("scSimEval_toc_hidden") === "true") {
               setTocState(false);
             }
           }
         }
 
-        /* ===== FULLSCREEN IMAGE VIEWER LIGHTBOX (MICROSOFT PHOTOS STYLE) ===== */
+        /* ===== FULLSCREEN IMAGE VIEWER LIGHTBOX ===== */
         window.scOpenLightbox = function(imgSrc) {
           if (!imgSrc) return;
           var existing = document.getElementById("sc_lightbox_overlay");
@@ -281,7 +278,7 @@ template:
                 '<span class="badge bg-white text-dark border px-2 py-1 ms-1 sc-doc-zoom-badge">100%</span>' +
                 '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 ms-1 sc-btn-fit" title="Fit Plot to Viewport"><i class="fa fa-compress"></i> Fit</button>' +
                 '<button type="button" class="btn btn-outline-primary btn-sm py-0 px-2 sc-btn-reset" title="Reset to 100% Actual View">100%</button>' +
-                '<button type="button" class="btn btn-primary btn-sm py-0 px-2 ms-1 sc-btn-full" title="Open Fullscreen Image Viewer (Mouse Wheel Zoom + Drag Pan)"><i class="fa fa-expand"></i> Full View</button>' +
+                '<button type="button" class="btn btn-primary btn-sm py-0 px-2 ms-1 sc-btn-full" title="Open Fullscreen Image Viewer"><i class="fa fa-expand"></i> Full View</button>' +
               '</div>';
 
             var container = document.createElement("div");
@@ -445,8 +442,8 @@ template:
       </script>
 
 home:
-  title: "scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking"
-  description: "Companion graphical Shiny web studio for scSimEval SingleCellExperiment benchmarking across 56 evaluation measures in 8 canonical categories."
+  title: "scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking"
+  description: "Point-and-click Shiny studio for exploring, comparing, and exporting single-cell and multiomics simulation benchmarks powered by scSimEval."
 
 footer:
   structure:
@@ -466,8 +463,6 @@ navbar:
       href: reference/index.html
     - text: "Changelog"
       href: news/index.html
-    - text: "scSimEval Core Docs"
-      href: https://kabilanbio.github.io/scSimEval/
   right:
     - search: true
     - icon: fa-sun
@@ -489,13 +484,13 @@ navbar:
 
 reference:
   - title: "Launch Studio & Package Overview"
-    desc: "Entry points for launching the interactive scSimEvalStudio Shiny benchmarking environment."
+    desc: "Functions to start and inspect the interactive scSimEvalStudio Shiny app."
     contents:
       - launch_scSimEval_app
       - scSimEvalStudio-package
 
 articles:
-  - title: "Workflow & Architecture Guide"
+  - title: "User Guide"
     navbar: "Architecture & Studio Guide"
     contents:
       - scSimEvalStudio-workflow

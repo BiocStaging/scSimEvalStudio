@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking • scSimEvalStudio</title>
+<title>scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking • scSimEvalStudio</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -16,9 +16,9 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
-<meta property="og:title" content="scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking">
-<meta name="description" content="Companion graphical Shiny web studio for scSimEval SingleCellExperiment benchmarking across 56 evaluation measures in 8 canonical categories.">
-<meta property="og:description" content="Companion graphical Shiny web studio for scSimEval SingleCellExperiment benchmarking across 56 evaluation measures in 8 canonical categories.">
+<meta property="og:title" content="scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking">
+<meta name="description" content="Point-and-click Shiny studio for exploring, comparing, and exporting single-cell and multiomics simulation benchmarks powered by scSimEval.">
+<meta property="og:description" content="Point-and-click Shiny studio for exploring, comparing, and exporting single-cell and multiomics simulation benchmarks powered by scSimEval.">
 <meta property="og:image" content="https://kabilanbio.github.io/scSimEvalStudio/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,256 +69,39 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt="scSimEvalStudio logo"><h1 id="scsimevalstudio-interactive-shiny-studio-for-single-cell-multiomics-simulation-benchmarking">scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Simulation Benchmarking<a class="anchor" aria-label="anchor" href="#scsimevalstudio-interactive-shiny-studio-for-single-cell-multiomics-simulation-benchmarking"></a>
+<img src="logo.png" class="logo" alt="scSimEvalStudio logo"><h1 id="scsimevalstudio-interactive-shiny-app-for-single-cell-simulation-benchmarking">scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking<a class="anchor" aria-label="anchor" href="#scsimevalstudio-interactive-shiny-app-for-single-cell-simulation-benchmarking"></a>
 </h1>
 </div>
-<p><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://kabilanbio.github.io/scSimEvalStudio/"><img src="https://img.shields.io/badge/docs-pkgdown-blue.svg" alt="Documentation"></a> <a href="https://bioconductor.org/packages/SingleCellExperiment/" class="external-link"><img src="https://img.shields.io/badge/Bioconductor-SingleCellExperiment-18bc9c.svg" alt="Bioconductor S4"></a> <a href="https://kabilanbio.github.io/scSimEval/" class="external-link"><img src="https://img.shields.io/badge/scSimEval-v0.99.12-2c3e50.svg" alt="Core Engine"></a></p>
+<p><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a> <a href="https://kabilanbio.github.io/scSimEvalStudio/"><img src="https://img.shields.io/badge/docs-pkgdown-blue.svg" alt="Documentation"></a> <a href="https://kabilanbio.github.io/scSimEval/" class="external-link"><img src="https://img.shields.io/badge/scSimEval-v0.99.12-2c3e50.svg" alt="Core Engine"></a></p>
 <hr>
 
 <div class="section level2">
-<h2 id="scientific-overview-multiomics-experimental-design-coverage">1. Scientific Overview &amp; Multiomics Experimental Design Coverage<a class="anchor" aria-label="anchor" href="#scientific-overview-multiomics-experimental-design-coverage"></a>
+<h2 id="welcome-to-scsimevalstudio">Welcome to <code>scSimEvalStudio</code><a class="anchor" aria-label="anchor" href="#welcome-to-scsimevalstudio"></a>
 </h2>
-<p><strong><code>scSimEvalStudio</code></strong> (version <code>0.99.3</code>) is the interactive graphical benchmarking studio companion to <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link"><code>scSimEval</code></a></strong> (version <code>0.99.12</code>). Single-cell and multiomics simulation algorithms are indispensable for benchmarking computational methods, conducting <em>in silico</em> power analyses, and evaluating data integration pipelines. However, synthetic datasets only provide valid benchmarks if they faithfully recapitulate the statistical distributions, technical dropout kinetics, high-dimensional cellular manifolds, batch confounder structure, differential regulatory signals, lineage topology, and cross-modal coupling of empirical biological tissues.</p>
-<p><code>scSimEvalStudio</code> operationalizes reference-based simulation benchmarking by comparing one or more synthetic datasets (<math display="inline"><mrow><msubsup><mi>𝒟</mi><mtext>sim</mtext><mrow><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow></msubsup><mo>,</mo><mo>…</mo><mo>,</mo><msubsup><mi>𝒟</mi><mtext>sim</mtext><mrow><mo stretchy="false">(</mo><mi>M</mi><mo stretchy="false">)</mo></mrow></msubsup></mrow></math>) directly against an empirical biological reference dataset (<math display="inline"><mrow><msub><mi>𝒟</mi><mtext>ref</mtext></msub></mrow></math>) across <strong>56 curated quantitative evaluation measures</strong> organized into <strong>8 canonical biological and computational categories</strong>.</p>
+<p><strong><code>scSimEvalStudio</code></strong> (version <code>0.99.3</code>) is the beginner-friendly, point-and-click <strong>Shiny web application</strong> companion to <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link"><code>scSimEval</code></a></strong>.</p>
+<p>It lets you compare single-cell <strong>RNA-seq</strong>, <strong>ATAC-seq</strong>, and <strong>multiomics</strong> simulation methods right in your browser—<strong>without writing plotting or analysis code</strong>. You can try built-in example datasets with one click, upload your own <code>.rds</code> files, zoom into interactive charts, and export ready-to-use tables and publication-quality figures.</p>
+<blockquote>
+<p><strong>Looking for the statistical methods, full 56-metric catalog, or R scripting tutorials?</strong><br>
+Visit the <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link">scSimEval Core Package Documentation</a></strong>.</p>
+</blockquote>
+<hr>
+</div>
+
+<div class="section level2">
+<h2 id="get-started-in-3-simple-steps">Get Started in 3 Simple Steps<a class="anchor" aria-label="anchor" href="#get-started-in-3-simple-steps"></a>
+</h2>
 
 <div class="section level3">
-<h3 id="supported-single-cell-multiomics-experimental-designs">Supported Single-Cell &amp; Multiomics Experimental Designs<a class="anchor" aria-label="anchor" href="#supported-single-cell-multiomics-experimental-designs"></a>
+<h3 id="step-1-install-scsimevalstudio">Step 1: Install <code>scSimEvalStudio</code><a class="anchor" aria-label="anchor" href="#step-1-install-scsimevalstudio"></a>
 </h3>
-<p>Built natively on Bioconductor <strong><code>SingleCellExperiment</code></strong> S4 containers (with automatic one-line conversion from <code>Seurat</code> objects via <code>Seurat::as.SingleCellExperiment()</code>), <code>scSimEvalStudio</code> supports four experimental design architectures:</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Experimental Design</th>
-<th style="text-align: left;">Primary Assay &amp; S4 Representation</th>
-<th style="text-align: left;">Required <code>colData</code> Annotations</th>
-<th style="text-align: center;">Active Categories</th>
-<th style="text-align: center;">Curated Measures Evaluated</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><strong>1. Unimodal <code>scRNA-seq</code></strong></td>
-<td style="text-align: left;">Gene × cell raw UMI/read count matrix (<code>assay(sce, "counts")</code>, sparse <code>dgCMatrix</code>)</td>
-<td style="text-align: left;"><code>cell_type</code> (Cat III, V) &amp; <code>batch</code> (Cat IV, V)</td>
-<td style="text-align: center;"><strong>7 Categories</strong> (I–V, VII, VIII)</td>
-<td style="text-align: center;"><strong>44 Measures</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>2. Unimodal <code>scATAC-seq</code></strong></td>
-<td style="text-align: left;">Peak/bin × cell raw chromatin fragment/insertion matrix (<code>assay(sce, "counts")</code>) with TF-IDF latent semantic indexing</td>
-<td style="text-align: left;"><code>cell_type</code> (Cat III, V) &amp; <code>batch</code> (Cat IV, V)</td>
-<td style="text-align: center;"><strong>6 Categories</strong> (I–V, VIII)</td>
-<td style="text-align: center;"><strong>38 Measures</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><strong>3. Paired Co-Assay Multiomics</strong></td>
-<td style="text-align: left;">Simultaneous <code>scRNA-seq + scATAC-seq</code> across identical cell barcodes (1-to-1 correspondence via <code>altExp(sce, "ATAC")</code> or <code>list(RNA = rna_sce, ATAC = atac_sce)</code>)</td>
-<td style="text-align: left;">Shared <code>cell_type</code> &amp; <code>batch</code> across paired barcodes</td>
-<td style="text-align: center;"><strong>All 8 Categories</strong> (I–VIII)</td>
-<td style="text-align: center;"><strong>56 Measures</strong> <em>(50 Bubble Matrix Columns)</em></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><strong>4. Unpaired Multiomics</strong></td>
-<td style="text-align: left;">Independent <code>scRNA-seq</code> and <code>scATAC-seq</code> <code>SingleCellExperiment</code> objects profiled from the same biological tissue without shared barcodes</td>
-<td style="text-align: left;">Modality-specific <code>cell_type</code> &amp; <code>batch</code> coupled in joint stacked latent space</td>
-<td style="text-align: center;"><strong>All 8 Categories</strong> (I–VIII)</td>
-<td style="text-align: center;"><strong>56 Measures</strong> <em>(50 Bubble Matrix Columns)</em></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<div class="section level2">
-<h2 id="end-to-end-architecture-the-8-category-56-measure-taxonomy">2. End-to-End Architecture &amp; The 8-Category / 56-Measure Taxonomy<a class="anchor" aria-label="anchor" href="#end-to-end-architecture-the-8-category-56-measure-taxonomy"></a>
-</h2>
-<p><code>scSimEvalStudio</code> orchestrates a four-stage evaluation workflow connecting data ingestion, parallelized statistical estimation, direction-aware mathematical score normalization, and interactive visual analytics:</p>
-
-<div class="figure">
-<img src="workflow_diagram.png" alt="scSimEval &amp; scSimEvalStudio 4-Stage Benchmarking Workflow Architecture" width="100%">
-<p class="caption"><strong>Figure 1 | The 4-Stage scSimEval &amp; scSimEvalStudio Benchmarking Architecture.</strong> (1) Multi-modal data ingestion and S4 validation for unimodal scRNA-seq, unimodal scATAC-seq, paired co-assay multiomics, and unpaired multiomics; (2) multi-core evaluation across 56 curated measures in 8 canonical categories; (3) direction-aware normalization onto a unified [0.00, 1.00] fidelity scale; and (4) visual analytics, multidimensional ordinations, and reproducible script/report exports.</p>
-</div>
-
-<div class="section level3">
-<h3 id="summary-of-the-8-canonical-evaluation-categories-56-measures">Summary of the 8 Canonical Evaluation Categories (56 Measures)<a class="anchor" aria-label="anchor" href="#summary-of-the-8-canonical-evaluation-categories-56-measures"></a>
-</h3>
-<table class="table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">Category</th>
-<th style="text-align: left;">Biological / Computational Domain</th>
-<th style="text-align: center;">Measures</th>
-<th style="text-align: left;">Statistical Formulation &amp; Biological Scope</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>I</strong></td>
-<td style="text-align: left;"><strong>Distributional Properties</strong></td>
-<td style="text-align: center;"><strong>14</strong></td>
-<td style="text-align: left;"><strong>10 univariate (1D)</strong> distances (<code>Wasserstein</code>, <code>KS</code>, <code>MAD</code>, <code>MAE</code>, <code>RMSE</code>, <code>Bhattacharyya</code>, <code>KDE_ISE</code>, <code>Runs_Statistic</code>, <code>NN_Mismatch</code>, <code>Between_Dataset_Silh_Global</code>) and <strong>4 bivariate (2D)</strong> distances (<code>Fasano_Franceschini_2D_KS</code>, <code>EMD_2D</code>, <code>NN_Mismatch_2D</code>, <code>Between_Dataset_Silh_2D_Global</code>) evaluated across <strong>18 empirical properties</strong>: 7 cell-level (<code>library_size</code>, <code>log_library_size</code>, <code>tmm_factor</code>, <code>zero_fraction_cell</code>, <code>detection_freq_cell</code>, <code>cell_cor</code>, <code>pca_dist</code>), 7 feature-level (<code>mean_expression</code>, <code>variance</code>, <code>scaled_variance</code>, <code>cv</code>, <code>zero_fraction_feature</code>, <code>dispersion</code>, <code>gene_cor</code>), and 4 bivariate pairs (<code>lib_vs_cellzero</code>, <code>mean_vs_sd</code>, <code>mean_vs_featzero</code>, <code>mean_vs_dispersion</code>).</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>II</strong></td>
-<td style="text-align: left;"><strong>Sparsity &amp; Zero-Inflation Dynamics</strong></td>
-<td style="text-align: center;"><strong>5</strong></td>
-<td style="text-align: left;">Parametric logistic dropout kinetics <math display="inline"><mrow><mi>P</mi><mo stretchy="false">(</mo><mtext>zero</mtext><mo>∣</mo><msub><mi>μ</mi><mi>g</mi></msub><mo stretchy="false">)</mo><mo>=</mo><msup><mrow><mo stretchy="false">[</mo><mn>1</mn><mo>+</mo><mi>exp</mi><mo stretchy="false">(</mo><mo>−</mo><mi>k</mi><mo stretchy="false">(</mo><msub><mi>μ</mi><mi>g</mi></msub><mo>−</mo><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo stretchy="false">]</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup></mrow></math> (<code>midpoint_error</code> <math display="inline"><mrow><mo stretchy="false">|</mo><mi>Δ</mi><msub><mi>x</mi><mn>0</mn></msub><mo stretchy="false">|</mo></mrow></math>, <code>slope_error</code> <math display="inline"><mrow><mo stretchy="false">|</mo><mi>Δ</mi><mi>k</mi><mo stretchy="false">|</mo></mrow></math>, goodness-of-fit <code>r2_discrepancy</code>), scATAC-seq quadratic accessibility-sparsity curve residual error (<code>curve_rmse</code>), and technical excess zero-inflation weight divergence (<code>excess_zero_weight_discrepancy</code>).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>III</strong></td>
-<td style="text-align: left;"><strong>Cellular Manifold &amp; Clustering Concordance</strong></td>
-<td style="text-align: center;"><strong>8</strong></td>
-<td style="text-align: left;">High-dimensional topology and unsupervised clustering fidelity: multi-scale RBF kernel Maximum Mean Discrepancy (<code>MMD</code>), <em>k</em>-NN manifold support <code>Generative_Precision</code> (penalizes hallucinated states) and <code>Generative_Recall</code> (penalizes mode collapse), cell-type Average Silhouette Width (<code>silhouette_sim</code>), penalized likelihood Clustering Deviation Index (<code>cdi</code>), local <em>k</em>-NN <code>neighborhood_purity</code>, Adjusted Rand Index (<code>ari</code>), and Normalized Mutual Information (<code>nmi</code>).</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>IV</strong></td>
-<td style="text-align: left;"><strong>Technical Variation &amp; Batch Mixing Dynamics</strong></td>
-<td style="text-align: center;"><strong>5</strong></td>
-<td style="text-align: left;">Technical batch confounder preservation and local neighborhood intermixing: <code>batch_silhouette</code>, Principal Component Regression variance explained (<code>pcr_r2</code>), Cell-Specific Mixing Score (<code>cms</code>; Lütge et al., <em>Life Sci. Alliance</em> 2021), Local Inverse Simpson's Index (<code>isi</code>; Korsunsky et al., <em>Nat. Methods</em> 2019), and held-out <code>cross_batch_F1</code> transfer classification.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>V</strong></td>
-<td style="text-align: left;"><strong>Biological Signal &amp; Differential Fidelity</strong></td>
-<td style="text-align: center;"><strong>12</strong></td>
-<td style="text-align: left;">Replicate-aware cell-type × batch pseudobulk aggregation (<code>to_pseudobulk()</code>) followed by negative binomial quasi-likelihood F-testing (<code>edgeR::glmQLFit</code> / <code>glmQLFTest</code>; Squair et al., <em>Nat. Commun.</em> 2021; Duo et al., <em>Genome Biol.</em> 2024; Teo et al., <em>Nat. Commun.</em> 2024). Evaluates <strong>6 scRNA-seq DE</strong> and <strong>6 binarized scATAC-seq DA</strong> metrics: null <em>p</em>-value uniformity (<code>pval_dist_score</code>), binary <code>accuracy</code>, <code>precision</code>, <code>recall</code>, harmonic <code>f1_score</code>, and threshold-free ranking <code>auc</code> (ROC-AUC).</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>VI</strong></td>
-<td style="text-align: left;"><strong>Multiomics Integration &amp; Alignment</strong></td>
-<td style="text-align: center;"><strong>5</strong></td>
-<td style="text-align: left;">Cross-modal joint latent space alignment (<code>scib</code>, <code>scMultiSim</code>, <code>scCross</code>, <code>Matilda</code>, <code>scMoMtF</code>): Cross-Modal <code>batch_asw</code>, Joint <code>cell_type_asw</code>, <em>k</em>-NN <code>graph_connectivity</code>, <code>integration_ari</code>, and <code>integration_nmi</code>.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>VII</strong></td>
-<td style="text-align: left;"><strong>Trajectory &amp; Lineage Topology</strong></td>
-<td style="text-align: center;"><strong>5</strong></td>
-<td style="text-align: left;">HVG-filtered <code>dynverse</code> milestone network inference on scRNA-seq (Saelens et al., <em>Nat. Biotechnol.</em> 2019): Hamming–Ipsen–Mikhailov graph topology similarity (<code>him</code>), <code>edge_flip</code> graph edit similarity, pairwise pseudotime <code>geodesic_correlation</code>, branch assignment <code>F1_branches</code>, and Ranger Random Forest driver gene importance weighted correlation (<code>wcor_features</code>).</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>VIII</strong></td>
-<td style="text-align: left;"><strong>Computational Scalability &amp; Efficiency</strong></td>
-<td style="text-align: center;"><strong>2</strong></td>
-<td style="text-align: left;">Hardware-normalized computational cost across heterogeneous CPU allocations: Cumulative CPU execution work <math display="inline"><mrow><mtext>Core-Seconds</mtext><mo>=</mo><msub><mi>T</mi><mtext>elapsed</mtext></msub><mo>×</mo><msub><mi>N</mi><mtext>cores</mtext></msub></mrow></math> (<code>core_seconds</code>) and per-core resident memory footprint <math display="inline"><mrow><mtext>Peak RAM per Core</mtext><mo>=</mo><msub><mi>M</mi><mtext>peak, MiB</mtext></msub><mo>/</mo><msub><mi>N</mi><mtext>cores</mtext></msub></mrow></math> (<code>memory_per_core_mib</code>).</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<div class="section level2">
-<h2 id="direction-aware-mathematical-score-normalization-hierarchical-aggregation">3. Direction-Aware Mathematical Score Normalization &amp; Hierarchical Aggregation<a class="anchor" aria-label="anchor" href="#direction-aware-mathematical-score-normalization-hierarchical-aggregation"></a>
-</h2>
-<p>Raw evaluation measures span incompatible physical units and optimization directions (e.g., unbounded transport distances and core-seconds where lower values are superior, zero-centered statistics such as Wald–Wolfowitz Runs and Batch Silhouette where <math display="inline"><mrow><mn>0</mn></mrow></math> is ideal, and bounded concordance indices such as ARI, NMI, and ROC-AUC where <math display="inline"><mrow><mn>1</mn></mrow></math> is optimal). <code>scSimEvalStudio</code> transforms every raw measurement (<code>Score_Raw</code>) through a two-stage direction-aware normalization pipeline (<code><a href="https://kabilanbio.github.io/scSimEval/reference/normalize_bubble_scores.html" class="external-link">scSimEval::normalize_bubble_scores()</a></code>):</p>
-
-<div class="figure">
-<img src="score_normalization_workflow.png" alt="Two-Stage Direction-Aware Score Normalization and Hierarchical Aggregation Pipeline" width="100%">
-<p class="caption"><strong>Figure 2 | Two-Stage Direction-Aware Mathematical Normalization &amp; Hierarchical Aggregation Pipeline.</strong> Raw measurements (<code>Score_Raw</code>) are direction-aligned and scaled onto a unified [0.00, 1.00] fidelity scale (where 1.00 denotes optimal empirical reference concordance), aggregated into category means, and combined into the composite Overall Score.</p>
-</div>
-
-<ol>
-<li>
-<p><strong>Direction Alignment &amp; <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math> Fidelity Scaling</strong>: For simulator <math display="inline"><mrow><mi>m</mi><mo>∈</mo><mo stretchy="false">{</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>M</mi><mo stretchy="false">}</mo></mrow></math> and metric <math display="inline"><mrow><mi>j</mi></mrow></math> with raw value <math display="inline"><mrow><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math>:</p>
-<ul>
-<li>For <strong>zero-targeted statistics</strong> (<code>Runs_Statistic</code>, <code>Between_Dataset_Silh_Global</code>, <code>Between_Dataset_Silh_2D_Global</code>, <code>batch_silhouette</code>), divergence magnitude is first taken as <math display="inline"><mrow><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mo stretchy="false">|</mo><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false">|</mo></mrow></math>.</li>
-<li>For <strong>lower-is-better distance, error, and computational cost measures</strong> (<math display="inline"><mrow><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math> or <math display="inline"><mrow><mo stretchy="false">|</mo><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false">|</mo></mrow></math>), scores are inverted and min-max normalized across the evaluated simulator cohort:
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>d</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>d</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>+</mo><mi>ε</mi></mrow></mfrac><mo>∈</mo><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></p>
-</li>
-<li>For <strong>higher-is-better similarity and classification fidelity measures</strong> (e.g., <code>ari</code>, <code>nmi</code>, <code>auc</code>, <code>f1_score</code>, <code>him</code>, <code>cms</code>, <code>isi</code>), values are scaled directly so that higher fidelity maps toward <math display="inline"><mrow><mn>1.00</mn></mrow></math>:
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><msub><mi>x</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub></mrow><mrow><munder><mi>max</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>−</mo><munder><mi>min</mi><mrow><msup><mi>m</mi><mo>′</mo></msup></mrow></munder><msub><mi>x</mi><mrow><msup><mi>m</mi><mo>′</mo></msup><mo>,</mo><mi>j</mi></mrow></msub><mo>+</mo><mi>ε</mi></mrow></mfrac><mo>∈</mo><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math></p>
-</li>
-</ul>
-</li>
-<li>
-<p><strong>Category-Level &amp; Overall Composite Aggregation</strong>:</p>
-<ul>
-<li>In Category I, property-level normalized scores across the 18 empirical distributions are averaged per metric to yield 14 consolidated distributional metric scores.</li>
-<li>Within each active category <math display="inline"><mrow><mi>k</mi><mo>∈</mo><mo stretchy="false">{</mo><mn>1</mn><mo>,</mo><mo>…</mo><mo>,</mo><mi>K</mi><mo stretchy="false">}</mo></mrow></math> containing <math display="inline"><mrow><msub><mi>ℳ</mi><mi>k</mi></msub></mrow></math> evaluated measures, the category fidelity score is the arithmetic mean:
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>S</mi><mrow><mtext>cat</mtext><mo>,</mo><mi>m</mi><mo>,</mo><mi>k</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false">|</mo><msub><mi>ℳ</mi><mi>k</mi></msub><mo stretchy="false">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><msub><mi>ℳ</mi><mi>k</mi></msub></mrow></munder><msub><mi>s</mi><mrow><mi>m</mi><mo>,</mo><mi>j</mi></mrow></msub></mrow></math></p>
-</li>
-<li>The unweighted <strong>Overall Composite Score</strong> (<math display="inline"><mrow><msub><mi>S</mi><mrow><mtext>overall</mtext><mo>,</mo><mi>m</mi></mrow></msub></mrow></math>) weights each active biological and computational dimension equally across all <math display="inline"><mrow><mi>K</mi></mrow></math> active categories (<math display="inline"><mrow><mi>K</mi><mo>=</mo><mn>7</mn></mrow></math> for scRNA-seq, <math display="inline"><mrow><mi>K</mi><mo>=</mo><mn>6</mn></mrow></math> for scATAC-seq, <math display="inline"><mrow><mi>K</mi><mo>=</mo><mn>8</mn></mrow></math> for paired/unpaired multiomics):
-<p style="text-align: center; margin: 0.8em 0;"><math display="block"><mrow><msub><mi>S</mi><mrow><mtext>overall</mtext><mo>,</mo><mi>m</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mi>K</mi></mfrac><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><msub><mi>S</mi><mrow><mtext>cat</mtext><mo>,</mo><mi>m</mi><mo>,</mo><mi>k</mi></mrow></msub></mrow></math></p>
-</li>
-</ul>
-</li>
-</ol>
-<p>Both the unnormalized physical measurement (<code>Score_Raw</code>) and the normalized <math display="inline"><mrow><mo stretchy="false">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false">]</mo></mrow></math> fidelity score (<code>Score</code>) are preserved in all interactive tables and downloadable archives.</p>
-</div>
-
-<div class="section level2">
-<h2 id="overview-of-the-8-interactive-modules-in-scsimevalstudio">4. Overview of the 8 Interactive Modules in <code>scSimEvalStudio</code><a class="anchor" aria-label="anchor" href="#overview-of-the-8-interactive-modules-in-scsimevalstudio"></a>
-</h2>
-<p>Launching <code><a href="reference/launch_scSimEval_app.html">scSimEvalStudio::launch_scSimEval_app()</a></code> opens a modern Bootstrap 5 (<code>bslib</code> Flatly + high-contrast Dark Mode) analytical workspace organized into <strong>8 top-level navigation tabs</strong>:</p>
-<table class="table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">Tab #</th>
-<th style="text-align: left;">Module Name</th>
-<th style="text-align: left;">Core Analytical &amp; Diagnostic Capabilities</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>1</strong></td>
-<td style="text-align: left;"><strong>Home</strong></td>
-<td style="text-align: left;">Executive KPI ribbon (56 measures, 8 categories, 3 modality classes, [0.0, 1.0] scale), 8-category overview grid, and 3-stage pipeline quick-jump controls.</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>2</strong></td>
-<td style="text-align: left;"><strong>Data Hub</strong></td>
-<td style="text-align: left;"><strong>4 Ingestion Modes</strong>: (1) <code>scRNA-seq</code>, (2) <code>scATAC-seq</code>, (3) <code>Paired &amp; Unpaired Multiomics</code>, and (4) <code>Upload Saved Results (.rds / .csv)</code>. Includes 1-click <em>Oryza sativa</em> Rice Bud (6 simulators) and <em>Glycine max</em> Soybean Root (3 simulators) empirical benchmarks, custom <code>.rds</code> upload (<code>SingleCellExperiment</code> or auto-converted <code>Seurat</code>), per-simulator runtime/RAM/core inputs, incremental benchmark appending, and a <strong>1-Click Standalone HPC/Workstation R Script Generator</strong>.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>3</strong></td>
-<td style="text-align: left;"><strong>Comparative Bubble Matrix</strong></td>
-<td style="text-align: left;"><strong>Sub-Tab 1</strong>: Flagship dual-encoded Bubble Matrix (<code>plot_benchmark_bubble_matrix()</code>) combining left-hand summary bars (Overall + Category I–VIII means) with right-hand metric circles (area ∝ score, bold outline = top method), dataset/modality filters, custom metric pickers, 600 DPI JPEG/PDF export, and standalone R script download. <strong>Sub-Tab 2</strong>: Interactive <strong>Fidelity Leaderboard</strong> (<code>compute_method_leaderboard()</code>) with CSV export.</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>4</strong></td>
-<td style="text-align: left;"><strong>Visualizations (8 Sub-Panels)</strong></td>
-<td style="text-align: left;"><strong>(1) Evaluation Summary</strong> (category bars &amp; radar profiles); <strong>(2) Distribution QC</strong> (Q-Q &amp; 1D/2D kernel density plots across all 18 properties); <strong>(3) Metric Heatmap</strong> (normalized [0, 1] or raw metric thermal matrix); <strong>(4) Metric Plots</strong> (individual metric bars &amp; category boxplots); <strong>(5) PCA Ordination</strong> (dual-panel simulator ordination &amp; metric loading biplot anchored to the <strong>Ideal Reference Anchor</strong> <strong>1</strong>); <strong>(6) MDS Metric Space</strong> (Euclidean MDS topology map); <strong>(7) Cell Embeddings</strong> (faceted/overlaid UMAP, t-SNE &amp; PCA projections with automated ASW, ARI &amp; library-depth table); and <strong>(8) Scalability Benchmark</strong> (4-panel runtime, peak RAM, Pareto trade-off &amp; resource cost across <code>core_seconds</code> and <code>MiB/core</code>). All figures include an interactive <strong>25%–400% Step-Zoom, Drag-to-Pan &amp; 600% Fullscreen Lightbox</strong> viewer.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>5</strong></td>
-<td style="text-align: left;"><strong>Benchmark Results &amp; Export</strong></td>
-<td style="text-align: left;">Complete reproducible session <code>.rds</code> archive download, searchable <code>DT</code> master table displaying both <code>Score_Raw</code> and normalized <code>Score</code>, and multi-sheet Excel (<code>.xlsx</code>) and <code>.csv</code> report exports.</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>6</strong></td>
-<td style="text-align: left;"><strong>Help &amp; Getting Started</strong></td>
-<td style="text-align: left;">Interactive zoomable workflow diagrams, S4 <code>SingleCellExperiment</code> data preparation recipes, and the <strong>Dynamic Multi-Core Scheduling Table</strong> detailing <code>BiocParallel</code> CPU allocation across Categories I–VIII.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>7</strong></td>
-<td style="text-align: left;"><strong>Logs</strong></td>
-<td style="text-align: left;">Real-time WebSocket diagnostic terminal (<code>sc_live_log</code>) streaming <code>INFO</code>, <code>NOTE</code>, <code>WARNING</code>, <code>ERROR</code>, and <code>SUCCESS</code> events with live KPI counters, level filters, full-text search, clipboard copy, and <code>.txt</code> export.</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>8</strong></td>
-<td style="text-align: left;"><strong>Contact</strong></td>
-<td style="text-align: left;">Institutional attribution, research team directory at the Division of Agricultural Bioinformatics, ICAR-IASRI, New Delhi, and GitHub issue links.</td>
-</tr>
-</tbody>
-</table>
-<p>For an in-depth walkthrough of every module, mathematical formula, and visualization panel, see the <strong><a href="articles/scSimEvalStudio-workflow.html">Architecture &amp; Interactive Studio Guide</a></strong>.</p>
-</div>
-
-<div class="section level2">
-<h2 id="installation-quick-start">5. Installation &amp; Quick Start<a class="anchor" aria-label="anchor" href="#installation-quick-start"></a>
-</h2>
-<div class="section level3">
-<h3 id="install-from-bioconductor">Install from Bioconductor<a class="anchor" aria-label="anchor" href="#install-from-bioconductor"></a>
-</h3>
+<p>Install from Bioconductor:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scSimEval"</span>, <span class="st">"scSimEvalStudio"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
-
-<div class="section level3">
-<h3 id="install-development-version-from-github">Install Development Version from GitHub<a class="anchor" aria-label="anchor" href="#install-development-version-from-github"></a>
-</h3>
-<div class="sourceCode" id="cb1b"><pre class="downlit sourceCode r">
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"scSimEvalStudio"</span><span class="op">)</span></span></code></pre></div>
+<p>Or install the latest development versions from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -327,9 +110,9 @@
 </div>
 
 <div class="section level3">
-<h3 id="launch-the-interactive-benchmarking-studio">Launch the Interactive Benchmarking Studio<a class="anchor" aria-label="anchor" href="#launch-the-interactive-benchmarking-studio"></a>
+<h3 id="step-2-launch-the-app">Step 2: Launch the App<a class="anchor" aria-label="anchor" href="#step-2-launch-the-app"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kabilanbio.github.io/scSimEvalStudio/">scSimEvalStudio</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Launches the Shiny studio on a local port with a 10 GiB upload limit</span></span>
@@ -337,36 +120,83 @@
 </div>
 
 <div class="section level3">
-<h3 id="programmatic-inspection-of-the-bundled-6-simulator-benchmark-database">Programmatic Inspection of the Bundled 6-Simulator Benchmark Database<a class="anchor" aria-label="anchor" href="#programmatic-inspection-of-the-bundled-6-simulator-benchmark-database"></a>
+<h3 id="step-3-explore-or-upload-your-data">Step 3: Explore or Upload Your Data<a class="anchor" aria-label="anchor" href="#step-3-explore-or-upload-your-data"></a>
 </h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kabilanbio.github.io/scSimEvalStudio/">scSimEvalStudio</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">app_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"shiny"</span>, <span class="st">"scSimEvalApp"</span>, package <span class="op">=</span> <span class="st">"scSimEvalStudio"</span><span class="op">)</span></span>
-<span><span class="va">demo_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">app_dir</span>, <span class="st">"data"</span>, <span class="st">"demo_benchmark_data.rds"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Inspect evaluated simulator methods and canonical categories</span></span>
-<span><span class="va">demo_obj</span><span class="op">$</span><span class="va">methods</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">demo_obj</span><span class="op">$</span><span class="va">benchmark_summary_table</span><span class="op">$</span><span class="va">Category</span><span class="op">)</span></span></code></pre></div>
+<ol>
+<li>Open the <strong>Data Hub</strong> tab and click a <strong>1-click built-in example dataset</strong> (Rice Bud or Soybean Root) to try the app immediately—no data preparation needed.</li>
+<li>When ready to benchmark your own data, upload your real reference <code>.rds</code> file and one or more simulated <code>.rds</code> files (<code>SingleCellExperiment</code> or <code>Seurat</code> objects—<code>Seurat</code> objects are converted automatically).</li>
+<li>Switch to <strong>Comparative Bubble Matrix</strong>, <strong>Visualizations</strong>, and <strong>Benchmark Results &amp; Export</strong> to rank simulators and download your figures and Excel reports.</li>
+</ol>
+<hr>
 </div>
 </div>
 
 <div class="section level2">
-<h2 id="development-citation-support">6. Development, Citation &amp; Support<a class="anchor" aria-label="anchor" href="#development-citation-support"></a>
+<h2 id="inside-the-shiny-studio-at-a-glance">Inside the Shiny Studio (At a Glance)<a class="anchor" aria-label="anchor" href="#inside-the-shiny-studio-at-a-glance"></a>
+</h2>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Tab</th>
+<th style="text-align: left;">What You Can Do</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>1. Home</strong></td>
+<td style="text-align: left;">Quick overview of the studio and a 1-click button to jump straight to <strong>Data Hub</strong>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>2. Data Hub</strong></td>
+<td style="text-align: left;">Load built-in example benchmarks, upload your own <code>.rds</code> datasets (scRNA-seq, scATAC-seq, or paired/unpaired multiomics), reload saved <code>.rds</code>/<code>.csv</code> results, or download a ready-to-run R script for large cluster jobs.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>3. Comparative Bubble Matrix</strong></td>
+<td style="text-align: left;">Visually see which simulator performs best—<strong>larger circles and scores closer to 1.0 mean a closer match to your real data</strong>, and a <strong>bold outline</strong> marks the top simulator per metric. Includes a ranked <strong>Fidelity Leaderboard</strong> table.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>4. Visualizations</strong></td>
+<td style="text-align: left;">Explore 8 interactive chart tabs (Summary Bars, Distribution QC, Metric Heatmap, Metric Plots, PCA &amp; MDS Maps, UMAP/t-SNE/PCA Cell Embeddings, and Runtime/RAM Scalability) with zoom, pan, fullscreen view, and 600 DPI exports.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>5. Benchmark Results &amp; Export</strong></td>
+<td style="text-align: left;">Search and filter the complete scores table, and download everything as an <strong>Excel workbook (<code>.xlsx</code>)</strong>, <strong><code>.csv</code></strong>, or reusable <strong><code>.rds</code></strong> session file.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>6. Help &amp; Getting Started</strong></td>
+<td style="text-align: left;">Built-in beginner guide, workflow overview, and copy-paste tips right inside the app.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>7. Logs</strong></td>
+<td style="text-align: left;">Live progress tracker showing what the app is running in real time, with search and <code>.txt</code> log download.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>8. Contact</strong></td>
+<td style="text-align: left;">Research team details and issue-reporting links.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</div>
+
+<div class="section level2">
+<h2 id="step-by-step-guide-further-reading">Step-by-Step Guide &amp; Further Reading<a class="anchor" aria-label="anchor" href="#step-by-step-guide-further-reading"></a>
 </h2>
 <p><code>scSimEvalStudio</code> and <code>scSimEval</code> are developed and maintained at the <strong>Division of Agricultural Bioinformatics, ICAR-Indian Agricultural Statistics Research Institute (ICAR-IASRI), New Delhi, India</strong>.</p>
 <ul>
-<li>
-<strong>Maintainer:</strong> Kabilan Sakthivel (<code>kabilan151414@gmail.com</code>)</li>
-<li>
-<strong>Studio Documentation (<code>scSimEvalStudio</code>):</strong> <a href="https://kabilanbio.github.io/scSimEvalStudio/">https://kabilanbio.github.io/scSimEvalStudio/</a>
-</li>
-<li>
-<strong>Core Engine Documentation (<code>scSimEval</code>):</strong> <a href="https://kabilanbio.github.io/scSimEval/" class="external-link">https://kabilanbio.github.io/scSimEval/</a>
-</li>
-<li>
-<strong>Source Code &amp; Issue Tracker:</strong> <a href="https://github.com/kabilanbio/scSimEvalStudio/issues" class="external-link">https://github.com/kabilanbio/scSimEvalStudio/issues</a>
-</li>
+<li><strong>Shiny App Walkthrough:</strong> Read the <strong><a href="articles/scSimEvalStudio-workflow.html">Architecture &amp; Studio Guide</a></strong> for a simple, tab-by-tab tour of the app.</li>
+<li><strong>Metrics &amp; R Workflows:</strong> Visit the <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link">scSimEval Core Documentation</a></strong> for full metric explanations, statistical methodology, and R code tutorials.</li>
+</ul>
+<hr>
+</div>
+
+<div class="section level2">
+<h2 id="development-support">Development &amp; Support<a class="anchor" aria-label="anchor" href="#development-support"></a>
+</h2>
+<p><code>scSimEvalStudio</code> is developed and maintained at the <strong>Division of Agricultural Bioinformatics, ICAR-Indian Agricultural Statistics Research Institute (ICAR-IASRI), New Delhi, India</strong>.</p>
+<ul>
+<li><strong>Maintainer:</strong> Kabilan Sakthivel (<code>kabilan151414@gmail.com</code>)</li>
+<li><strong>Bug Reports &amp; Feature Requests:</strong> <a href="https://github.com/kabilanbio/scSimEvalStudio/issues" class="external-link">https://github.com/kabilanbio/scSimEvalStudio/issues</a></li>
 </ul>
 </div>
 </div>
@@ -375,7 +205,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/kabilanbio/scSimEvalStudio/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/kabilanbio/scSimEvalStudio/issues" class="external-link">Report a bug</a></li>
-<li><a href="https://kabilanbio.github.io/scSimEval/" class="external-link">scSimEval Core Docs (v0.99.12)</a></li>
+<li><a href="https://kabilanbio.github.io/scSimEval/" class="external-link">scSimEval core docs</a></li>
 </ul>
 </div>
 
@@ -412,8 +242,6 @@
 </ul>
 </div>
 
-
-
   </aside>
 </div>
 
@@ -429,31 +257,14 @@
     </footer>
 </div>
 
-
-
-  <script>
+<script>
 document.addEventListener("DOMContentLoaded", function() {
-  // Hide citation block on authors page if present
-  const citationHeader = document.getElementById("citation");
-  if (citationHeader && citationHeader.closest(".section")) {
-    citationHeader.closest(".section").remove();
-  }
-  const authorsH1 = document.querySelector(".template-citation-authors h1");
-  if (authorsH1 && authorsH1.textContent.includes("Citation")) {
-    authorsH1.textContent = "Authors";
-  }
-  // Custom search placeholder
   const searchInput = document.getElementById("search-input");
   if (searchInput) {
     searchInput.placeholder = "Search docs... (Press /)";
   }
-
-  // On this page (TOC) Hide / Show Toggle Feature
-  const tocNav = document.getElementById("toc");
-  if (tocNav) {
-    const tocAside = tocNav.closest("aside") || tocNav.closest(".col-md-3");
-    const mainEl = document.getElementById("main");
-    const tocH2 = tocNav.querySelector("h2");
+});
+</script>
 
     if (tocAside && mainEl && tocH2) {
       // Add hide button to TOC header

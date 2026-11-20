@@ -1,103 +1,83 @@
 [
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/index.html",
-    "id": "scientific-overview-multiomics-experimental-design-coverage",
-    "dir": "",
+    "id": "welcome-to-scsimevalstudio",
+    "dir": "Home",
     "previous_headings": "",
-    "what": "1. Scientific Overview & Multiomics Experimental Design Coverage",
-    "title": "scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking",
-    "text": "scSimEvalStudio (version 0.99.3) is the interactive graphical benchmarking studio companion to scSimEval (version 0.99.12). It operationalizes reference-based simulation benchmarking by comparing synthetic datasets against an empirical biological reference dataset across 56 curated quantitative evaluation measures organized into 8 canonical biological and computational categories. Supports 4 experimental designs on Bioconductor SingleCellExperiment S4 objects (and Seurat via Seurat::as.SingleCellExperiment()): Unimodal scRNA-seq (44 measures across 7 categories), Unimodal scATAC-seq (38 measures across 6 categories), Paired Co-Assay Multiomics via altExp(sce, 'ATAC') (56 measures across 8 categories), and Unpaired Multiomics (56 measures across 8 categories).",
+    "what": "Welcome to scSimEvalStudio",
+    "title": "scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking",
+    "text": "scSimEvalStudio (version 0.99.3) is the beginner-friendly, point-and-click Shiny web application companion to scSimEval. Compare single-cell RNA-seq, ATAC-seq, and multiomics simulation methods right in your browser without writing plotting or analysis code. Visit https://kabilanbio.github.io/scSimEval/ for statistical methods and the full 56-metric catalog.",
     "code": ""
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/index.html",
-    "id": "end-to-end-architecture-the-8-category-56-measure-taxonomy",
-    "dir": "",
+    "id": "get-started-in-3-simple-steps",
+    "dir": "Home",
     "previous_headings": "",
-    "what": "2. End-to-End Architecture & The 8-Category / 56-Measure Taxonomy",
-    "title": "scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking",
-    "text": "The 4-Stage scSimEval & scSimEvalStudio Benchmarking Architecture covers: (I) Distributional Properties (14 measures: 10 univariate 1D distances Wasserstein, KS, MAD, MAE, RMSE, Bhattacharyya, KDE_ISE, Runs_Statistic, NN_Mismatch, Between_Dataset_Silh_Global and 4 bivariate 2D distances Fasano_Franceschini_2D_KS, EMD_2D, NN_Mismatch_2D, Between_Dataset_Silh_2D_Global across 18 empirical properties: 7 cell-level, 7 feature-level, 4 bivariate pairs); (II) Sparsity & Zero-Inflation Dynamics (5 measures: midpoint_error, slope_error, r2_discrepancy, curve_rmse, excess_zero_weight_discrepancy); (III) Cellular Manifold & Clustering Concordance (8 measures: MMD, Generative_Precision, Generative_Recall, silhouette_sim, cdi, neighborhood_purity, ari, nmi); (IV) Technical Variation & Batch Mixing Dynamics (5 measures: batch_silhouette, pcr_r2, cms, isi, cross_batch_F1); (V) Biological Signal & Differential Fidelity (12 measures: 6 scRNA-seq DE + 6 scATAC-seq DA via replicate-aware pseudobulk edgeR-QLF: pval_dist_score, accuracy, precision, recall, f1_score, auc); (VI) Multiomics Integration & Alignment (5 measures: batch_asw, cell_type_asw, graph_connectivity, integration_ari, integration_nmi); (VII) Trajectory & Lineage Topology (5 measures via HVG-filtered dynverse: him, edge_flip, geodesic_correlation, F1_branches, wcor_features); and (VIII) Computational Scalability & Efficiency (2 hardware-normalized measures: core_seconds and memory_per_core_mib).",
-    "code": ""
+    "what": "Get Started in 3 Simple Steps",
+    "title": "scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking",
+    "text": "Install scSimEvalStudio from Bioconductor or GitHub, launch the Shiny app with launch_scSimEval_app(), and explore 1-click built-in example datasets or upload your own SingleCellExperiment or Seurat .rds files.",
+    "code": "BiocManager::install(\"scSimEvalStudio\")\nlibrary(scSimEvalStudio)\nlaunch_scSimEval_app()"
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/index.html",
-    "id": "direction-aware-mathematical-score-normalization-hierarchical-aggregation",
-    "dir": "",
+    "id": "inside-the-shiny-studio-at-a-glance",
+    "dir": "Home",
     "previous_headings": "",
-    "what": "3. Direction-Aware Mathematical Score Normalization & Hierarchical Aggregation",
-    "title": "scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking",
-    "text": "scSimEvalStudio transforms every raw measurement (Score_Raw) through a two-stage direction-aware normalization pipeline (scSimEval::normalize_bubble_scores()): zero-targeted statistics take absolute divergence |x|, lower-is-better distance/error/cost metrics are inverted and min-max normalized onto [0, 1], and higher-is-better concordance metrics are scaled directly onto [0, 1] where 1.00 denotes optimal empirical reference concordance. Metrics are averaged into category means S_cat and combined into the unweighted Overall Composite Score S_overall.",
-    "code": ""
-  },
-  {
-    "path": "https://kabilanbio.github.io/scSimEvalStudio/index.html",
-    "id": "overview-of-the-8-interactive-modules-in-scsimevalstudio",
-    "dir": "",
-    "previous_headings": "",
-    "what": "4. Overview of the 8 Interactive Modules in scSimEvalStudio",
-    "title": "scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking",
-    "text": "The 8 interactive tabs in scSimEvalStudio are: (1) Home KPI dashboard; (2) Data Hub with 4 ingestion modes (scRNA-seq, scATAC-seq, Paired & Unpaired Multiomics, Upload Saved Results .rds/.csv), Oryza sativa Rice Bud and Glycine max Soybean Root empirical benchmarks, and 1-Click Standalone HPC/Workstation R Script Generator; (3) Comparative Bubble Matrix & Fidelity Leaderboard; (4) Visualizations with 8 diagnostic sub-panels (Evaluation Summary, Distribution QC, Metric Heatmap, Metric Plots, PCA Ordination anchored to Ideal Reference Anchor 1, MDS Metric Space, Cell Embeddings UMAP/t-SNE/PCA with ASW & ARI, Scalability Benchmark) and 25%-400% Step-Zoom & 600% Fullscreen Lightbox; (5) Benchmark Results & Export (.rds, .xlsx, .csv); (6) Help & Getting Started with Dynamic Multi-Core Scheduling Table; (7) Logs real-time WebSocket diagnostic terminal; and (8) Contact (Division of Agricultural Bioinformatics, ICAR-IASRI, New Delhi).",
-    "code": ""
-  },
-  {
-    "path": "https://kabilanbio.github.io/scSimEvalStudio/index.html",
-    "id": "installation-quick-start",
-    "dir": "",
-    "previous_headings": "",
-    "what": "5. Installation & Quick Start",
-    "title": "scSimEvalStudio: Interactive Shiny Studio for Single-Cell Multiomics Benchmarking",
-    "text": "Install scSimEval and scSimEvalStudio from Bioconductor via BiocManager::install() or from GitHub via remotes::install_github(), and launch the studio with launch_scSimEval_app().",
-    "code": "BiocManager::install(c(\"scSimEval\", \"scSimEvalStudio\")) library(scSimEvalStudio) launch_scSimEval_app()"
-  },
-  {
-    "path": "https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.html",
-    "id": "scientific-motivation-multiomics-experimental-design-coverage",
-    "dir": "Articles",
-    "previous_headings": "",
-    "what": "1. Scientific Motivation & Multiomics Experimental Design Coverage",
-    "title": "Interactive Single-Cell & Multiomics Simulation Benchmarking with scSimEvalStudio",
-    "text": "scSimEvalStudio (v0.99.3) and scSimEval (v0.99.12) establish a reference-based benchmarking framework comparing simulated datasets against empirical biological references across 56 curated evaluation measures in 8 canonical categories. Integrates natively with Bioconductor SingleCellExperiment S4 containers, altExp(sce, 'ATAC'), SummarizedExperiment::colData(sce) cell_type and batch metadata, BiocParallel, Matrix dgCMatrix, edgeR pseudobulk quasi-likelihood testing, CDI, CellMixS, scater, scuttle, and Seurat::as.SingleCellExperiment().",
+    "what": "Inside the Shiny Studio (At a Glance)",
+    "title": "scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking",
+    "text": "Home, Data Hub, Comparative Bubble Matrix, Visualizations (8 interactive chart tabs), Benchmark Results & Export (Excel, CSV, RDS, 600 DPI figures), Help & Getting Started, Logs, and Contact.",
     "code": ""
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.html",
-    "id": "end-to-end-architecture-the-8-category-56-measure-taxonomy",
+    "id": "welcome-to-scsimevalstudio",
     "dir": "Articles",
     "previous_headings": "",
-    "what": "2. End-to-End Architecture & The 8-Category / 56-Measure Taxonomy",
-    "title": "Interactive Single-Cell & Multiomics Simulation Benchmarking with scSimEvalStudio",
-    "text": "Complete mathematical and biological breakdown of Categories I-VIII and all 56 evaluation measures: Category I Distributional Properties (14 measures across 18 properties: library_size, log_library_size, tmm_factor, zero_fraction_cell, detection_freq_cell, cell_cor, pca_dist, mean_expression, variance, scaled_variance, cv, zero_fraction_feature, dispersion, gene_cor, lib_vs_cellzero, mean_vs_sd, mean_vs_featzero, mean_vs_dispersion), Category II Sparsity & Zero-Inflation Dynamics (5 measures), Category III Cellular Manifold & Clustering Concordance (8 measures), Category IV Technical Variation & Batch Mixing Dynamics (5 measures), Category V Biological Signal & Differential Fidelity (12 measures: 6 scRNA-seq DE + 6 scATAC-seq DA via replicate-aware pseudobulk edgeR-QLF), Category VI Multiomics Integration & Alignment (5 measures), Category VII Trajectory & Lineage Topology (5 measures via HVG-filtered dynverse), and Category VIII Computational Scalability & Efficiency (2 hardware-normalized measures: core_seconds = T_elapsed * N_cores and memory_per_core_mib = M_peak / N_cores).",
+    "what": "1. Welcome to scSimEvalStudio",
+    "title": "Beginner's Guide to scSimEvalStudio",
+    "text": "Point-and-click Shiny web app for single-cell and multiomics simulation benchmarking. Try 1-click example datasets, upload SingleCellExperiment or Seurat .rds files, compare simulators on a simple 0 to 1 scale, and download 600 DPI figures and Excel workbooks.",
     "code": ""
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.html",
-    "id": "direction-aware-score-normalization-hierarchical-aggregation",
+    "id": "step-2-load-data-in-the-data-hub-tab",
     "dir": "Articles",
     "previous_headings": "",
-    "what": "3. Direction-Aware Score Normalization & Hierarchical Aggregation",
-    "title": "Interactive Single-Cell & Multiomics Simulation Benchmarking with scSimEvalStudio",
-    "text": "Two-stage direction-aware transformation via scSimEval::normalize_bubble_scores(): Stage 1 aligns zero-targeted statistics, lower-is-better distance/error/cost metrics, and higher-is-better concordance metrics onto [0, 1]. Stage 2 consolidates Category I property scores, computes category fidelity means S_cat, and aggregates the unweighted Overall Composite Score S_overall.",
+    "what": "3. Step 2 — Load Data in the Data Hub Tab",
+    "title": "Beginner's Guide to scSimEvalStudio",
+    "text": "4 easy options in Data Hub: 1-click example datasets (Rice Bud or Soybean Root), upload single-cell scRNA-seq or scATAC-seq .rds files, upload paired or unpaired multiomics .rds files, or reload saved .rds or .csv results. Includes 1-click Download R Script for large datasets.",
     "code": ""
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.html",
-    "id": "detailed-guide-to-all-8-interactive-modules-in-scsimevalstudio",
+    "id": "step-3-compare-simulators-at-a-glance",
     "dir": "Articles",
     "previous_headings": "",
-    "what": "4. Detailed Guide to All 8 Interactive Modules in scSimEvalStudio",
-    "title": "Interactive Single-Cell & Multiomics Simulation Benchmarking with scSimEvalStudio",
-    "text": "Walkthrough of Module 1 (Home), Module 2 (Data Hub with 4 modes, Rice Bud & Soybean Root datasets, and 1-Click Standalone HPC R Script Generator), Module 3 (Comparative Bubble Matrix & Fidelity Leaderboard), Module 4 (Visualizations: Evaluation Summary, Distribution QC, Metric Heatmap, Metric Plots, PCA Ordination with Ideal Reference Anchor 1, MDS Metric Space, Cell Embeddings UMAP/t-SNE/PCA with ASW & ARI quality table, Scalability Benchmark), Module 5 (Benchmark Results & Export: .rds, .xlsx, .csv), Module 6 (Help & Getting Started with Dynamic Multi-Core Scheduling Table), Module 7 (Logs live WebSocket terminal), and Module 8 (Contact).",
+    "what": "4. Step 3 — Compare Simulators at a Glance",
+    "title": "Beginner's Guide to scSimEvalStudio",
+    "text": "Read the Comparative Bubble Matrix and Fidelity Leaderboard on a simple 0.0 to 1.0 scale where bigger circles mean better scores and a bold black outline marks the top simulator per metric.",
     "code": ""
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.html",
-    "id": "installation-launching-programmatic-verification",
+    "id": "step-4-explore-interactive-charts-visualizations-tab",
     "dir": "Articles",
     "previous_headings": "",
-    "what": "5. Installation, Launching & Programmatic Verification",
-    "title": "Interactive Single-Cell & Multiomics Simulation Benchmarking with scSimEvalStudio",
-    "text": "Verify that the bundled Shiny application initializes cleanly with shiny::shinyAppDir() and inspect the bundled 6-simulator demonstration benchmark database (demo_benchmark_data.rds: scMultiSim, scDesign3, MOSim, scCross, scMoMtF, Matilda).",
-    "code": "library(scSimEvalStudio) app_dir <- system.file(\"shiny\", \"scSimEvalApp\", package = \"scSimEvalStudio\") app <- shiny::shinyAppDir(app_dir) demo_obj <- readRDS(file.path(app_dir, \"data\", \"demo_benchmark_data.rds\"))"
+    "what": "5. Step 4 — Explore Interactive Charts (Visualizations Tab)",
+    "title": "Beginner's Guide to scSimEvalStudio",
+    "text": "8 interactive chart tabs: Evaluation Summary, Distribution QC, Metric Heatmap, Metric Plots, PCA Ordination, MDS Metric Space, Cell Embeddings (UMAP, t-SNE & PCA), and Scalability Benchmark, with 25%-400% zoom, pan, Full View lightbox, 600 DPI JPEG/PDF export, and 1-click R script export.",
+    "code": ""
+  },
+  {
+    "path": "https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.html",
+    "id": "step-5-export-results-monitor-progress-get-help",
+    "dir": "Articles",
+    "previous_headings": "",
+    "what": "6. Step 5 — Export Results, Monitor Progress & Get Help",
+    "title": "Beginner's Guide to scSimEvalStudio",
+    "text": "Download Excel (.xlsx), CSV, or full .rds session backups in Benchmark Results & Export; monitor live progress in Logs; access in-app tips and contact details in Help & Contact.",
+    "code": ""
   },
   {
     "path": "https://kabilanbio.github.io/scSimEvalStudio/reference/launch_scSimEval_app.html",
@@ -106,27 +86,17 @@
     "previous_headings": "",
     "what": "Launch Interactive scSimEval Benchmarking Studio — launch_scSimEval_app",
     "title": "Launch Interactive scSimEval Benchmarking Studio — launch_scSimEval_app",
-    "text": "Launches the companion Shiny web application bundled in scSimEvalStudio. Provides a graphical interface to upload SingleCellExperiment biological reference and simulated datasets (scRNA-seq, scATAC-seq, paired or unpaired multiomics), execute the 56-measure evaluation suite across 8 canonical categories, explore diagnostic figures interactively, and export publication-quality figures, standalone HPC R scripts, and Excel/PDF reports.",
-    "code": "launch_scSimEval_app(port = NULL, host = \"127.0.0.1\", launch.browser = interactive(), maxRequestSize = 10 * 1024^3)"
+    "text": "Launches the companion Shiny web application bundled in scSimEvalStudio with a default 10 GiB upload limit.",
+    "code": "library(scSimEvalStudio)\nlaunch_scSimEval_app()"
   },
   {
-    "path": "https://kabilanbio.github.io/scSimEvalStudio/reference/scSimEvalStudio-package.html",
-    "id": null,
-    "dir": "Reference",
+    "path": "https://kabilanbio.github.io/scSimEvalStudio/news/index.html",
+    "id": "scsimevalstudio-0993",
+    "dir": "Changelog",
     "previous_headings": "",
-    "what": "scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking — scSimEvalStudio-package",
-    "title": "scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking — scSimEvalStudio-package",
-    "text": "Companion graphical Shiny web interface for the scSimEval Bioconductor package (v0.99.12). Developed at the Division of Agricultural Bioinformatics, ICAR-IASRI, New Delhi.",
-    "code": ""
-  },
-  {
-    "path": "https://kabilanbio.github.io/scSimEvalStudio/authors.html",
-    "id": null,
-    "dir": "",
-    "previous_headings": "",
-    "what": "Authors",
-    "title": "Authors and Citation",
-    "text": "Kabilan Sakthivel, Dr Dwijesh Chandra Mishra, Dr Shashi Bhushan Lal, Dr Ulavappa Angadi, Dr Sudhir Srivastava, Dr Neeraj Budhlakoti, Dr Krishna Kumar Chaturvedi, Dr Ranjeet Ranjan Kumar, Dr Navin Chandra Gupta, Dr Sharanbasappa.",
+    "what": "scSimEvalStudio 0.99.3",
+    "title": "Changelog",
+    "text": "Streamlined README, vignette, and pkgdown github.io documentation into a beginner-friendly Shiny studio guide.",
     "code": ""
   }
 ]
