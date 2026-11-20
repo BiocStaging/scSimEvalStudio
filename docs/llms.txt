@@ -1,46 +1,12 @@
-# scSimEvalStudio
+# scSimEvalStudio: Interactive Shiny App for Single-Cell Simulation Benchmarking
 
-**`scSimEvalStudio`** is the interactive Shiny graphical interface
-companion package for
-**[scSimEval](https://github.com/kabilanbio/scSimEval)**
-(`SingleCellExperiment`-based benchmarking of single-cell RNA-seq,
-scATAC-seq, and paired/unpaired multiomics simulations).
+`scSimEvalStudio` (version `0.99.3`) is the beginner-friendly, point-and-click Shiny web application companion to [`scSimEval`](https://kabilanbio.github.io/scSimEval/). It lets users explore built-in examples, upload single-cell RNA-seq, ATAC-seq, or multiomics `.rds` datasets, compare simulators on a simple 0 to 1 visual scale, explore 8 interactive chart views, and export 600 DPI figures, Excel workbooks, CSV tables, and reusable `.rds` sessions.
 
-## Installation
+## Key Documentation Pages
 
-``` r
-if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
-remotes::install_github("kabilanbio/scSimEval")
-remotes::install_github("kabilanbio/scSimEvalStudio")
-```
-
-## Quick Start
-
-``` r
-library(scSimEvalStudio)
-launch_scSimEval_app()
-```
-
-## Development & Support
-
-- **Maintainer:** Kabilan Sakthivel (`kabilan151414@gmail.com`)
-- **Documentation:** <https://kabilanbio.github.io/scSimEvalStudio/>
-- **Issues:** <https://github.com/kabilanbio/scSimEvalStudio/issues>
-
-# Package index
-
-## Launch Studio
-
-- [`launch_scSimEval_app()`](https://kabilanbio.github.io/scSimEvalStudio/reference/launch_scSimEval_app.md)
-  : Launch Interactive scSimEval Benchmarking Studio
-- [`scSimEvalStudio`](https://kabilanbio.github.io/scSimEvalStudio/reference/scSimEvalStudio-package.md)
-  [`scSimEvalStudio-package`](https://kabilanbio.github.io/scSimEvalStudio/reference/scSimEvalStudio-package.md)
-  : scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell
-  Multiomics Benchmarking
-
-# Articles
-
-### All vignettes
-
-- [Interactive Single-Cell Simulation Benchmarking with
-  scSimEvalStudio](https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.md):
+- [Home & Quick Start](https://kabilanbio.github.io/scSimEvalStudio/index.md)
+- [Beginner's Guide to scSimEvalStudio (Architecture & Studio Guide)](https://kabilanbio.github.io/scSimEvalStudio/articles/scSimEvalStudio-workflow.md)
+- [Function Reference: `launch_scSimEval_app()`](https://kabilanbio.github.io/scSimEvalStudio/reference/launch_scSimEval_app.md)
+- [Package Overview: `scSimEvalStudio-package`](https://kabilanbio.github.io/scSimEvalStudio/reference/scSimEvalStudio-package.md)
+- [Changelog](https://kabilanbio.github.io/scSimEvalStudio/news/index.md)
+- [Core Engine (`scSimEval`) Documentation](https://kabilanbio.github.io/scSimEval/)
