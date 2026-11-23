@@ -1,6 +1,45 @@
+# R session and IDE files
 .Rproj.user
+.Rhistory
+.RData
+.Ruserdata
 *.Rproj
+
+# R build, check, and Bioconductor artifacts
+*.tar.gz
 *.Rcheck/
 *.BiocCheck/
-*.tar.gz
+Meta/
+
+# Vignette build intermediates in vignettes/ (docs/ holds the published pkgdown site)
+vignettes/*.html
+vignettes/*.R
+vignettes/*_files/
+vignettes/*_cache/
+
+# Test artifacts
+**/Rplots.pdf
 Rplots.pdf
+tests/testthat/_snaps/
+
+# Development-only directories
+examples/
+data-raw/
+scratch/
+
+# Agent/local scratch and temporary files
+AGENTS.md
+*.tmp
+*.log
+*.bak
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Credentials and runtime caches
+*google_key.json
+*.key.json
+pageviews_cache.rds

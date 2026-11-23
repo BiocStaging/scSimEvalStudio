@@ -1,12 +1,48 @@
-^\.Rproj\.user$
+# R project and IDE files
 ^.*\.Rproj$
+^\.Rproj\.user$
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+
+# Version control and CI metadata
 ^\.git$
 ^\.gitignore$
+^\.github$
+
+# OS and temporary artifacts
+^\.DS_Store$
+^Thumbs\.db$
+^Desktop\.ini$
+^Rplots\.pdf$
+^tests/testthat/Rplots\.pdf$
+^tests/testthat/_snaps$
+^.*\.tmp$
+^.*\.log$
+
+# Build and check artifacts
+^.*\.tar\.gz$
+^.*\.Rcheck$
+^.*\.BiocCheck$
+^Meta$
+
+# Development-only directories and internal notes
+^examples$
+^data-raw$
+^scratch$
+^AGENTS\.md$
+
+# pkgdown website files (GitHub Pages only, excluded from Bioconductor tarball)
 ^docs$
 ^pkgdown$
 ^_pkgdown\.yml$
-^AGENTS\.md$
-^Rplots\.pdf$
-^.*\.Rcheck$
-^.*\.BiocCheck$
-^scSimEvalStudio_.*\.tar\.gz$
+^vignettes/.*\.html$
+^vignettes/.*_files$
+
+# README-only figures
+^man/figures$
+
+# Credentials and runtime caches
+^.*google_key\.json$
+^.*\.key\.json$
+^pageviews_cache\.rds$

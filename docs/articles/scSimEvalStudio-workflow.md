@@ -25,7 +25,7 @@ Instead of writing scripts to run metrics and format dozens of plots,
 
 ![Overview of the 4 simple stages inside scSimEvalStudio: Load Data, Run
 Evaluation, Compare Rankings, and Explore & Export
-Results.](../../../tmp/RtmpOPyzcl/temp_libpath143f9717cb908/scSimEvalStudio/shiny/scSimEvalApp/www/workflow_diagram.png)
+Results.](../../../tmp/RtmpBe8Cj3/temp_libpath16c4b734f2249/scSimEvalStudio/shiny/scSimEvalApp/www/workflow_diagram.png)
 
 Overview of the 4 simple stages inside scSimEvalStudio: Load Data, Run
 Evaluation, Compare Rankings, and Explore & Export Results.
