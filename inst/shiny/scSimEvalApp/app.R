@@ -56,8 +56,8 @@ ui_max_cores <- max(128L, n_physical_cores)
 default_n_cores <- max(1L, min(4L, n_physical_cores - 1L))
 
 sys_hardware_summary <- sprintf("System detected: %d CPU cores", n_physical_cores)
-.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.4")
-.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.12")
+.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.5")
+.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.14")
 
 # Register static resource directory for documentation figures
 fig_dirs <- c(
@@ -3286,8 +3286,43 @@ ui <- page_navbar(
             });
           }
         };
-        bindAll();
-        var observer = new MutationObserver(bindAll);
+        window.scCalcLocked = false;
+        window.scApplyCalcLock = function() {
+          if (!window.scCalcLocked) return;
+          var ids = [
+            'btn_run_uni_eval',
+            'btn_run_uni_eval_atac',
+            'btn_run_multi_eval',
+            'btn_run_uni_eval_main',
+            'btn_run_multi_eval_main'
+          ];
+          ids.forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) {
+              el.disabled = true;
+              el.setAttribute('disabled', 'disabled');
+              el.setAttribute('aria-disabled', 'true');
+              el.classList.add('disabled');
+              el.style.pointerEvents = 'none';
+              el.style.opacity = '0.55';
+              el.title = 'Disabled while exploring example datasets. Refresh the app to run a custom evaluation.';
+            }
+          });
+        };
+        if (window.Shiny && Shiny.addCustomMessageHandler) {
+          Shiny.addCustomMessageHandler('sc_lock_calc_buttons', function(msg) {
+            if (msg && msg.locked) {
+              window.scCalcLocked = true;
+              window.scApplyCalcLock();
+            }
+          });
+        }
+        var bindAllWithLock = function() {
+          bindAll();
+          window.scApplyCalcLock();
+        };
+        bindAllWithLock();
+        var observer = new MutationObserver(bindAllWithLock);
         observer.observe(document.body, { childList: true, subtree: true });
       });
     ")),
@@ -5409,6 +5444,11 @@ server <- function(input, output, session) {
     ref_matrices = list(),
     dataset_summary_df = NULL
   )
+  example_data_locked <- reactiveVal(FALSE)
+  lock_calc_buttons_for_example <- function() {
+    example_data_locked(TRUE)
+    session$sendCustomMessage("sc_lock_calc_buttons", list(locked = TRUE))
+  }
   
   # Dedicated per-mode data cache ensuring complete isolation across upload modes
   mode_data <- reactiveValues(
@@ -5838,7 +5878,8 @@ server <- function(input, output, session) {
                     stats::setNames(sim_mats, paste0("[Simulated] ", names(sim_mats), " (Rice Bud scRNA-seq)")))
       idx_rna <- !grepl("^atac_da_|^DA ", bm$benchmark_df$Metric, ignore.case = TRUE) &
                  !bm$benchmark_df$Metric %in% c("curve_rmse", "Accessibility Sparsity RMSE") &
-                 !grepl("^\\(VI\\)|Multiomics Integration", bm$benchmark_df$Category, ignore.case = TRUE)
+                 !grepl("^\\(VI\\)|Multiomics Integration", bm$benchmark_df$Category, ignore.case = TRUE) &
+                 !(bm$benchmark_df$Modality %in% c("ATAC", "scATAC-seq", "Joint (Cross-Modal)"))
       bench_df <- bm$benchmark_df[bm$benchmark_df$Dataset == "Rice Bud (Paired)" & idx_rna, ]
       bench_df$Modality <- "scRNA-seq"
       bench_df$Dataset <- "Rice Bud (scRNA-seq)"
@@ -5913,7 +5954,8 @@ server <- function(input, output, session) {
                     stats::setNames(sim_mats, paste0("[Simulated] ", names(sim_mats), " (Rice Bud scATAC-seq)")))
       idx_atac <- !grepl("^rna_de_|^DE ", bm$benchmark_df$Metric, ignore.case = TRUE) &
                   !grepl("^\\(VII\\)|Trajectory", bm$benchmark_df$Category, ignore.case = TRUE) &
-                  !grepl("^\\(VI\\)|Multiomics Integration", bm$benchmark_df$Category, ignore.case = TRUE)
+                  !grepl("^\\(VI\\)|Multiomics Integration", bm$benchmark_df$Category, ignore.case = TRUE) &
+                  !(bm$benchmark_df$Modality %in% c("RNA", "scRNA-seq", "Joint (Cross-Modal)"))
       bench_df <- bm$benchmark_df[bm$benchmark_df$Dataset == "Rice Bud (Paired)" & idx_atac, ]
       bench_df$Modality <- "scATAC-seq"
       bench_df$Dataset <- "Rice Bud (scATAC-seq)"
@@ -6108,9 +6150,10 @@ server <- function(input, output, session) {
     mode_data$demo <- mode_data[[target_mode]]
     
     sync_active_mode_data(target_mode)
+    lock_calc_buttons_for_example()
     rv_plot_triggers$bubble <- 0; rv_plot_triggers$sum <- 0; rv_plot_triggers$dist <- 0; rv_plot_triggers$scale <- 0; rv_plot_triggers$box <- 0; rv_plot_triggers$heat <- 0; rv_plot_triggers$pca <- 0; rv_plot_triggers$mds <- 0; rv_plot_triggers$emb <- 0
     sc_log("SUCCESS", paste0("Demo benchmark data loaded: '", source_name, "' (", nrow(bench_df), " evaluation rows across ", length(methods), " simulators: ", paste(methods, collapse = ", "), ")."), "DataHub")
-    showNotification(paste0(source_name, " loaded successfully!"), type = "message", duration = 6)
+    showNotification(paste0(source_name, " loaded successfully! Calculate Metrics buttons are locked while exploring example results (refresh the app to run custom calculations)."), type = "message", duration = 7)
     nav_select("datahub_subtabs", "Dataset properties")
     return(TRUE)
   }
@@ -6152,8 +6195,9 @@ server <- function(input, output, session) {
       all_matrices       = sess$all_matrices %||% list()
     )
     sync_active_mode_data("upload_bench")
+    lock_calc_buttons_for_example()
     rv_plot_triggers$bubble <- 0; rv_plot_triggers$sum <- 0; rv_plot_triggers$dist <- 0; rv_plot_triggers$scale <- 0; rv_plot_triggers$box <- 0; rv_plot_triggers$heat <- 0; rv_plot_triggers$pca <- 0; rv_plot_triggers$mds <- 0; rv_plot_triggers$emb <- 0
-    showNotification("Loaded Paired Multiomics Example (.rds) successfully!", type = "message", duration = 6)
+    showNotification("Loaded Paired Multiomics Example (.rds) successfully! Calculate Metrics buttons are locked while exploring example results (refresh the app to run custom calculations).", type = "message", duration = 7)
     nav_select("datahub_subtabs", "Dataset properties")
   })
   observeEvent(input$btn_load_example_paired_multi, {
@@ -6773,6 +6817,10 @@ server <- function(input, output, session) {
 
   # Single-Cell Evaluation Core Runner Function
   run_single_cell_evaluation <- function() {
+    if (isTRUE(example_data_locked())) {
+      showNotification("Example analysis results are already loaded for exploration. Refresh the app to run a custom evaluation.", type = "warning", duration = 6)
+      return(invisible(NULL))
+    }
     is_atac_mode <- identical(input$opt_data_mode, "scatac")
     n_dsets <- input$num_uni_datasets %||% 1
     n_sims <- input$num_uni_sims %||% 1
@@ -7477,6 +7525,10 @@ server <- function(input, output, session) {
 
   # Multiomics Evaluation Core Runner Function
   run_multiomics_evaluation <- function() {
+    if (isTRUE(example_data_locked())) {
+      showNotification("Example analysis results are already loaded for exploration. Refresh the app to run a custom evaluation.", type = "warning", duration = 6)
+      return(invisible(NULL))
+    }
     n_dsets <- input$num_multi_datasets %||% 1
     n_sims <- input$num_multi_sims %||% 1
     is_paired <- identical(input$opt_multi_pairing, "paired")
@@ -8952,7 +9004,7 @@ server <- function(input, output, session) {
           class = "d-flex gap-2 flex-wrap",
           downloadButton("dl_hpc_r_script_uni", "Download R Script", class = "btn btn-outline-primary", icon = icon("file-code")),
           actionButton("btn_inspect_uni_data", "Inspect & View Dataset Properties", class = "btn btn-outline-secondary px-3 py-2", icon = icon("table-cells")),
-          actionButton("btn_run_uni_eval_main", "Calculate Single-Cell Metrics", class = "btn btn-primary px-4 py-2", icon = icon("play"), style = "font-weight: 700; font-size: 0.95rem;")
+          actionButton("btn_run_uni_eval_main", "Calculate Single-Cell Metrics", class = paste("btn btn-primary px-4 py-2", if (isTRUE(example_data_locked())) "disabled" else ""), icon = icon("play"), style = "font-weight: 700; font-size: 0.95rem;", disabled = if (isTRUE(example_data_locked())) "disabled" else NULL)
         )
       )
     )
@@ -9063,7 +9115,7 @@ server <- function(input, output, session) {
           class = "d-flex gap-2 flex-wrap",
           downloadButton("dl_hpc_r_script_multi", "Download R Script", class = "btn btn-outline-primary", icon = icon("file-code")),
           actionButton("btn_inspect_multi_data", "Inspect & View Dataset Properties", class = "btn btn-outline-secondary px-3 py-2", icon = icon("table-cells")),
-          actionButton("btn_run_multi_eval_main", "Calculate Multiomics Metrics", class = "btn btn-primary px-4 py-2", icon = icon("dna"), style = "font-weight: 700; font-size: 0.95rem;")
+          actionButton("btn_run_multi_eval_main", "Calculate Multiomics Metrics", class = paste("btn btn-primary px-4 py-2", if (isTRUE(example_data_locked())) "disabled" else ""), icon = icon("dna"), style = "font-weight: 700; font-size: 0.95rem;", disabled = if (isTRUE(example_data_locked())) "disabled" else NULL)
         )
       )
     )

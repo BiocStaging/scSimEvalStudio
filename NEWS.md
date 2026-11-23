@@ -1,3 +1,8 @@
+# scSimEvalStudio 0.99.5
+
+* Synchronized bundled example benchmark caches (`demo_benchmark_data.rds` and `demo_paired_multiomics_saved.rds`) with `scSimEval 0.99.14` (Rice Bud paired 100 balanced cells × 100 HVGs/HVPs across 6 simulators, Soybean Root unpaired 100 balanced cells × 100 HVGs/HVPs across 3 simulators, updated scalability benchmarks, and complete bivariate Category I coverage returning exact 56/56/44/38 metrics).
+* Automatically disabled the `Calculate scRNA-seq Metrics`, `Calculate scATAC-seq Metrics`, and `Calculate Multiomics Metrics` buttons in the Data Hub (until app refresh) whenever an example dataset is loaded for exploration, preventing accidental clicks from triggering the busy overlay and blocking result viewing.
+
 # scSimEvalStudio 0.99.4
 
 * Extracted inline post-footer JavaScript across `docs/*.html` into `docs/studio-ui.js` for clean HTML markup and verified `R CMD check` and `BiocCheck` compliance.

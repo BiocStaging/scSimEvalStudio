@@ -7,17 +7,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Beginner's Guide to scSimEvalStudio • scSimEvalStudio</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Beginner's Guide to scSimEvalStudio">
-<meta property="og:image" content="https://kabilanbio.github.io/scSimEvalStudio/logo.png">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Beginner's Guide to scSimEvalStudio">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
@@ -30,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scSimEvalStudio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +44,7 @@
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
- <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search docs... (Press /)" data-search-index="../search.json">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
@@ -64,39 +62,60 @@
   </div>
 </nav><div class="container template-article">
 
+
+
+
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <h1>Beginner's Guide to scSimEvalStudio</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Beginner's Guide to scSimEvalStudio</h1>
+            
+      
       <small class="dont-index">Source: <a href="https://github.com/kabilanbio/scSimEvalStudio/blob/HEAD/vignettes/scSimEvalStudio-workflow.Rmd" class="external-link"><code>vignettes/scSimEvalStudio-workflow.Rmd</code></a></small>
       <div class="d-none name"><code>scSimEvalStudio-workflow.Rmd</code></div>
     </div>
 
+    
+    
 <div class="section level2">
 <h2 id="welcome-to-scsimevalstudio">1. Welcome to <code>scSimEvalStudio</code><a class="anchor" aria-label="anchor" href="#welcome-to-scsimevalstudio"></a>
 </h2>
-<p><strong><code>scSimEvalStudio</code></strong> (version <code>0.99.4</code>) is a <strong>point-and-click Shiny web app</strong> built to make single-cell and multiomics simulation benchmarking simple and accessible—even if you are brand new to R.</p>
-<p>Instead of writing scripts to run metrics and format dozens of plots, <code>scSimEvalStudio</code> gives you a clean browser workspace where you can:</p>
+<p><strong><code>scSimEvalStudio</code></strong> (version
+<code>0.99.4</code>) is a <strong>point-and-click Shiny web app</strong>
+built to make single-cell and multiomics simulation benchmarking simple
+and accessible—even if you are brand new to R.</p>
+<p>Instead of writing scripts to run metrics and format dozens of plots,
+<code>scSimEvalStudio</code> gives you a clean browser workspace where
+you can:</p>
 <ul>
-<li>Try <strong>1-click example datasets</strong> immediately to learn how the app works.</li>
-<li>Upload your own <strong>scRNA-seq</strong>, <strong>scATAC-seq</strong>, or <strong>multiomics</strong> <code>.rds</code> datasets (<code>SingleCellExperiment</code> or <code>Seurat</code>).</li>
-<li>Compare simulators visually on an easy <strong>0 to 1 scale</strong> (where <strong>1.0 = best match</strong> to your real dataset).</li>
-<li>Zoom, pan, customize, and download <strong>600 DPI figures</strong>, <strong>Excel workbooks</strong>, and <strong>reproducible R scripts</strong>.</li>
+<li>Try <strong>1-click example datasets</strong> immediately to learn
+how the app works.</li>
+<li>Upload your own <strong>scRNA-seq</strong>,
+<strong>scATAC-seq</strong>, or <strong>multiomics</strong>
+<code>.rds</code> datasets (<code>SingleCellExperiment</code> or
+<code>Seurat</code>).</li>
+<li>Compare simulators visually on an easy <strong>0 to 1 scale</strong>
+(where <strong>1.0 = best match</strong> to your real dataset).</li>
+<li>Zoom, pan, customize, and download <strong>600 DPI figures</strong>,
+<strong>Excel workbooks</strong>, and <strong>reproducible R
+scripts</strong>.</li>
 </ul>
 <blockquote>
-<p><strong>Want the full metric definitions, statistical details, or R programming tutorials?</strong><br>
-All underlying evaluation methods are documented separately on the <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link">scSimEval Core Package Documentation</a></strong>.</p>
+<p><strong>Want the full metric definitions, statistical details, or R
+programming tutorials?</strong> All underlying evaluation methods are
+documented separately on the <strong><a href="https://kabilanbio.github.io/scSimEval/" class="external-link">scSimEval Core Package
+Documentation</a></strong>.</p>
 </blockquote>
 <div class="figure">
-<img src="../workflow_diagram.png" alt="Overview of the 4 simple stages inside scSimEvalStudio" width="100%">
-<p class="caption"><strong>Figure 1.</strong> Overview of the 4 simple stages inside <code>scSimEvalStudio</code>: Load Data, Run Evaluation, Compare Rankings, and Explore &amp; Export Results.</p>
+<img src="../../../tmp/RtmpOPyzcl/temp_libpath143f9717cb908/scSimEvalStudio/shiny/scSimEvalApp/www/workflow_diagram.png" class="r-plt" alt="Overview of the 4 simple stages inside scSimEvalStudio: Load Data, Run Evaluation, Compare Rankings, and Explore &amp; Export Results." width="100%"><p class="caption">
+Overview of the 4 simple stages inside scSimEvalStudio: Load Data, Run
+Evaluation, Compare Rankings, and Explore &amp; Export Results.
+</p>
 </div>
 <hr>
 </div>
-
 <div class="section level2">
 <h2 id="step-1-install-and-open-the-app">2. Step 1 — Install and Open the App<a class="anchor" aria-label="anchor" href="#step-1-install-and-open-the-app"></a>
 </h2>
-
 <div class="section level3">
 <h3 id="install-from-bioconductor">Install from Bioconductor<a class="anchor" aria-label="anchor" href="#install-from-bioconductor"></a>
 </h3>
@@ -106,7 +125,6 @@ All underlying evaluation methods are documented separately on the <strong><a hr
 <span><span class="op">}</span></span>
 <span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"scSimEval"</span>, <span class="st">"scSimEvalStudio"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-
 <div class="section level3">
 <h3 id="or-install-from-github">Or Install from GitHub<a class="anchor" aria-label="anchor" href="#or-install-from-github"></a>
 </h3>
@@ -117,7 +135,6 @@ All underlying evaluation methods are documented separately on the <strong><a hr
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kabilanbio/scSimEval"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"kabilanbio/scSimEvalStudio"</span><span class="op">)</span></span></code></pre></div>
 </div>
-
 <div class="section level3">
 <h3 id="launch-the-shiny-studio">Launch the Shiny Studio<a class="anchor" aria-label="anchor" href="#launch-the-shiny-studio"></a>
 </h3>
@@ -126,115 +143,193 @@ All underlying evaluation methods are documented separately on the <strong><a hr
 <span></span>
 <span><span class="co"># Configures shiny.maxRequestSize = 10 GiB by default for large multiomics .rds archives</span></span>
 <span><span class="fu"><a href="../reference/launch_scSimEval_app.html">launch_scSimEval_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Your default web browser will open automatically. By default, the app allows uploads up to <strong>10 GiB</strong> so large single-cell <code>.rds</code> files can be loaded locally without errors.</p>
+<p>Your default web browser will open automatically. By default, the app
+allows uploads up to <strong>10 GiB</strong> so large single-cell
+<code>.rds</code> files can be loaded locally without errors.</p>
 <hr>
 </div>
 </div>
-
 <div class="section level2">
 <h2 id="step-2-load-data-in-the-data-hub-tab">3. Step 2 — Load Data in the Data Hub Tab<a class="anchor" aria-label="anchor" href="#step-2-load-data-in-the-data-hub-tab"></a>
 </h2>
-<p>When the app opens, click <strong>Data Hub</strong> in the top bar. You have <strong>4 easy options</strong>:</p>
-<ol>
-<li><strong>Try a 1-Click Example Dataset (Recommended for Beginners):</strong> Choose an included empirical benchmark—such as <strong>Rice Bud</strong> (6 simulators) or <strong>Soybean Root</strong> (3 simulators)—to populate every chart and table in seconds.</li>
-<li><strong>Upload Your Own Single-Cell Data (<code>scRNA-seq</code> or <code>scATAC-seq</code>):</strong> Upload your real reference <code>.rds</code> file along with one or more simulated <code>.rds</code> files. Both <code>SingleCellExperiment</code> and <code>Seurat</code> <code>.rds</code> files are accepted (<code>Seurat</code> objects are converted automatically). If your files contain <code>cell_type</code> and <code>batch</code> columns, extra clustering, batch, and biological signal checks unlock automatically.</li>
-<li><strong>Upload Multiomics Data (RNA + ATAC):</strong> Choose <strong>Paired</strong> (RNA and ATAC measured in the same cells) or <strong>Unpaired</strong> (measured in separate cells from the same tissue), upload your <code>.rds</code> files, and click <strong>Run</strong>.</li>
-<li><strong>Reload Previously Saved Results (<code>.rds</code> or <code>.csv</code>):</strong> Already ran a benchmark earlier? Upload your saved <code>.rds</code> archive or <code>.csv</code> table to view and customize plots instantly without waiting for calculations to run again.</li>
+<p>When the app opens, click <strong>Data Hub</strong> in the top bar.
+You have <strong>4 easy options</strong>:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Try a 1-Click Example Dataset (Recommended for
+Beginners)</strong> Choose an included empirical benchmark—such as
+<strong>Rice Bud</strong> (6 simulators) or <strong>Soybean
+Root</strong> (3 simulators)—to populate every chart and table in
+seconds.</li>
+<li>
+<strong>Upload Your Own Single-Cell Data (<code>scRNA-seq</code> or
+<code>scATAC-seq</code>)</strong> Upload your real reference
+<code>.rds</code> file along with one or more simulated
+<code>.rds</code> files. Both <code>SingleCellExperiment</code> and
+<code>Seurat</code> <code>.rds</code> files are accepted
+(<code>Seurat</code> objects are converted automatically). If your files
+contain <code>cell_type</code> and <code>batch</code> columns, extra
+clustering, batch, and biological signal checks unlock
+automatically.</li>
+<li>
+<strong>Upload Multiomics Data (RNA + ATAC)</strong> Choose
+<strong>Paired</strong> (RNA and ATAC measured in the same cells) or
+<strong>Unpaired</strong> (measured in separate cells from the same
+tissue), upload your <code>.rds</code> files, and click
+<strong>Run</strong>.</li>
+<li>
+<strong>Reload Previously Saved Results (<code>.rds</code> or
+<code>.csv</code>)</strong> Already ran a benchmark earlier? Upload your
+saved <code>.rds</code> archive or <code>.csv</code> table to view and
+customize plots instantly without waiting for calculations to run
+again.</li>
 </ol>
 <blockquote>
-<p><strong>Tip for Very Large Datasets:</strong> After configuring your files in <strong>Data Hub</strong>, click <strong>Download R Script</strong> to save a ready-to-run script that you can execute on a lab workstation or HPC server, then upload the saved <code>.rds</code> output back into <strong>Data Hub</strong> to explore the plots.</p>
+<p><strong>Tip for Very Large Datasets:</strong> After configuring your
+files in <strong>Data Hub</strong>, click <strong>Download R
+Script</strong> to save a ready-to-run script that you can execute on a
+lab workstation or HPC server, then upload the saved <code>.rds</code>
+output back into <strong>Data Hub</strong> to explore the plots.</p>
 </blockquote>
 <hr>
 </div>
-
 <div class="section level2">
 <h2 id="step-3-compare-simulators-at-a-glance">4. Step 3 — Compare Simulators at a Glance<a class="anchor" aria-label="anchor" href="#step-3-compare-simulators-at-a-glance"></a>
 </h2>
-<p>Open the <strong>Comparative Bubble Matrix</strong> tab to see how your simulators rank:</p>
+<p>Open the <strong>Comparative Bubble Matrix</strong> tab to see how
+your simulators rank:</p>
 <ul>
-<li><strong>How to Read the Scores:</strong> Every metric is shown on a simple <strong>0.0 to 1.0 scale</strong>, where <strong>closer to 1.0 means a closer match</strong> to your real biological dataset.</li>
-<li><strong>Comparative Bubble Matrix Figure:</strong> The left bars show overall and category averages; the right grid shows individual metrics as circles. <strong>Bigger circles = better scores</strong>, and a <strong>bold black outline</strong> highlights the top-performing simulator for each metric.</li>
-<li><strong>Fidelity Leaderboard:</strong> Switch to the second sub-tab for a clean, sortable ranking table that you can download as a <code>.csv</code> file.</li>
-<li><strong>Easy Filtering:</strong> Use the sidebar controls to filter by dataset, modality (<code>scRNA-seq</code>, <code>scATAC-seq</code>, or <code>Combined</code>), specific simulators, or specific categories, and adjust figure width and height before downloading.</li>
+<li>
+<strong>How to Read the Scores:</strong> Every metric is shown on a
+simple <strong>0.0 to 1.0 scale</strong>, where <strong>closer to 1.0
+means a closer match</strong> to your real biological dataset.</li>
+<li>
+<strong>Comparative Bubble Matrix Figure:</strong> The left bars
+show overall and category averages; the right grid shows individual
+metrics as circles. <strong>Bigger circles = better scores</strong>, and
+a <strong>bold black outline</strong> highlights the top-performing
+simulator for each metric.</li>
+<li>
+<strong>Fidelity Leaderboard:</strong> Switch to the second sub-tab
+for a clean, sortable ranking table that you can download as a
+<code>.csv</code> file.</li>
+<li>
+<strong>Easy Filtering:</strong> Use the sidebar controls to filter
+by dataset, modality (<code>scRNA-seq</code>, <code>scATAC-seq</code>,
+or <code>Combined</code>), specific simulators, or specific categories,
+and adjust figure width and height before downloading.</li>
 </ul>
 <hr>
 </div>
-
 <div class="section level2">
 <h2 id="step-4-explore-interactive-charts-visualizations-tab">5. Step 4 — Explore Interactive Charts (Visualizations Tab)<a class="anchor" aria-label="anchor" href="#step-4-explore-interactive-charts-visualizations-tab"></a>
 </h2>
-<p>The <strong>Visualizations</strong> tab provides <strong>8 focused chart views</strong> so you can inspect your results from every angle:</p>
+<p>The <strong>Visualizations</strong> tab provides <strong>8 focused
+chart views</strong> so you can inspect your results from every
+angle:</p>
 <table class="table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Sub-Tab</th>
-<th style="text-align: left;">What It Helps You See</th>
-</tr>
-</thead>
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Sub-Tab</th>
+<th align="left">What It Helps You See</th>
+</tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;"><strong>1. Evaluation Summary</strong></td>
-<td style="text-align: left;">Overall and category-level bar charts and radar profiles comparing all simulators side by side.</td>
+<td align="left"><strong>1. Evaluation Summary</strong></td>
+<td align="left">Overall and category-level bar charts and radar
+profiles comparing all simulators side by side.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>2. Distribution QC</strong></td>
-<td style="text-align: left;">Visual checks showing whether simulated library sizes, gene/peak averages, and zero counts match your real data.</td>
+<td align="left"><strong>2. Distribution QC</strong></td>
+<td align="left">Visual checks showing whether simulated library sizes,
+gene/peak averages, and zero counts match your real data.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>3. Metric Heatmap</strong></td>
-<td style="text-align: left;">Color-coded matrix displaying all simulator scores together in one view (switch between 0–1 scores and raw values).</td>
+<td align="left"><strong>3. Metric Heatmap</strong></td>
+<td align="left">Color-coded matrix displaying all simulator scores
+together in one view (switch between 0–1 scores and raw values).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>4. Metric Plots</strong></td>
-<td style="text-align: left;">Zoom in on any single metric bar chart or compare simulator spread across a category using boxplots.</td>
+<td align="left"><strong>4. Metric Plots</strong></td>
+<td align="left">Zoom in on any single metric bar chart or compare
+simulator spread across a category using boxplots.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>5. PCA Ordination</strong></td>
-<td style="text-align: left;">Simple 2D map showing which simulators sit closest to the <strong>Ideal Reference</strong> target.</td>
+<td align="left"><strong>5. PCA Ordination</strong></td>
+<td align="left">Simple 2D map showing which simulators sit closest to
+the <strong>Ideal Reference</strong> target.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>6. MDS Metric Space</strong></td>
-<td style="text-align: left;">Visual map grouping simulators that behave similarly across evaluation metrics.</td>
+<td align="left"><strong>6. MDS Metric Space</strong></td>
+<td align="left">Visual map grouping simulators that behave similarly
+across evaluation metrics.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;"><strong>7. Cell Embeddings (UMAP, t-SNE &amp; PCA)</strong></td>
-<td style="text-align: left;">Side-by-side or overlaid 2D cell plots colored by cell type, batch, or library size, plus a clean cluster quality summary table.</td>
+<td align="left"><strong>7. Cell Embeddings (UMAP, t-SNE &amp;
+PCA)</strong></td>
+<td align="left">Side-by-side or overlaid 2D cell plots colored by cell
+type, batch, or library size, plus a clean cluster quality summary
+table.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;"><strong>8. Scalability Benchmark</strong></td>
-<td style="text-align: left;">Compare simulator speed (runtime) and memory usage (RAM) with selectable units (seconds, minutes, MB, GB, or per-core).</td>
+<td align="left"><strong>8. Scalability Benchmark</strong></td>
+<td align="left">Compare simulator speed (runtime) and memory usage
+(RAM) with selectable units (seconds, minutes, MB, GB, or
+per-core).</td>
 </tr>
 </tbody>
 </table>
-
 <div class="section level3">
 <h3 id="interactive-zoom-pan-publication-downloads">Interactive Zoom, Pan &amp; Publication Downloads<a class="anchor" aria-label="anchor" href="#interactive-zoom-pan-publication-downloads"></a>
 </h3>
 <p>Every plot panel inside <code>scSimEvalStudio</code> includes:</p>
 <ul>
-<li><strong>Zoom &amp; Pan Toolbar:</strong> Zoom smoothly from <strong>25% to 400%</strong>, drag to pan around large figures, or click <strong>Full View</strong> to inspect plots in fullscreen mode.</li>
-<li><strong>High-Resolution Downloads:</strong> Save any chart as a <strong>600 DPI JPEG</strong> or <strong>Vector PDF</strong> ready for papers, theses, and posters.</li>
-<li><strong>1-Click R Script Export:</strong> Download a standalone <code>ggplot2</code> R script for any figure if you want to fine-tune colors or labels in R later.</li>
+<li>
+<strong>Zoom &amp; Pan Toolbar:</strong> Zoom smoothly from
+<strong>25% to 400%</strong>, drag to pan around large figures, or click
+<strong>Full View</strong> to inspect plots in fullscreen mode.</li>
+<li>
+<strong>High-Resolution Downloads:</strong> Save any chart as a
+<strong>600 DPI JPEG</strong> or <strong>Vector PDF</strong> ready for
+papers, theses, and posters.</li>
+<li>
+<strong>1-Click R Script Export:</strong> Download a standalone
+<code>ggplot2</code> R script for any figure if you want to fine-tune
+colors or labels in R later.</li>
 </ul>
 <hr>
 </div>
 </div>
-
 <div class="section level2">
 <h2 id="step-5-export-results-monitor-progress-get-help">6. Step 5 — Export Results, Monitor Progress &amp; Get Help<a class="anchor" aria-label="anchor" href="#step-5-export-results-monitor-progress-get-help"></a>
 </h2>
 <ul>
-<li><strong>Benchmark Results &amp; Export:</strong> Browse, search, and filter the master results table (showing both raw values and 0–1 scores), and download a formatted <strong>Excel workbook (<code>.xlsx</code>)</strong>, <strong><code>.csv</code></strong> table, or full <strong><code>.rds</code></strong> session backup.</li>
-<li><strong>Logs:</strong> Watch live progress messages (<code>INFO</code>, <code>WARNING</code>, <code>SUCCESS</code>) while benchmarks run, filter messages by type, or download a <code>.txt</code> log file for troubleshooting.</li>
-<li><strong>Help &amp; Contact:</strong> Access quick in-app tips, file format checklists, and contact details for the development team at ICAR-IASRI, New Delhi.</li>
+<li>
+<strong>Benchmark Results &amp; Export:</strong> Browse, search, and
+filter the master results table (showing both raw values and 0–1
+scores), and download a formatted <strong>Excel workbook
+(<code>.xlsx</code>)</strong>, <strong><code>.csv</code></strong> table,
+or full <strong><code>.rds</code></strong> session backup.</li>
+<li>
+<strong>Logs:</strong> Watch live progress messages
+(<code>INFO</code>, <code>WARNING</code>, <code>SUCCESS</code>) while
+benchmarks run, filter messages by type, or download a <code>.txt</code>
+log file for troubleshooting.</li>
+<li>
+<strong>Help &amp; Contact:</strong> Access quick in-app tips, file
+format checklists, and contact details for the development team at
+ICAR-IASRI, New Delhi.</li>
 </ul>
 <hr>
 </div>
-
 <div class="section level2">
 <h2 id="quick-verification-for-package-testing">7. Quick Verification (For Package Testing)<a class="anchor" aria-label="anchor" href="#quick-verification-for-package-testing"></a>
 </h2>
-<p>You can confirm from R that the bundled Shiny app and demo dataset load properly:</p>
+<p>You can confirm from R that the bundled Shiny app and demo dataset
+load properly:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kabilanbio.github.io/scSimEvalStudio/">scSimEvalStudio</a></span><span class="op">)</span></span>
 <span></span>
@@ -243,15 +338,35 @@ All underlying evaluation methods are documented separately on the <strong><a hr
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyAppDir</a></span><span class="op">(</span><span class="va">app_dir</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Loading required package: shiny</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'bslib'</span></span>
+<span><span class="co">#&gt; The following object is masked from 'package:utils':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     page</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'DT'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:shiny':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     dataTableOutput, renderDataTable</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">app</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "shiny.appobj"</span></span>
 <span></span>
 <span><span class="va">demo_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">app_dir</span>, <span class="st">"data"</span>, <span class="st">"demo_benchmark_data.rds"</span><span class="op">)</span></span>
 <span><span class="va">demo_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">demo_file</span><span class="op">)</span></span>
 <span><span class="va">demo_obj</span><span class="op">$</span><span class="va">methods</span></span>
-<span><span class="co">#&gt; [1] "scMultiSim" "scDesign3"  "MOSim"      "scCross"    "scMoMtF"    "Matilda"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "scMultiSim" "scDesign3"  "MOSim"      "scCross"    "scMoMtF"   </span></span>
+<span><span class="co">#&gt; [6] "Matilda"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_obj</span><span class="op">$</span><span class="va">benchmark_summary_table</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Method"</span>, <span class="st">"Category"</span>, <span class="st">"Metric"</span>, <span class="st">"Score"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       Method                      Category         Metric     Score</span></span>
+<span><span class="co">#&gt; 1 scMultiSim (I) Distributional Properties    Wasserstein 0.3676551</span></span>
+<span><span class="co">#&gt; 2 scMultiSim (I) Distributional Properties             KS 0.4675325</span></span>
+<span><span class="co">#&gt; 3 scMultiSim (I) Distributional Properties            MAD 0.4223376</span></span>
+<span><span class="co">#&gt; 4 scMultiSim (I) Distributional Properties  Bhattacharyya 0.6940634</span></span>
+<span><span class="co">#&gt; 5 scMultiSim (I) Distributional Properties Runs_Statistic 0.5600933</span></span>
+<span><span class="co">#&gt; 6 scMultiSim (I) Distributional Properties    NN_Mismatch 0.5628743</span></span></code></pre></div>
+<hr>
 </div>
-
 <div class="section level2">
 <h2 id="session-information">8. Session Information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
@@ -259,19 +374,98 @@ All underlying evaluation methods are documented separately on the <strong><a hr
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.6.2 (2026-10-29)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 24.04.5 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.4 LTS</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.0 </span></span>
+<span><span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.12.0  LAPACK version 3.12.0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span><span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span><span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span><span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span><span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span><span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; time zone: Asia/Kolkata</span></span>
+<span><span class="co">#&gt; tzcode source: system (glibc)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; attached base packages:</span></span>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] scSimEval_0.99.12      Matrix_1.7-6           DT_0.34.0             </span></span>
-<span><span class="co">#&gt; [4] ggplot2_4.0.4          bslib_0.12.0           shiny_1.14.0          </span></span>
-<span><span class="co">#&gt; [7] scSimEvalStudio_0.99.4</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] scSimEval_0.99.14      Matrix_1.7-6           DT_0.34.0             </span></span>
+<span><span class="co">#&gt; [4] ggplot2_4.0.4          bslib_0.12.0           shiny_1.15.0          </span></span>
+<span><span class="co">#&gt; [7] scSimEvalStudio_0.99.5</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             </span></span>
+<span><span class="co">#&gt;   [3] magrittr_2.0.5              farver_2.1.2               </span></span>
+<span><span class="co">#&gt;   [5] rmarkdown_2.32              fs_2.1.0                   </span></span>
+<span><span class="co">#&gt;   [7] ragg_1.5.2                  vctrs_0.7.3                </span></span>
+<span><span class="co">#&gt;   [9] memoise_2.0.1               htmltools_0.5.9            </span></span>
+<span><span class="co">#&gt;  [11] S4Arrays_1.12.1             SparseArray_1.12.3         </span></span>
+<span><span class="co">#&gt;  [13] sass_0.5.0                  sctransform_0.4.3          </span></span>
+<span><span class="co">#&gt;  [15] parallelly_1.50.0           KernSmooth_2.23-27         </span></span>
+<span><span class="co">#&gt;  [17] htmlwidgets_1.6.4           desc_1.4.3                 </span></span>
+<span><span class="co">#&gt;  [19] ica_1.0-3                   fontawesome_0.5.3          </span></span>
+<span><span class="co">#&gt;  [21] plyr_1.8.9                  plotly_4.12.1              </span></span>
+<span><span class="co">#&gt;  [23] cachem_1.1.0                igraph_2.3.4               </span></span>
+<span><span class="co">#&gt;  [25] mime_0.13                   lifecycle_1.0.5            </span></span>
+<span><span class="co">#&gt;  [27] pkgconfig_2.0.3             R6_2.6.1                   </span></span>
+<span><span class="co">#&gt;  [29] fastmap_1.2.0               MatrixGenerics_1.24.0      </span></span>
+<span><span class="co">#&gt;  [31] future_1.82.0               digest_0.6.39              </span></span>
+<span><span class="co">#&gt;  [33] patchwork_1.3.2             S4Vectors_0.50.3           </span></span>
+<span><span class="co">#&gt;  [35] Seurat_6.0.0                RSpectra_0.16-2            </span></span>
+<span><span class="co">#&gt;  [37] irlba_2.4.1                 crosstalk_1.2.2            </span></span>
+<span><span class="co">#&gt;  [39] textshaping_1.1.0           GenomicRanges_1.64.0       </span></span>
+<span><span class="co">#&gt;  [41] progressr_1.1.0             httr_1.4.9                 </span></span>
+<span><span class="co">#&gt;  [43] abind_1.4-8                 compiler_4.6.2             </span></span>
+<span><span class="co">#&gt;  [45] withr_3.0.3                 S7_1.0.0                   </span></span>
+<span><span class="co">#&gt;  [47] bsicons_0.1.2               BiocParallel_1.46.0        </span></span>
+<span><span class="co">#&gt;  [49] fastDummies_1.7.6           MASS_7.3-66                </span></span>
+<span><span class="co">#&gt;  [51] DelayedArray_0.38.2         ggsci_5.2.0                </span></span>
+<span><span class="co">#&gt;  [53] tools_4.6.2                 otel_0.3.0                 </span></span>
+<span><span class="co">#&gt;  [55] zip_3.0.2                   httpuv_1.6.17              </span></span>
+<span><span class="co">#&gt;  [57] future.apply_1.21.0         glue_1.8.1                 </span></span>
+<span><span class="co">#&gt;  [59] promises_1.5.0              grid_4.6.2                 </span></span>
+<span><span class="co">#&gt;  [61] Rtsne_0.17                  cluster_2.1.8.2            </span></span>
+<span><span class="co">#&gt;  [63] reshape2_1.4.5              generics_0.1.4             </span></span>
+<span><span class="co">#&gt;  [65] gtable_0.3.6                tidyr_1.3.2                </span></span>
+<span><span class="co">#&gt;  [67] data.table_1.18.6.1         sp_2.2-4                   </span></span>
+<span><span class="co">#&gt;  [69] XVector_0.52.0              BiocGenerics_0.58.1        </span></span>
+<span><span class="co">#&gt;  [71] RcppAnnoy_0.0.23            ggrepel_0.9.8              </span></span>
+<span><span class="co">#&gt;  [73] RANN_2.6.3                  pillar_1.11.1              </span></span>
+<span><span class="co">#&gt;  [75] stringr_1.6.0               spam_2.11-4                </span></span>
+<span><span class="co">#&gt;  [77] RcppHNSW_0.7.0              later_1.4.8                </span></span>
+<span><span class="co">#&gt;  [79] dplyr_1.2.1                 lattice_0.23-1             </span></span>
+<span><span class="co">#&gt;  [81] tidyselect_1.2.1            SingleCellExperiment_1.34.0</span></span>
+<span><span class="co">#&gt;  [83] CDI_1.10.0                  pbapply_1.7-5              </span></span>
+<span><span class="co">#&gt;  [85] knitr_1.52                  gridExtra_2.3.1            </span></span>
+<span><span class="co">#&gt;  [87] IRanges_2.46.0              Seqinfo_1.2.0              </span></span>
+<span><span class="co">#&gt;  [89] SummarizedExperiment_1.42.0 scattermore_1.2            </span></span>
+<span><span class="co">#&gt;  [91] stats4_4.6.2                xfun_0.62                  </span></span>
+<span><span class="co">#&gt;  [93] pls_2.9-0                   Biobase_2.72.0             </span></span>
+<span><span class="co">#&gt;  [95] matrixStats_1.5.0           stringi_1.8.9              </span></span>
+<span><span class="co">#&gt;  [97] yaml_2.3.12                 evaluate_1.0.5             </span></span>
+<span><span class="co">#&gt;  [99] codetools_0.2-20            tibble_3.3.1               </span></span>
+<span><span class="co">#&gt; [101] cli_3.6.6                   uwot_0.2.5                 </span></span>
+<span><span class="co">#&gt; [103] xtable_1.8-8                systemfonts_1.3.4          </span></span>
+<span><span class="co">#&gt; [105] jquerylib_0.1.4             Rcpp_1.1.2                 </span></span>
+<span><span class="co">#&gt; [107] globals_0.20.0              png_0.1-9                  </span></span>
+<span><span class="co">#&gt; [109] parallel_4.6.2              pkgdown_2.2.1              </span></span>
+<span><span class="co">#&gt; [111] dotCall64_1.2               listenv_1.1.0              </span></span>
+<span><span class="co">#&gt; [113] viridisLite_0.4.3           scales_1.4.0               </span></span>
+<span><span class="co">#&gt; [115] ggridges_0.5.7              SeuratObject_5.4.0         </span></span>
+<span><span class="co">#&gt; [117] openxlsx_4.2.9              purrr_1.2.2                </span></span>
+<span><span class="co">#&gt; [119] writexl_2.0.1               rlang_1.3.0                </span></span>
+<span><span class="co">#&gt; [121] cowplot_1.2.0</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
+
 
 
     <footer><div class="pkgdown-footer-left">
@@ -285,6 +479,466 @@ All underlying evaluation methods are documented separately on the <strong><a hr
     </footer>
 </div>
 
-<script src="../studio-ui.js"></script>
+
+
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  function safeGetStorage(key) {
+    try { return window.localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function safeSetStorage(key, val) {
+    try { window.localStorage.setItem(key, val); } catch (e) {}
+  }
+
+  // Hide citation block and its TOC link on authors page if present
+  const citationHeader = document.getElementById("citation");
+  if (citationHeader && citationHeader.closest(".section")) {
+    citationHeader.closest(".section").remove();
+  }
+  const tocCitationLink = document.querySelector('#toc a[href="#citation"]');
+  if (tocCitationLink && tocCitationLink.closest("li")) {
+    tocCitationLink.closest("li").remove();
+  }
+  const authorsH1 = document.querySelector(".template-citation-authors h1");
+  if (authorsH1 && authorsH1.textContent.includes("Citation")) {
+    authorsH1.textContent = "Authors";
+    if (document.title && document.title.includes("Authors and Citation")) {
+      document.title = document.title.replace("Authors and Citation", "Authors");
+    }
+  }
+  // Custom search placeholder
+  const searchInput = document.getElementById("search-input");
+  if (searchInput) {
+    searchInput.placeholder = "Search docs... (Press /)";
+  }
+
+  // On this page (TOC) Hide / Show Toggle Feature
+  const tocNav = document.getElementById("toc");
+  if (tocNav) {
+    const tocAside = tocNav.closest("aside") || tocNav.closest(".col-md-3");
+    const mainEl = document.getElementById("main");
+    const tocH2 = tocNav.querySelector("h2");
+
+    if (tocAside && mainEl && tocH2) {
+      if (!document.getElementById("btn-hide-toc")) {
+        const hideBtn = document.createElement("button");
+        hideBtn.id = "btn-hide-toc";
+        hideBtn.type = "button";
+        hideBtn.className = "btn btn-sm btn-outline-secondary float-end toc-toggle-btn";
+        hideBtn.title = "Hide 'On this page' sidebar";
+        hideBtn.setAttribute("aria-label", "Hide Table of Contents");
+        hideBtn.innerHTML = '<span class="fa fa-angle-right me-1"></span>Hide';
+        tocH2.appendChild(hideBtn);
+
+        hideBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          setTocState(false);
+        });
+      }
+
+      let showBtn = document.getElementById("btn-show-toc");
+      if (!showBtn) {
+        showBtn = document.createElement("button");
+        showBtn.id = "btn-show-toc";
+        showBtn.type = "button";
+        showBtn.className = "btn btn-sm btn-primary toc-floating-show-btn shadow-sm d-none";
+        showBtn.title = "Show 'On this page' sidebar";
+        showBtn.setAttribute("aria-label", "Show Table of Contents");
+        showBtn.innerHTML = '<span class="fa fa-list-ul me-1"></span> On this page';
+        document.body.appendChild(showBtn);
+
+        showBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          setTocState(true);
+        });
+      }
+
+      function setTocState(visible) {
+        const container = mainEl.closest(".container") || mainEl.closest(".container-fluid") || document.querySelector(".container.template-article") || document.querySelector("body > .container");
+        if (visible) {
+          document.body.classList.remove("toc-collapsed");
+          if (container) container.classList.remove("container-fullwidth");
+          tocAside.classList.remove("d-none");
+          tocAside.style.display = "";
+          mainEl.classList.remove("col-md-12", "main-expanded");
+          mainEl.classList.add("col-md-9");
+          mainEl.style.width = "";
+          mainEl.style.maxWidth = "";
+          mainEl.style.flex = "";
+          if (showBtn) showBtn.classList.add("d-none");
+          safeSetStorage("scSimEval_toc_hidden", "false");
+        } else {
+          document.body.classList.add("toc-collapsed");
+          if (container) container.classList.add("container-fullwidth");
+          tocAside.classList.add("d-none");
+          tocAside.style.display = "none";
+          mainEl.classList.remove("col-md-9");
+          mainEl.classList.add("col-md-12", "main-expanded");
+          mainEl.style.width = "100%";
+          mainEl.style.maxWidth = "100%";
+          mainEl.style.flex = "0 0 100%";
+          if (showBtn) showBtn.classList.remove("d-none");
+          safeSetStorage("scSimEval_toc_hidden", "true");
+        }
+      }
+
+      if (safeGetStorage("scSimEval_toc_hidden") === "true") {
+        setTocState(false);
+      }
+    }
+  }
+
+  /* ===== FULLSCREEN IMAGE VIEWER LIGHTBOX ===== */
+  window.scOpenLightbox = function(imgSrc) {
+    if (!imgSrc) return;
+    var existing = document.getElementById("sc_lightbox_overlay");
+    if (existing) existing.remove();
+
+    var overlay = document.createElement("div");
+    overlay.id = "sc_lightbox_overlay";
+    overlay.className = "sc-lightbox-overlay";
+
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "sc-lightbox-close";
+    closeBtn.type = "button";
+    closeBtn.title = "Close Viewer (Esc)";
+    closeBtn.setAttribute("aria-label", "Close Fullscreen Viewer");
+    closeBtn.innerHTML = "&times;";
+
+    var canvas = document.createElement("div");
+    canvas.className = "sc-lightbox-canvas";
+
+    var img = document.createElement("img");
+    img.className = "sc-lightbox-img";
+    img.src = imgSrc;
+    canvas.appendChild(img);
+
+    var bar = document.createElement("div");
+    bar.className = "sc-lightbox-bar";
+    bar.innerHTML =
+      '<button type="button" id="sc_lb_out" title="Zoom Out (-)"><i class="fa fa-search-minus"></i></button>' +
+      '<input type="range" id="sc_lb_slider" min="10" max="600" step="5" value="100">' +
+      '<button type="button" id="sc_lb_in" title="Zoom In (+)"><i class="fa fa-search-plus"></i></button>' +
+      '<span id="sc_lb_pct" style="font-family:monospace;min-width:48px;text-align:center;font-weight:700;">100%</span>' +
+      '<button type="button" id="sc_lb_fit" title="Fit to Window (0)">Fit</button>' +
+      '<button type="button" id="sc_lb_100" title="Actual Size (1)">100%</button>' +
+      '<span class="d-none d-md-inline" style="font-size:0.74rem;opacity:0.75;margin-left:4px;">Wheel: Zoom • Drag: Pan • Esc: Close</span>';
+
+    overlay.appendChild(closeBtn);
+    overlay.appendChild(canvas);
+    overlay.appendChild(bar);
+    document.body.appendChild(overlay);
+
+    var state = { scale: 1, tx: 0, ty: 0, dragging: false, moved: false, sx: 0, sy: 0, stx: 0, sty: 0 };
+    var lbSlider = document.getElementById("sc_lb_slider");
+    var lbPct = document.getElementById("sc_lb_pct");
+
+    function applyTransform() {
+      img.style.transform = "translate3d(" + state.tx + "px," + state.ty + "px,0) scale(" + state.scale + ")";
+      var p = Math.round(state.scale * 100);
+      lbPct.innerText = p + "%";
+      lbSlider.value = Math.max(10, Math.min(600, p));
+    }
+
+    function fitImage() {
+      var nw = img.naturalWidth || img.width || 900;
+      var nh = img.naturalHeight || img.height || 600;
+      var vw = window.innerWidth * 0.90;
+      var vh = (window.innerHeight - 90) * 0.92;
+      state.scale = Math.max(0.1, Math.min(4, Math.min(vw / nw, vh / nh)));
+      state.tx = 0;
+      state.ty = 0;
+      applyTransform();
+    }
+
+    function zoomAt(newScale, clientX, clientY) {
+      newScale = Math.max(0.10, Math.min(6.0, newScale));
+      var cx = window.innerWidth / 2;
+      var cy = window.innerHeight / 2;
+      var dx = (typeof clientX === "number") ? (clientX - cx) : 0;
+      var dy = (typeof clientY === "number") ? (clientY - cy) : 0;
+      var ratio = newScale / state.scale;
+      state.tx = dx - (dx - state.tx) * ratio;
+      state.ty = dy - (dy - state.ty) * ratio;
+      state.scale = newScale;
+      applyTransform();
+    }
+
+    if (img.complete && img.naturalWidth > 0) fitImage(); else img.onload = fitImage;
+
+    canvas.addEventListener("wheel", function(e) {
+      e.preventDefault();
+      var mult = e.deltaY < 0 ? 1.12 : (1 / 1.12);
+      zoomAt(state.scale * mult, e.clientX, e.clientY);
+    }, { passive: false });
+
+    canvas.addEventListener("mousedown", function(e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      state.dragging = true;
+      state.moved = false;
+      state.sx = e.clientX; state.sy = e.clientY;
+      state.stx = state.tx; state.sty = state.ty;
+      canvas.classList.add("sc-panning");
+    });
+
+    function onLbMove(e) {
+      if (!state.dragging) return;
+      var dx = e.clientX - state.sx;
+      var dy = e.clientY - state.sy;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) state.moved = true;
+      state.tx = state.stx + dx;
+      state.ty = state.sty + dy;
+      applyTransform();
+    }
+
+    function onLbUp() {
+      if (!state.dragging) return;
+      state.dragging = false;
+      canvas.classList.remove("sc-panning");
+    }
+
+    window.addEventListener("mousemove", onLbMove);
+    window.addEventListener("mouseup", onLbUp);
+
+    canvas.addEventListener("dblclick", function(e) {
+      if (Math.abs(state.scale - 2.0) < 0.15) {
+        fitImage();
+      } else {
+        zoomAt(2.0, e.clientX, e.clientY);
+      }
+    });
+
+    document.getElementById("sc_lb_out").onclick = function() { zoomAt(state.scale / 1.15); };
+    document.getElementById("sc_lb_in").onclick = function() { zoomAt(state.scale * 1.15); };
+    document.getElementById("sc_lb_fit").onclick = fitImage;
+    document.getElementById("sc_lb_100").onclick = function() { state.scale = 1; state.tx = 0; state.ty = 0; applyTransform(); };
+    lbSlider.oninput = function() { zoomAt(Number(this.value) / 100); };
+
+    function closeLightbox() {
+      window.removeEventListener("mousemove", onLbMove);
+      window.removeEventListener("mouseup", onLbUp);
+      window.removeEventListener("keydown", onLbKey);
+      if (overlay && overlay.parentNode) overlay.remove();
+    }
+
+    function onLbKey(e) {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "+" || e.key === "=") zoomAt(state.scale * 1.15);
+      else if (e.key === "-") zoomAt(state.scale / 1.15);
+      else if (e.key === "0") fitImage();
+      else if (e.key === "1") { state.scale = 1; state.tx = 0; state.ty = 0; applyTransform(); }
+    }
+    window.addEventListener("keydown", onLbKey);
+    closeBtn.onclick = closeLightbox;
+    overlay.addEventListener("click", function(e) {
+      if (state.moved) {
+        state.moved = false;
+        return;
+      }
+      if (e.target === overlay || e.target === canvas) closeLightbox();
+    });
+  };
+
+  /* ===== IN-ARTICLE FIGURE ZOOM & PAN COMPONENT ===== */
+  function initDocPlotZoom() {
+    var images = document.querySelectorAll(
+      "#main .figure img, #main figure img, #main img.r-plt, #main p > img:not(.logo), .template-article .figure img, .template-article figure img"
+    );
+    images.forEach(function(img, idx) {
+      if (img.closest(".sc-doc-zoom-wrapper")) return;
+      if (img.classList.contains("logo") || (img.src && (img.src.indexOf("shields.io") !== -1 || img.src.indexOf("badge") !== -1))) return;
+      if (img.naturalWidth > 0 && img.naturalWidth < 120) return;
+
+      var id = "doc_zoom_" + idx;
+      var wrapper = document.createElement("div");
+      wrapper.className = "sc-doc-zoom-wrapper";
+      wrapper.id = "wrap_" + id;
+
+      var toolbar = document.createElement("div");
+      toolbar.className = "sc-doc-zoom-toolbar";
+      toolbar.innerHTML =
+        '<span class="d-none d-md-inline-flex align-items-center gap-1 sc-doc-zoom-hint">' +
+          '<i class="fa fa-hand text-secondary"></i>' +
+          '<span>Drag to pan • Ctrl+Wheel or Slider to zoom</span>' +
+        '</span>' +
+        '<div class="d-flex align-items-center flex-wrap gap-1 ms-auto">' +
+          '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 sc-btn-out" title="Zoom Out (-10%)"><i class="fa fa-search-minus"></i></button>' +
+          '<input type="range" class="sc-zoom-slider" min="25" max="400" step="5" value="100" title="Slide to Zoom (25% - 400%)">' +
+          '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 sc-btn-in" title="Zoom In (+10%)"><i class="fa fa-search-plus"></i></button>' +
+          '<span class="badge bg-white text-dark border px-2 py-1 ms-1 sc-doc-zoom-badge">100%</span>' +
+          '<button type="button" class="btn btn-outline-secondary btn-sm py-0 px-2 ms-1 sc-btn-fit" title="Fit Plot to Viewport"><i class="fa fa-compress"></i> Fit</button>' +
+          '<button type="button" class="btn btn-outline-primary btn-sm py-0 px-2 sc-btn-reset" title="Reset to 100% Actual View">100%</button>' +
+          '<button type="button" class="btn btn-primary btn-sm py-0 px-2 ms-1 sc-btn-full" title="Open Fullscreen Image Viewer"><i class="fa fa-expand"></i> Full View</button>' +
+        '</div>';
+
+      var container = document.createElement("div");
+      container.className = "sc-doc-zoom-container";
+      container.id = "container_" + id;
+
+      var stage = document.createElement("div");
+      stage.className = "sc-doc-zoom-stage";
+      stage.id = "stage_" + id;
+
+      var target = document.createElement("div");
+      target.className = "sc-doc-zoom-target";
+      target.id = "target_" + id;
+
+      img.parentNode.insertBefore(wrapper, img);
+      target.appendChild(img);
+      stage.appendChild(target);
+      container.appendChild(stage);
+      wrapper.appendChild(toolbar);
+      wrapper.appendChild(container);
+
+      var curZoom = 100;
+      var slider = toolbar.querySelector(".sc-zoom-slider");
+      var badge = toolbar.querySelector(".sc-doc-zoom-badge");
+      var btnOut = toolbar.querySelector(".sc-btn-out");
+      var btnIn = toolbar.querySelector(".sc-btn-in");
+      var btnFit = toolbar.querySelector(".sc-btn-fit");
+      var btnReset = toolbar.querySelector(".sc-btn-reset");
+      var btnFull = toolbar.querySelector(".sc-btn-full");
+
+      function syncPannable() {
+        if (container.scrollWidth > container.clientWidth + 2 || container.scrollHeight > container.clientHeight + 2 || curZoom > 100) {
+          container.classList.add("sc-pannable");
+        } else {
+          container.classList.remove("sc-pannable");
+        }
+      }
+
+      if (img.complete && img.naturalWidth > 0) syncPannable(); else img.addEventListener("load", syncPannable);
+
+      function setZoom(next, anchorX, anchorY) {
+        next = Math.max(25, Math.min(400, Math.round(next)));
+        var prev = curZoom;
+        curZoom = next;
+        slider.value = next;
+        badge.innerText = next + "%";
+
+        if (next === 100) {
+          target.style.transform = "";
+          target.style.position = "relative";
+          target.style.top = "";
+          target.style.left = "";
+          target.style.width = "100%";
+          target.style.height = "";
+          stage.style.width = "100%";
+          stage.style.height = "";
+          stage.style.overflow = "visible";
+          delete target.dataset.baseW;
+          delete target.dataset.baseH;
+          syncPannable();
+          return;
+        }
+
+        if (prev === 100 || !target.dataset.baseW) {
+          var bw = img.offsetWidth || 800;
+          var bh = img.offsetHeight || 500;
+          if (bw > 40 && bh > 40) {
+            target.dataset.baseW = String(bw);
+            target.dataset.baseH = String(bh);
+          }
+        }
+
+        var baseW = Number(target.dataset.baseW) || 800;
+        var baseH = Number(target.dataset.baseH) || 500;
+        var prevFactor = prev / 100;
+        var factor = next / 100;
+
+        var rect = container.getBoundingClientRect();
+        var relX = (typeof anchorX === "number") ? (anchorX - rect.left) : (container.clientWidth / 2);
+        var relY = (typeof anchorY === "number") ? (anchorY - rect.top) : (container.clientHeight / 2);
+        var contentX = (container.scrollLeft + relX) / (prevFactor || 1);
+        var contentY = (container.scrollTop + relY) / (prevFactor || 1);
+
+        stage.style.width = Math.round(baseW * factor) + "px";
+        stage.style.height = Math.round(baseH * factor) + "px";
+        stage.style.overflow = "hidden";
+
+        target.style.position = "absolute";
+        target.style.top = "0px";
+        target.style.left = "0px";
+        target.style.width = baseW + "px";
+        target.style.height = baseH + "px";
+        target.style.transformOrigin = "0 0";
+        target.style.transform = "scale(" + factor + ")";
+
+        container.scrollLeft = Math.max(0, Math.round(contentX * factor - relX));
+        container.scrollTop = Math.max(0, Math.round(contentY * factor - relY));
+
+        syncPannable();
+      }
+
+      slider.addEventListener("input", function() { setZoom(Number(this.value)); });
+      btnOut.addEventListener("click", function() { setZoom(curZoom - 10); });
+      btnIn.addEventListener("click", function() { setZoom(curZoom + 10); });
+      btnReset.addEventListener("click", function() {
+        setZoom(100);
+        container.scrollLeft = 0;
+        container.scrollTop = 0;
+      });
+      btnFit.addEventListener("click", function() {
+        setZoom(100);
+        var bw = img.offsetWidth || 800;
+        var bh = img.offsetHeight || 500;
+        var availW = Math.max(120, container.clientWidth - 20);
+        var availH = Math.max(120, container.clientHeight - 20);
+        var fitScale = Math.min(availW / bw, availH / bh);
+        var fitPct = Math.max(25, Math.min(100, Math.floor(fitScale * 100)));
+        setZoom(fitPct);
+      });
+      btnFull.addEventListener("click", function() {
+        window.scOpenLightbox(img.src);
+      });
+
+      img.addEventListener("dblclick", function(e) {
+        if (curZoom > 100) {
+          setZoom(100);
+        } else {
+          setZoom(175, e.clientX, e.clientY);
+        }
+      });
+
+      container.addEventListener("wheel", function(e) {
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+        var delta = e.deltaY < 0 ? 15 : -15;
+        setZoom(curZoom + delta, e.clientX, e.clientY);
+      }, { passive: false });
+
+      var isDragging = false;
+      var startX = 0, startY = 0, startSL = 0, startST = 0;
+      container.addEventListener("mousedown", function(e) {
+        if (e.button !== 0) return;
+        if (container.scrollWidth <= container.clientWidth && container.scrollHeight <= container.clientHeight && curZoom <= 100) return;
+        e.preventDefault();
+        isDragging = true;
+        container.classList.add("sc-panning");
+        startX = e.clientX;
+        startY = e.clientY;
+        startSL = container.scrollLeft;
+        startST = container.scrollTop;
+      });
+
+      window.addEventListener("mousemove", function(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        container.scrollLeft = startSL - (e.clientX - startX);
+        container.scrollTop = startST - (e.clientY - startY);
+      });
+
+      window.addEventListener("mouseup", function() {
+        if (isDragging) {
+          isDragging = false;
+          container.classList.remove("sc-panning");
+        }
+      });
+    });
+  }
+  initDocPlotZoom();
+});
+</script>
 </body>
 </html>
