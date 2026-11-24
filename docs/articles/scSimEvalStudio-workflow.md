@@ -239,7 +239,7 @@ sessionInfo()
 #> other attached packages:
 #> [1] scSimEval_0.99.14      Matrix_1.7-6           DT_0.34.0             
 #> [4] ggplot2_4.0.4          bslib_0.12.0           shiny_1.15.0          
-#> [7] scSimEvalStudio_0.99.5
+#> [7] scSimEvalStudio_0.99.6
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             

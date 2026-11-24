@@ -1,5 +1,11 @@
 # Changelog
 
+## scSimEvalStudio 0.99.6
+
+- Synchronized with `scSimEval (>= 0.99.16)` for full 56-metric category coverage and optimization-direction arrows (`↑` / `↓`) across all visualization modules, including previously saved `.rds` uploads via Data Hub Option 4.
+- Updated the PCA Ordination module (and exported R script) to include all 8 canonical categories / 56 metrics (`exclude_categories = NULL`) and increased the top-loadings selector limit to 56 metrics.
+- Updated the Metric Plots single-metric picker and category-bar height calculation to disambiguate Category V (`RNA DE` vs `ATAC DA`, 12 metrics) and Category VI (`Integration ARI`/`Integration NMI`) with canonical ordering and `↑`/`↓` arrows, and increased default Heatmap (`1250 px`) and MDS (`720 px`) plot heights for 56-metric readability.
+
 ## scSimEvalStudio 0.99.5
 
 - Synchronized bundled example benchmark caches

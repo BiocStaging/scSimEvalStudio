@@ -56,7 +56,7 @@ ui_max_cores <- max(128L, n_physical_cores)
 default_n_cores <- max(1L, min(4L, n_physical_cores - 1L))
 
 sys_hardware_summary <- sprintf("System detected: %d CPU cores", n_physical_cores)
-.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.5")
+.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.6")
 .core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.14")
 
 # Register static resource directory for documentation figures
@@ -3940,7 +3940,7 @@ ui <- page_navbar(
                      )
               ),
               column(2,
-                     sliderInput("sld_heat_height", "Heatmap Height (px):", min = 400, max = 1500, value = 1100, step = 50)
+                     sliderInput("sld_heat_height", "Heatmap Height (px):", min = 400, max = 1800, value = 1250, step = 50)
               ),
               column(2,
                      sliderInput("sld_heat_width", "Heatmap Width (px):", min = 600, max = 1300, value = 880, step = 20)
@@ -4074,7 +4074,7 @@ ui <- page_navbar(
                      )
               ),
               column(2, selectInput("sel_pca_panel", "PCA Panel:", choices = c("Both (Simulators & Metric Loadings)" = "both", "Simulator Ordination Only" = "methods", "Metric Loadings Only" = "loadings"), selected = "both")),
-              column(2, numericInput("num_pca_top_metrics", "Top Metrics to Label:", value = 8, min = 3, max = 25, step = 1))
+              column(2, numericInput("num_pca_top_metrics", "Top Metrics to Label:", value = 12, min = 3, max = 56, step = 1))
             ),
             fluidRow(
               column(12, style = "margin-top: 10px;",
@@ -4148,7 +4148,7 @@ ui <- page_navbar(
                      )
               ),
               column(2, selectInput("sel_mds_by", "Compare By:", choices = c("By Simulators" = "simulators", "By Metric Summaries" = "summaries"), selected = "simulators")),
-              column(2, sliderInput("sld_mds_height", "MDS Height (px):", min = 400, max = 1300, value = 620, step = 20))
+              column(2, sliderInput("sld_mds_height", "MDS Height (px):", min = 400, max = 1400, value = 720, step = 20))
             ),
             fluidRow(
               column(12, style = "margin-top: 10px;",
@@ -11076,7 +11076,7 @@ server <- function(input, output, session) {
         "  p <- plot_metric_heatmap(benchmark_data = df, category = cat_filter, scale_fill = scale_type, cluster_rows = FALSE, cluster_cols = FALSE, base_size = 11)",
         "",
         sprintf("  w_in <- %.2f", (input$sld_heat_width %||% 880) / 90),
-        sprintf("  h_in <- %.2f", (input$sld_heat_height %||% 1100) / 90),
+        sprintf("  h_in <- %.2f", (input$sld_heat_height %||% 1250) / 90),
         "  pdf_file  <- file.path(output_dir, 'scSimEval_metric_heatmap.pdf')",
         "  jpeg_file <- file.path(output_dir, 'scSimEval_metric_heatmap.jpeg')",
         "  ggplot2::ggsave(pdf_file, plot = p, width = w_in, height = h_in, device = 'pdf')",
@@ -11086,9 +11086,9 @@ server <- function(input, output, session) {
       "pca" = c(
         sprintf("  cat_filter   <- %s", if (identical(input$sel_pca_cat, "all")) "NULL" else paste0("'", input$sel_pca_cat, "'")),
         sprintf("  panel_type   <- '%s'", input$sel_pca_panel %||% "both"),
-        sprintf("  top_loadings <- %d", input$num_pca_top_metrics %||% 8),
+        sprintf("  top_loadings <- %d", input$num_pca_top_metrics %||% 12),
         "  cat('[scSimEval Workflow] Step 4: Generating PCA ordination and loadings plot...\n')",
-        "  p <- plot_metric_pca(benchmark_data = df, category = cat_filter, exclude_categories = '(VIII) Computational Scalability & Efficiency', panel = panel_type, top_n_loadings = top_loadings, base_size = 12)",
+        "  p <- plot_metric_pca(benchmark_data = df, category = cat_filter, exclude_categories = NULL, panel = panel_type, top_n_loadings = top_loadings, base_size = 12)",
         "",
         sprintf("  w_in <- %.2f", (input$sld_pca_width %||% 950) / 90),
         sprintf("  h_in <- %.2f", (input$sld_pca_height %||% 1100) / 90),
@@ -11105,7 +11105,7 @@ server <- function(input, output, session) {
         "  p <- plot_metric_mds(benchmark_data = df, category = cat_filter, ordination_by = ord_by, base_size = 13)",
         "",
         sprintf("  w_in <- %.2f", (input$sld_mds_width %||% 900) / 80),
-        sprintf("  h_in <- %.2f", (input$sld_mds_height %||% 620) / 80),
+        sprintf("  h_in <- %.2f", (input$sld_mds_height %||% 720) / 80),
         "  pdf_file  <- file.path(output_dir, 'scSimEval_metric_mds.pdf')",
         "  jpeg_file <- file.path(output_dir, 'scSimEval_metric_mds.jpeg')",
         "  ggplot2::ggsave(pdf_file, plot = p, width = w_in, height = h_in, device = 'pdf')",
@@ -11790,9 +11790,37 @@ server <- function(input, output, session) {
   output$ui_box_metric_picker <- renderUI({
     df <- get_viz_benchmark_data(dataset_choice = input$sel_box_dataset, modality_choice = input$sel_box_modality)
     req(input$sel_box_cat_first)
+    ns_sc <- tryCatch(asNamespace("scSimEval"), error = function(e) NULL)
+    if (!is.null(ns_sc)) {
+      fn_c6 <- get0(".disambiguate_cat6_metrics", envir = ns_sc, mode = "function", inherits = FALSE)
+      fn_c5 <- get0(".disambiguate_cat5_metrics", envir = ns_sc, mode = "function", inherits = FALSE)
+      if (!is.null(fn_c6)) df <- fn_c6(df)
+      if (!is.null(fn_c5)) df <- fn_c5(df)
+    }
     sub_df <- df[df$Category == input$sel_box_cat_first, , drop = FALSE]
-    avail_metrics <- sort(unique(sub_df$Metric))
-    selectInput("sel_box_metric_single", "2. Choose Metric Name:", choices = avail_metrics, selected = avail_metrics[1])
+    avail_metrics <- unique(as.character(sub_df$Metric))
+    if (!is.null(ns_sc)) {
+      fn_ord <- get0(".order_metrics_canonical", envir = ns_sc, mode = "function", inherits = FALSE)
+      if (!is.null(fn_ord)) avail_metrics <- fn_ord(avail_metrics)
+      lbl_tbl <- get0(".METRIC_DISPLAY_LABELS", envir = ns_sc, inherits = FALSE)
+      fn_c5p  <- get0(".resolve_cat5_prefix", envir = ns_sc, mode = "function", inherits = FALSE)
+      fn_c5l  <- get0(".apply_cat5_display_labels", envir = ns_sc, mode = "function", inherits = FALSE)
+      fn_hib  <- get0(".is_higher_better", envir = ns_sc, mode = "function", inherits = FALSE)
+      disp_lbls <- if (!is.null(lbl_tbl)) {
+        ifelse(avail_metrics %in% names(lbl_tbl), unname(lbl_tbl[avail_metrics]), avail_metrics)
+      } else avail_metrics
+      if (!is.null(fn_c5p) && !is.null(fn_c5l)) {
+        disp_lbls <- fn_c5l(disp_lbls, avail_metrics, rep(input$sel_box_cat_first, length(avail_metrics)), fn_c5p(df))
+      }
+      if (!is.null(fn_hib)) {
+        disp_lbls <- paste0(disp_lbls, ifelse(fn_hib(avail_metrics), " (\u2191)", " (\u2193)"))
+      }
+      choices_vec <- stats::setNames(avail_metrics, disp_lbls)
+    } else {
+      avail_metrics <- sort(avail_metrics)
+      choices_vec <- avail_metrics
+    }
+    selectInput("sel_box_metric_single", "2. Choose Metric Name:", choices = choices_vec, selected = avail_metrics[1])
   })
 
   output$ui_box_cat_group_selector <- renderUI({
@@ -11863,9 +11891,16 @@ server <- function(input, output, session) {
     } else {
       df <- get_viz_benchmark_data()
       if (!identical(input$sel_box_cat_group, "all") && !is.null(df)) {
+        ns_sc <- tryCatch(asNamespace("scSimEval"), error = function(e) NULL)
+        if (!is.null(ns_sc)) {
+          fn_c6 <- get0(".disambiguate_cat6_metrics", envir = ns_sc, mode = "function", inherits = FALSE)
+          fn_c5 <- get0(".disambiguate_cat5_metrics", envir = ns_sc, mode = "function", inherits = FALSE)
+          if (!is.null(fn_c6)) df <- fn_c6(df)
+          if (!is.null(fn_c5)) df <- fn_c5(df)
+        }
         sub_df <- df[df$Category == input$sel_box_cat_group, , drop = FALSE]
         n_m <- length(unique(sub_df$Metric))
-        h <- max(450, min(1400, n_m * 42 + 160))
+        h <- max(480, min(1400, ceiling(n_m / 4) * 260 + 180))
       } else {
         h <- 780
       }
@@ -11916,7 +11951,7 @@ server <- function(input, output, session) {
       ))
     }
     w <- if (!is.null(input$sld_heat_width)) input$sld_heat_width else 880
-    h <- if (!is.null(input$sld_heat_height)) input$sld_heat_height else 1100
+    h <- if (!is.null(input$sld_heat_height)) input$sld_heat_height else 1250
     with_step_zoom("plot_metric_heat", plotOutput("plot_metric_heat", width = paste0(w, "px"), height = paste0(h, "px")), max_height = "760px")
   })
   
@@ -12014,7 +12049,7 @@ server <- function(input, output, session) {
         plot_metric_pca(
           benchmark_data = df,
           category = cat_sel,
-          exclude_categories = "(VIII) Computational Scalability & Efficiency",
+          exclude_categories = NULL,
           panel = p_panel,
           top_n_loadings = n_top,
           base_size = 12
@@ -12056,7 +12091,7 @@ server <- function(input, output, session) {
       ))
     }
     w <- if (!is.null(input$sld_mds_width)) input$sld_mds_width else 900
-    h <- if (!is.null(input$sld_mds_height)) input$sld_mds_height else 620
+    h <- if (!is.null(input$sld_mds_height)) input$sld_mds_height else 720
     with_step_zoom("plot_metric_mds_out", plotOutput("plot_metric_mds_out", width = paste0(w, "px"), height = paste0(h, "px")), max_height = "760px")
   })
   

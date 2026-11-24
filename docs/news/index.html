@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">scSimEvalStudio</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.99.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,12 @@
       <small>Source: <a href="https://github.com/kabilanbio/scSimEvalStudio/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.99.6" id="scsimevalstudio-0996">scSimEvalStudio 0.99.6<a class="anchor" aria-label="anchor" href="#scsimevalstudio-0996"></a></h2>
+<ul><li>Synchronized with <code>scSimEval (&gt;= 0.99.16)</code> for full 56-metric category coverage and optimization-direction arrows (<code>↑</code> / <code>↓</code>) across all visualization modules, including previously saved <code>.rds</code> uploads via Data Hub Option 4.</li>
+<li>Updated the PCA Ordination module (and exported R script) to include all 8 canonical categories / 56 metrics (<code>exclude_categories = NULL</code>) and increased the top-loadings selector limit to 56 metrics.</li>
+<li>Updated the Metric Plots single-metric picker and category-bar height calculation to disambiguate Category V (<code>RNA DE</code> vs <code>ATAC DA</code>, 12 metrics) and Category VI (<code>Integration ARI</code>/<code>Integration NMI</code>) with canonical ordering and <code>↑</code>/<code>↓</code> arrows, and increased default Heatmap (<code>1250 px</code>) and MDS (<code>720 px</code>) plot heights for 56-metric readability.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.99.5" id="scsimevalstudio-0995">scSimEvalStudio 0.99.5<a class="anchor" aria-label="anchor" href="#scsimevalstudio-0995"></a></h2>
 <ul><li>Synchronized bundled example benchmark caches (<code>demo_benchmark_data.rds</code> and <code>demo_paired_multiomics_saved.rds</code>) with <code>scSimEval 0.99.14</code> (Rice Bud paired 100 balanced cells × 100 HVGs/HVPs across 6 simulators, Soybean Root unpaired 100 balanced cells × 100 HVGs/HVPs across 3 simulators, updated scalability benchmarks, and complete bivariate Category I coverage returning exact 56/56/44/38 metrics).</li>
