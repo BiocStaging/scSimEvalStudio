@@ -1,7 +1,7 @@
 Package: scSimEvalStudio
 Type: Package
 Title: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking
-Version: 0.99.6
+Version: 0.99.7
 Authors@R: c(
     person("Kabilan", "Sakthivel", role = c("aut", "cre"), email = "kabilan151414@gmail.com",
       comment = c(ORCID = "0009-0002-9422-0938")),
@@ -39,7 +39,7 @@ VignetteBuilder: knitr
 Depends:
     R (>= 4.3.0)
 Imports:
-    scSimEval,
+    scSimEval (>= 0.99.17),
     shiny,
     bslib,
     bsicons,

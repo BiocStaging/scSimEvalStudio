@@ -4,13 +4,13 @@
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://kabilanbio.github.io/scSimEvalStudio/)
 [![Core
-Engine](https://img.shields.io/badge/scSimEval-v0.99.12-2c3e50.svg)](https://kabilanbio.github.io/scSimEval/)
+Engine](https://img.shields.io/badge/scSimEval-v0.99.17-2c3e50.svg)](https://kabilanbio.github.io/scSimEval/)
 
 ------------------------------------------------------------------------
 
 ## Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.4`) is the beginner-friendly,
+**`scSimEvalStudio`** (version `0.99.7`) is the beginner-friendly,
 point-and-click **Shiny web application** companion to
 **[`scSimEval`](https://kabilanbio.github.io/scSimEval/)**.
 
@@ -33,31 +33,28 @@ publication-quality figures.
 
 Install from Bioconductor:
 
-``` r
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
-}
-BiocManager::install(c("scSimEval", "scSimEvalStudio"))
-```
+\
+`if`` ``(``!`[`requireNamespace`](https://rdrr.io/r/base/ns-load.html)`(``"BiocManager"``, quietly ``=`` ``TRUE``)``)`` ``{`\
+`    `[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"BiocManager"``)`\
+`}`\
+`BiocManager``::`[`install`](https://bioconductor.github.io/BiocManager/reference/install.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``"scSimEval"``, ``"scSimEvalStudio"``)``)`
 
 Or install the latest development versions from GitHub:
 
-``` r
-if (!requireNamespace("remotes", quietly = TRUE)) {
-    install.packages("remotes")
-}
-remotes::install_github("kabilanbio/scSimEval")
-remotes::install_github("kabilanbio/scSimEvalStudio")
-```
+\
+`if`` ``(``!`[`requireNamespace`](https://rdrr.io/r/base/ns-load.html)`(``"remotes"``, quietly ``=`` ``TRUE``)``)`` ``{`\
+`    `[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"remotes"``)`\
+`}`\
+`remotes``::`[`install_github`](https://remotes.r-lib.org/reference/install_github.html)`(``"kabilanbio/scSimEval"``)`\
+`remotes``::`[`install_github`](https://remotes.r-lib.org/reference/install_github.html)`(``"kabilanbio/scSimEvalStudio"``)`
 
 ### Step 2: Launch the App
 
-``` r
-library(scSimEvalStudio)
-
-# Launches the Shiny studio on a local port with a 10 GiB upload limit
-launch_scSimEval_app()
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`scSimEvalStudio`](https://kabilanbio.github.io/scSimEvalStudio/)`)`\
+\
+`# Launches the Shiny studio on a local port with a 10 GiB upload limit`\
+[`launch_scSimEval_app`](https://kabilanbio.github.io/scSimEvalStudio/reference/launch_scSimEval_app.md)`(``)`
 
 ### Step 3: Explore or Upload Your Data
 
@@ -76,16 +73,16 @@ launch_scSimEval_app()
 
 ## Inside the Shiny Studio (At a Glance)
 
-| Tab                               | What You Can Do                                                                                                                                                                                                                            |
-|:----------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **1. Home**                       | Quick overview of the studio and a 1-click button to jump straight to **Data Hub**.                                                                                                                                                        |
-| **2. Data Hub**                   | Load built-in example benchmarks, upload your own `.rds` datasets (scRNA-seq, scATAC-seq, or paired/unpaired multiomics), reload saved `.rds`/`.csv` results, or download a ready-to-run R script for large cluster jobs.                  |
-| **3. Comparative Bubble Matrix**  | Visually see which simulator performs best—**larger circles and scores closer to 1.0 mean a closer match to your real data**, and a **bold outline** marks the top simulator per metric. Includes a ranked **Fidelity Leaderboard** table. |
-| **4. Visualizations**             | Explore 8 interactive chart tabs (Summary Bars, Distribution QC, Metric Heatmap, Metric Plots, PCA & MDS Maps, UMAP/t-SNE/PCA Cell Embeddings, and Runtime/RAM Scalability) with zoom, pan, fullscreen view, and 600 DPI exports.          |
-| **5. Benchmark Results & Export** | Search and filter the complete scores table, and download everything as an **Excel workbook (`.xlsx`)**, **`.csv`**, or reusable **`.rds`** session file.                                                                                  |
-| **6. Help & Getting Started**     | Built-in beginner guide, workflow overview, and copy-paste tips right inside the app.                                                                                                                                                      |
-| **7. Logs**                       | Live progress tracker showing what the app is running in real time, with search and `.txt` log download.                                                                                                                                   |
-| **8. Contact**                    | Research team details and issue-reporting links.                                                                                                                                                                                           |
+| Tab | What You Can Do |
+|:---|:---|
+| **1. Home** | Quick overview of the studio and a 1-click button to jump straight to **Data Hub**. |
+| **2. Data Hub** | Load built-in example benchmarks, upload your own `.rds` datasets (scRNA-seq, scATAC-seq, or paired/unpaired multiomics), reload saved `.rds`/`.csv` results, or download a ready-to-run R script for large cluster jobs. |
+| **3. Comparative Bubble Matrix** | Visually see which simulator performs best—**larger circles and scores closer to 1.0 mean a closer match to your real data**, and a **bold outline** marks the top simulator per metric. Includes a ranked **Fidelity Leaderboard** table. |
+| **4. Visualizations** | Explore 8 interactive chart tabs (Summary Bars, Distribution QC, Metric Heatmap, Metric Plots, PCA & MDS Maps, UMAP/t-SNE/PCA Cell Embeddings, and Runtime/RAM Scalability) with zoom, pan, fullscreen view, and 600 DPI exports. |
+| **5. Benchmark Results & Export** | Search and filter the complete scores table, and download everything as an **Excel workbook (`.xlsx`)**, **`.csv`**, or reusable **`.rds`** session file. |
+| **6. Help & Getting Started** | Built-in beginner guide, workflow overview, and copy-paste tips right inside the app. |
+| **7. Logs** | Live progress tracker showing what the app is running in real time, with search and `.txt` log download. |
+| **8. Contact** | Research team details and issue-reporting links. |
 
 ------------------------------------------------------------------------
 

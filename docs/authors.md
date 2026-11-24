@@ -41,13 +41,13 @@ Sakthivel K, Dwijesh Chandra Mishra D, Shashi Bhushan Lal D, Ulavappa
 Angadi D, Sudhir Srivastava D, Neeraj Budhlakoti D, Krishna Kumar
 Chaturvedi D, Ranjeet Ranjan Kumar D, Navin Chandra Gupta D (2026).
 *scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell
-Multiomics Benchmarking*. R package version 0.99.6,
+Multiomics Benchmarking*. R package version 0.99.7,
 <https://kabilanbio.github.io/scSimEvalStudio/>.
 
-    @Manual{,
-      title = {scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking},
-      author = {Kabilan Sakthivel and Dr {Dwijesh Chandra Mishra} and Dr {Shashi Bhushan Lal} and Dr {Ulavappa Angadi} and Dr {Sudhir Srivastava} and Dr {Neeraj Budhlakoti} and Dr {Krishna Kumar Chaturvedi} and Dr {Ranjeet Ranjan Kumar} and Dr {Navin Chandra Gupta}},
-      year = {2026},
-      note = {R package version 0.99.6},
-      url = {https://kabilanbio.github.io/scSimEvalStudio/},
-    }
+@Manual{,\
+  title = {scSimEvalStudio: Interactive Shiny Studio for scSimEval Single-Cell Multiomics Benchmarking},\
+  author = {Kabilan Sakthivel and Dr {Dwijesh Chandra Mishra} and Dr {Shashi Bhushan Lal} and Dr {Ulavappa Angadi} and Dr {Sudhir Srivastava} and Dr {Neeraj Budhlakoti} and Dr {Krishna Kumar Chaturvedi} and Dr {Ranjeet Ranjan Kumar} and Dr {Navin Chandra Gupta}},\
+  year = {2026},\
+  note = {R package version 0.99.7},\
+  url = {https://kabilanbio.github.io/scSimEvalStudio/},\
+}

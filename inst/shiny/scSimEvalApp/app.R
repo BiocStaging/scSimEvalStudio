@@ -56,8 +56,8 @@ ui_max_cores <- max(128L, n_physical_cores)
 default_n_cores <- max(1L, min(4L, n_physical_cores - 1L))
 
 sys_hardware_summary <- sprintf("System detected: %d CPU cores", n_physical_cores)
-.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.6")
-.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.14")
+.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.7")
+.core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.17")
 
 # Register static resource directory for documentation figures
 fig_dirs <- c(
@@ -11812,7 +11812,7 @@ server <- function(input, output, session) {
       if (!is.null(fn_c5p) && !is.null(fn_c5l)) {
         disp_lbls <- fn_c5l(disp_lbls, avail_metrics, rep(input$sel_box_cat_first, length(avail_metrics)), fn_c5p(df))
       }
-      if (!is.null(fn_hib)) {
+      if (!is.null(fn_hib) && identical(input$sel_box_indiv_score, "raw")) {
         disp_lbls <- paste0(disp_lbls, ifelse(fn_hib(avail_metrics), " (\u2191)", " (\u2193)"))
       }
       choices_vec <- stats::setNames(avail_metrics, disp_lbls)
@@ -11820,7 +11820,9 @@ server <- function(input, output, session) {
       avail_metrics <- sort(avail_metrics)
       choices_vec <- avail_metrics
     }
-    selectInput("sel_box_metric_single", "2. Choose Metric Name:", choices = choices_vec, selected = avail_metrics[1])
+    prev_sel <- isolate(input$sel_box_metric_single)
+    sel_metric <- if (!is.null(prev_sel) && prev_sel %in% avail_metrics) prev_sel else avail_metrics[1]
+    selectInput("sel_box_metric_single", "2. Choose Metric Name:", choices = choices_vec, selected = sel_metric)
   })
 
   output$ui_box_cat_group_selector <- renderUI({

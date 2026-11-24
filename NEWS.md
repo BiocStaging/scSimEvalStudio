@@ -1,3 +1,9 @@
+# scSimEvalStudio 0.99.7
+
+* Synchronized with `scSimEval (>= 0.99.17)` for per-metric `[0, 1]` tile color scaling in raw-value heatmaps and raw-mode-only optimization-direction arrows (`↑` / `↓`) across all plotting modules.
+* Updated the Metric Plots single-metric picker so `↑` / `↓` direction arrows appear only when **Raw Metric Value** is selected (preserving the active metric selection on toggle), and synced package version references across `README.md`, vignettes, and `pkgdown` docs.
+
+
 # scSimEvalStudio 0.99.6
 
 * Synchronized with `scSimEval (>= 0.99.16)` for full 56-metric category coverage and optimization-direction arrows (`↑` / `↓`) across all visualization modules, including previously saved `.rds` uploads via Data Hub Option 4.
