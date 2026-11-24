@@ -56,7 +56,7 @@ ui_max_cores <- max(128L, n_physical_cores)
 default_n_cores <- max(1L, min(4L, n_physical_cores - 1L))
 
 sys_hardware_summary <- sprintf("System detected: %d CPU cores", n_physical_cores)
-.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.7")
+.studio_version <- tryCatch(as.character(utils::packageVersion("scSimEvalStudio")), error = function(e) "0.99.8")
 .core_version   <- tryCatch(as.character(utils::packageVersion("scSimEval")), error = function(e) "0.99.17")
 
 # Register static resource directory for documentation figures
@@ -9812,6 +9812,9 @@ server <- function(input, output, session) {
       actionButton(
         paste0("btn_view_dataset_", i),
         label = tagList(icon("database", class = "me-1"), d),
+        class = paste0("btn btn-sm me-1 mb-1 ", if (identical(current_sel, d)) "btn-primary active fw-bold" else "btn-outline-secondary"),
+        onclick = sprintf("Shiny.setInputValue('sel_bubble_dataset_view', '%s');", d)
+      )
     })
     
     div(

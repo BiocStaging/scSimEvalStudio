@@ -8,7 +8,7 @@
 
 ## Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.7`) is the beginner-friendly, point-and-click **Shiny web application** companion to **[`scSimEval`](https://kabilanbio.github.io/scSimEval/)**.
+**`scSimEvalStudio`** (version `0.99.8`) is the beginner-friendly, point-and-click **Shiny web application** companion to **[`scSimEval`](https://kabilanbio.github.io/scSimEval/)**.
 
 It lets you compare single-cell **RNA-seq**, **ATAC-seq**, and **multiomics** simulation methods right in your browser—**without writing plotting or analysis code**. You can try built-in example datasets with one click, upload your own `.rds` files, zoom into interactive charts, and export ready-to-use tables and publication-quality figures.
 

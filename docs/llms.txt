@@ -10,7 +10,7 @@ Engine](https://img.shields.io/badge/scSimEval-v0.99.17-2c3e50.svg)](https://kab
 
 ## Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.7`) is the beginner-friendly,
+**`scSimEvalStudio`** (version `0.99.8`) is the beginner-friendly,
 point-and-click **Shiny web application** companion to
 **[`scSimEval`](https://kabilanbio.github.io/scSimEval/)**.
 

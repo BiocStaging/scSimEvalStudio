@@ -2,7 +2,7 @@
 
 ## 1. Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.7`) is a **point-and-click Shiny
+**`scSimEvalStudio`** (version `0.99.8`) is a **point-and-click Shiny
 web app** built to make single-cell and multiomics simulation
 benchmarking simple and accessible—even if you are brand new to R.
 
@@ -232,7 +232,7 @@ properly:
 `#> other attached packages:`\
 `#> [1] scSimEval_0.99.17      Matrix_1.7-6           DT_0.34.0             `\
 `#> [4] ggplot2_4.0.4          bslib_0.12.0           shiny_1.14.0          `\
-`#> [7] scSimEvalStudio_0.99.6`\
+`#> [7] scSimEvalStudio_0.99.8`\
 `#> `\
 `#> loaded via a namespace (and not attached):`\
 `#>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             `\

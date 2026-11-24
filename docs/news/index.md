@@ -1,5 +1,15 @@
 # Changelog
 
+## scSimEvalStudio 0.99.8
+
+- Updated the **Benchmark Results & Export** table
+  (`table_master_export`) and `.xlsx`/`.csv`/`.txt` exports to
+  disambiguate all 56 canonical metric names (`rna_de_*`, `atac_da_*`,
+  `integration_ari`, `integration_nmi`) and enable dropdown filtering on
+  `Modality`, while maintaining full backward/forward compatibility with
+  previously saved `.rds` session files and re-uploaded `.csv`/`.xlsx`
+  tables.
+
 ## scSimEvalStudio 0.99.7
 
 - Synchronized with `scSimEval (>= 0.99.17)` for per-metric `[0, 1]`
