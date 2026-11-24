@@ -8174,6 +8174,7 @@ server <- function(input, output, session) {
       req(df)
       if (!"Method" %in% colnames(df) && "Simulator" %in% colnames(df)) df$Method <- df$Simulator
       if (!"Score" %in% colnames(df) && "Value" %in% colnames(df)) df$Score <- df$Value
+      if (!"Score" %in% colnames(df) && "Score_Raw" %in% colnames(df)) df$Score <- df$Score_Raw
       if (!"Score_Raw" %in% colnames(df) && "Score" %in% colnames(df)) df$Score_Raw <- df$Score
       if (!"Sim_Cores" %in% colnames(df)) {
         ch <- intersect(c("Cores_Used", "Cores", "n_cores"), colnames(df))
@@ -9811,9 +9812,6 @@ server <- function(input, output, session) {
       actionButton(
         paste0("btn_view_dataset_", i),
         label = tagList(icon("database", class = "me-1"), d),
-        class = paste0("btn btn-sm me-1 mb-1 ", if (identical(current_sel, d)) "btn-primary active fw-bold" else "btn-outline-secondary"),
-        onclick = sprintf("Shiny.setInputValue('sel_bubble_dataset_view', '%s');", d)
-      )
     })
     
     div(
@@ -12486,7 +12484,7 @@ server <- function(input, output, session) {
     filename = function() { paste0("scSimEval_benchmark_results_", Sys.Date(), ".xlsx") },
     content = function(file) {
       req(rv$benchmark_df)
-      export_excel_workbook(file, rv$benchmark_df, leaderboard_reactive(), rv$dataset_summary_df)
+      export_excel_workbook(file, prepare_master_export_df(rv$benchmark_df, round_scores = FALSE), leaderboard_reactive(), rv$dataset_summary_df)
     }
   )
   
@@ -12494,7 +12492,7 @@ server <- function(input, output, session) {
     filename = function() { paste0("scSimEval_benchmark_results_", Sys.Date(), ".csv") },
     content = function(file) {
       req(rv$benchmark_df)
-      utils::write.csv(rv$benchmark_df, file, row.names = FALSE)
+      utils::write.csv(prepare_master_export_df(rv$benchmark_df, round_scores = FALSE), file, row.names = FALSE)
     }
   )
   
@@ -12502,7 +12500,7 @@ server <- function(input, output, session) {
     filename = function() { paste0("scSimEval_benchmark_results_", Sys.Date(), ".txt") },
     content = function(file) {
       req(rv$benchmark_df)
-      utils::write.table(rv$benchmark_df, file, sep = "\t", row.names = FALSE, quote = FALSE)
+      utils::write.table(prepare_master_export_df(rv$benchmark_df, round_scores = FALSE), file, sep = "\t", row.names = FALSE, quote = FALSE)
     }
   )
   
@@ -12599,6 +12597,74 @@ server <- function(input, output, session) {
     }
   )
   
+  # Shared formatter for Benchmark Results & Export table and .xlsx/.csv downloads
+  # Disambiguates all 56 canonical metric names (Cat V RNA DE vs ATAC DA; Cat VI Integration ARI/NMI)
+  # without mutating rv$benchmark_df or breaking backward compatibility with previously saved .rds files.
+  prepare_master_export_df <- function(df, round_scores = FALSE) {
+    if (is.null(df) || !is.data.frame(df) || nrow(df) == 0L) return(df)
+    ns_sc <- tryCatch(asNamespace("scSimEval"), error = function(e) NULL)
+    fn_c6 <- if (!is.null(ns_sc)) get0(".disambiguate_cat6_metrics", envir = ns_sc, mode = "function", inherits = FALSE) else NULL
+    fn_c5 <- if (!is.null(ns_sc)) get0(".disambiguate_cat5_metrics", envir = ns_sc, mode = "function", inherits = FALSE) else NULL
+
+    if (!is.null(fn_c6)) {
+      df <- fn_c6(df)
+    } else if (all(c("Category", "Metric") %in% colnames(df))) {
+      is_c6 <- grepl("^\\(VI\\)|Multiomics Integration|Cross-Modal", as.character(df$Category), ignore.case = TRUE)
+      if (any(is_c6)) {
+        m_chr <- as.character(df$Metric)
+        m_chr[is_c6 & m_chr == "ari"] <- "integration_ari"
+        m_chr[is_c6 & m_chr == "nmi"] <- "integration_nmi"
+        df$Metric <- m_chr
+      }
+    }
+
+    if (!is.null(fn_c5)) {
+      df <- fn_c5(df)
+    } else if (all(c("Category", "Metric") %in% colnames(df))) {
+      is_c5 <- grepl("^\\(V\\)|Biological Signal|Bio-Signal", as.character(df$Category), ignore.case = TRUE)
+      if (any(is_c5)) {
+        prop_chr <- if ("Property" %in% colnames(df)) as.character(df$Property) else rep("", nrow(df))
+        mod_chr  <- if ("Modality" %in% colnames(df)) as.character(df$Modality) else rep("", nrow(df))
+        m_chr    <- as.character(df$Metric)
+        is_rna   <- is_c5 & (grepl("scRNA_differential_expression|differential_expression", prop_chr, ignore.case = TRUE) | grepl("^rna$|scrna", mod_chr, ignore.case = TRUE) | grepl("^rna_de_", m_chr, ignore.case = TRUE))
+        is_atac  <- is_c5 & (grepl("scATAC_differential_accessibility|differential_accessibility", prop_chr, ignore.case = TRUE) | grepl("^atac$|scatac", mod_chr, ignore.case = TRUE) | grepl("^atac_da_", m_chr, ignore.case = TRUE))
+        if (any(is_rna) && any(is_atac)) {
+          rna_map  <- c(pval_dist_score = "rna_de_pval_dist_score", accuracy = "rna_de_accuracy", precision = "rna_de_precision", recall = "rna_de_recall", f1_score = "rna_de_f1", auc = "rna_de_auc")
+          atac_map <- c(pval_dist_score = "atac_da_pval_dist_score", accuracy = "atac_da_accuracy", precision = "atac_da_precision", recall = "atac_da_recall", f1_score = "atac_da_f1", auc = "atac_da_auc")
+          hit_r <- is_rna & m_chr %in% names(rna_map)
+          if (any(hit_r)) m_chr[hit_r] <- unname(rna_map[m_chr[hit_r]])
+          hit_a <- is_atac & m_chr %in% names(atac_map)
+          if (any(hit_a)) m_chr[hit_a] <- unname(atac_map[m_chr[hit_a]])
+          df$Metric <- m_chr
+        }
+      }
+    }
+
+    if (!"Dataset" %in% colnames(df)) df$Dataset <- "Dataset 1"
+    if (!"Score_Raw" %in% colnames(df)) {
+      if ("Value" %in% colnames(df)) df$Score_Raw <- df$Value
+      else if ("Raw_Value" %in% colnames(df)) df$Score_Raw <- df$Raw_Value
+      else df$Score_Raw <- df$Score
+    }
+    if (isTRUE(round_scores)) {
+      df$Score_Raw <- round(as.numeric(df$Score_Raw), 4)
+    }
+    if (!"Property" %in% colnames(df)) {
+      df$Property <- df$Metric
+    } else {
+      df$Property <- ifelse(is.na(df$Property) | df$Property == "", df$Metric, df$Property)
+    }
+    df$Score <- NULL
+    df$Score_Norm <- NULL
+    df$Value <- NULL
+    df$Raw_Value <- NULL
+
+    pref_cols <- c("Dataset", "Method", "Category", "Property", "Metric", "Score_Raw", intersect("Modality", colnames(df)))
+    col_order <- unique(c(pref_cols, colnames(df)))
+    col_order <- intersect(col_order, colnames(df))
+    df[, col_order, drop = FALSE]
+  }
+
   # Unified format downloader based on sel_download_format
   # Dedicated Master Table Download Handlers inside the Table Box
   output$download_master_table_excel <- downloadHandler(
@@ -12607,31 +12673,12 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       req(rv$benchmark_df)
-      df_export <- rv$benchmark_df
+      df_export <- prepare_master_export_df(rv$benchmark_df, round_scores = FALSE)
       if (!is.null(input$table_master_export_rows_all) &&
           length(input$table_master_export_rows_all) > 0 &&
           length(input$table_master_export_rows_all) < nrow(df_export)) {
         df_export <- df_export[input$table_master_export_rows_all, , drop = FALSE]
       }
-      if (!"Dataset" %in% colnames(df_export)) df_export$Dataset <- "Dataset 1"
-      if (!"Score_Raw" %in% colnames(df_export)) {
-        if ("Value" %in% colnames(df_export)) df_export$Score_Raw <- df_export$Value
-        else if ("Raw_Value" %in% colnames(df_export)) df_export$Score_Raw <- df_export$Raw_Value
-        else df_export$Score_Raw <- df_export$Score
-      }
-      if (!"Property" %in% colnames(df_export)) {
-        df_export$Property <- df_export$Metric
-      } else {
-        df_export$Property <- ifelse(is.na(df_export$Property) | df_export$Property == "", df_export$Metric, df_export$Property)
-      }
-      df_export$Score <- NULL
-      df_export$Score_Norm <- NULL
-      df_export$Value <- NULL
-      df_export$Raw_Value <- NULL
-      pref_cols <- c("Dataset", "Method", "Category", "Property", "Metric", "Score_Raw", intersect("Modality", colnames(df_export)))
-      col_order <- unique(c(pref_cols, colnames(df_export)))
-      col_order <- intersect(col_order, colnames(df_export))
-      df_export <- df_export[, col_order, drop = FALSE]
       export_excel_workbook(file, df_export, leaderboard_reactive(), rv$dataset_summary_df)
     }
   )
@@ -12642,31 +12689,12 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       req(rv$benchmark_df)
-      df_export <- rv$benchmark_df
+      df_export <- prepare_master_export_df(rv$benchmark_df, round_scores = FALSE)
       if (!is.null(input$table_master_export_rows_all) &&
           length(input$table_master_export_rows_all) > 0 &&
           length(input$table_master_export_rows_all) < nrow(df_export)) {
         df_export <- df_export[input$table_master_export_rows_all, , drop = FALSE]
       }
-      if (!"Dataset" %in% colnames(df_export)) df_export$Dataset <- "Dataset 1"
-      if (!"Score_Raw" %in% colnames(df_export)) {
-        if ("Value" %in% colnames(df_export)) df_export$Score_Raw <- df_export$Value
-        else if ("Raw_Value" %in% colnames(df_export)) df_export$Score_Raw <- df_export$Raw_Value
-        else df_export$Score_Raw <- df_export$Score
-      }
-      if (!"Property" %in% colnames(df_export)) {
-        df_export$Property <- df_export$Metric
-      } else {
-        df_export$Property <- ifelse(is.na(df_export$Property) | df_export$Property == "", df_export$Metric, df_export$Property)
-      }
-      df_export$Score <- NULL
-      df_export$Score_Norm <- NULL
-      df_export$Value <- NULL
-      df_export$Raw_Value <- NULL
-      pref_cols <- c("Dataset", "Method", "Category", "Property", "Metric", "Score_Raw", intersect("Modality", colnames(df_export)))
-      col_order <- unique(c(pref_cols, colnames(df_export)))
-      col_order <- intersect(col_order, colnames(df_export))
-      df_export <- df_export[, col_order, drop = FALSE]
       utils::write.csv(df_export, file, row.names = FALSE)
     }
   )
@@ -12684,43 +12712,10 @@ server <- function(input, output, session) {
   
   output$table_master_export <- renderDT({
     req(rv$benchmark_df)
-    df <- rv$benchmark_df
-    
-    # Ensure Dataset column exists and is positioned first for instant dropdown filtering
-    if (!"Dataset" %in% colnames(df)) df$Dataset <- "Dataset 1"
-    
-    # Ensure raw values are present
-    if (!"Score_Raw" %in% colnames(df)) {
-      if ("Value" %in% colnames(df)) df$Score_Raw <- df$Value
-      else if ("Raw_Value" %in% colnames(df)) df$Score_Raw <- df$Raw_Value
-      else df$Score_Raw <- df$Score
-    }
-    
-    # Ensure Score_Raw is rounded to 4 decimals
-    df$Score_Raw <- round(as.numeric(df$Score_Raw), 4)
-    
-    # Ensure Property column is present and never empty
-    if (!"Property" %in% colnames(df)) {
-      df$Property <- df$Metric
-    } else {
-      df$Property <- ifelse(is.na(df$Property) | df$Property == "", df$Metric, df$Property)
-    }
-    
-    # Remove redundant intermediate columns (keep only Score_Raw)
-    df$Score <- NULL
-    df$Score_Norm <- NULL
-    df$Value <- NULL
-    df$Raw_Value <- NULL
-    
-    # Establish clean, logical column ordering:
-    # Dataset -> Method -> Category -> Property -> Metric -> Score_Raw -> Modality
-    pref_cols <- c("Dataset", "Method", "Category", "Property", "Metric", "Score_Raw", intersect("Modality", colnames(df)))
-    col_order <- unique(c(pref_cols, colnames(df)))
-    col_order <- intersect(col_order, colnames(df))
-    df <- df[, col_order, drop = FALSE]
+    df <- prepare_master_export_df(rv$benchmark_df, round_scores = TRUE)
     
     # Convert text columns to factors for automatic DT dropdown filtering
-    cat_cols <- c("Dataset", "Method", "Category", "Metric", "Property")
+    cat_cols <- c("Dataset", "Method", "Category", "Metric", "Property", "Modality")
     for (col in cat_cols) {
       if (col %in% colnames(df)) df[[col]] <- as.factor(df[[col]])
     }
