@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 ## 1. Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.8`) is a **point-and-click Shiny web app** built to make single-cell and multiomics simulation benchmarking simple and accessible—even if you are brand new to R.
+**`scSimEvalStudio`** (version `0.99.9`) is a **point-and-click Shiny web app** built to make single-cell and multiomics simulation benchmarking simple and accessible—even if you are brand new to R.
 
 Instead of writing scripts to run metrics and format dozens of plots, `scSimEvalStudio` gives you a clean browser workspace where you can:
 
@@ -32,13 +32,7 @@ Instead of writing scripts to run metrics and format dozens of plots, `scSimEval
 > All underlying evaluation methods are documented separately on the **[scSimEval Core Package Documentation](https://kabilanbio.github.io/scSimEval/)**.
 
 ```{r workflow-diagram, echo = FALSE, out.width = "100%", fig.cap = "Overview of the 4 simple stages inside scSimEvalStudio: Load Data, Run Evaluation, Compare Rankings, and Explore & Export Results."}
-wf_img <- system.file("shiny", "scSimEvalApp", "www", "workflow_diagram.png", package = "scSimEvalStudio")
-if (!nzchar(wf_img) || !file.exists(wf_img)) {
-  wf_img <- "../inst/shiny/scSimEvalApp/www/workflow_diagram.png"
-}
-if (file.exists(wf_img)) {
-  knitr::include_graphics(wf_img)
-}
+knitr::include_graphics("workflow_diagram.png")
 ```
 
 ---

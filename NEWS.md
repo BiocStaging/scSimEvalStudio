@@ -1,3 +1,9 @@
+# scSimEvalStudio 0.99.9
+
+* Fixed the `pkgdown` documentation stylesheet by adding `pkgdown/extra.css` synchronized with `scSimEval`, restoring identical `Inter` / `JetBrains Mono` typography, font sizes, high-contrast dark mode, interactive figure zoom/lightbox controls, and the collapsible **"On this page"** sidebar toggle and floating restore button across all `github.io` pages.
+* Fixed the broken workflow overview diagram in the **Architecture & Studio Guide** (`vignettes/scSimEvalStudio-workflow.Rmd`) by bundling `vignettes/workflow_diagram.png` and referencing it via a relative path so it renders reliably in both Bioconductor vignette builds and GitHub Pages (`pkgdown`).
+
+
 # scSimEvalStudio 0.99.8
 
 * Updated the **Benchmark Results & Export** table (`table_master_export`) and `.xlsx`/`.csv`/`.txt` exports to disambiguate all 56 canonical metric names (`rna_de_*`, `atac_da_*`, `integration_ari`, `integration_nmi`) and enable dropdown filtering on `Modality`, while maintaining full backward/forward compatibility with previously saved `.rds` session files and re-uploaded `.csv`/`.xlsx` tables.

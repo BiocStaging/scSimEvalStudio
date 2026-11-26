@@ -4,13 +4,13 @@
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-pkgdown-blue.svg)](https://kabilanbio.github.io/scSimEvalStudio/)
 [![Core
-Engine](https://img.shields.io/badge/scSimEval-v0.99.17-2c3e50.svg)](https://kabilanbio.github.io/scSimEval/)
+Engine](https://img.shields.io/badge/scSimEval-v0.99.18-2c3e50.svg)](https://kabilanbio.github.io/scSimEval/)
 
 ------------------------------------------------------------------------
 
 ## Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.8`) is the beginner-friendly,
+**`scSimEvalStudio`** (version `0.99.9`) is the beginner-friendly,
 point-and-click **Shiny web application** companion to
 **[`scSimEval`](https://kabilanbio.github.io/scSimEval/)**.
 

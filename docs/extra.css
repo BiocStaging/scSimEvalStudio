@@ -1,97 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ==========================================================================
-   scSimEvalStudio Documentation Theme (Flatly Light + High-Contrast Night Mode)
+   scSimEval Documentation Theme (Tidyverse Light + High-Contrast Night Mode)
    ========================================================================== */
-
-:root,
-[data-bs-theme="light"] {
-  --bs-primary: #2c3e50 !important;
-  --bs-secondary: #95a5a6 !important;
-  --bs-success: #18bc9c !important;
-  --bs-info: #3498db !important;
-  --bs-warning: #f39c12 !important;
-  --bs-danger: #e74c3c !important;
-  --bs-light: #ecf0f1 !important;
-  --bs-dark: #7b8a8b !important;
-  --bs-primary-rgb: 44, 62, 80 !important;
-  --bs-secondary-rgb: 149, 165, 166 !important;
-  --bs-success-rgb: 24, 188, 156 !important;
-  --bs-info-rgb: 52, 152, 219 !important;
-  --bs-warning-rgb: 243, 156, 18 !important;
-  --bs-danger-rgb: 231, 76, 60 !important;
-  --bs-link-color: #18bc9c !important;
-  --bs-link-color-rgb: 24, 188, 156 !important;
-  --bs-link-hover-color: #13967d !important;
-  --bs-link-hover-color-rgb: 19, 150, 125 !important;
-}
-
-.navbar {
-  --bs-navbar-padding-x: 0;
-  --bs-navbar-padding-y: 0.75rem;
-}
-
-.row > main,
-.row > aside {
-  margin-top: 76px;
-}
-
-html,
-body {
-  scroll-padding-top: 80px;
-}
-
-html:not([data-bs-theme="dark"]) .navbar {
-  --bs-navbar-padding-x: 0;
-  --bs-navbar-padding-y: 0.75rem;
-  --bs-navbar-color: #ffffff;
-  --bs-navbar-hover-color: #18bc9c;
-  --bs-navbar-disabled-color: rgba(255, 255, 255, 0.3);
-  --bs-navbar-active-color: #18bc9c;
-  --bs-navbar-brand-color: #ffffff;
-  --bs-navbar-brand-hover-color: #ffffff;
-  --bs-navbar-toggler-border-color: rgba(255, 255, 255, 0.25);
-  background-color: #2c3e50 !important;
-  background: #2c3e50 !important;
-  line-height: initial;
-}
-
-html:not([data-bs-theme="dark"]) .navbar .navbar-brand {
-  color: #ffffff !important;
-}
-
-html:not([data-bs-theme="dark"]) .navbar .nav-text,
-html:not([data-bs-theme="dark"]) .navbar small.nav-text {
-  color: rgba(255, 255, 255, 0.78) !important;
-}
-
-html:not([data-bs-theme="dark"]) .navbar .nav-link {
-  color: #ffffff !important;
-}
-
-html:not([data-bs-theme="dark"]) .navbar .nav-link:hover,
-html:not([data-bs-theme="dark"]) .navbar .nav-link:focus,
-html:not([data-bs-theme="dark"]) .navbar .nav-item.active > .nav-link,
-html:not([data-bs-theme="dark"]) .navbar .nav-link.active {
-  color: #18bc9c !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-html:not([data-bs-theme="dark"]) .navbar .fa,
-html:not([data-bs-theme="dark"]) .navbar .fa-solid,
-html:not([data-bs-theme="dark"]) .navbar .fa-brands,
-html:not([data-bs-theme="dark"]) .navbar .fas,
-html:not([data-bs-theme="dark"]) .navbar .fab {
-  color: inherit !important;
-}
-
-html:not([data-bs-theme="dark"]) .navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.3) !important;
-}
-
-html:not([data-bs-theme="dark"]) .navbar .navbar-toggler-icon {
-  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-}
 
 /* Typography & Global Layout */
 body {
@@ -252,7 +163,8 @@ main#main, .col-md-9 {
     margin-top: 2rem !important;
     border-top: 1px solid #e2e8f0 !important;
     border-left: none !important;
-    padding: 1rem 1.25rem !important;
+    padding-top: 1.5rem !important;
+    padding-left: 0 !important;
   }
 }
 
@@ -352,7 +264,7 @@ p > img:not(.logo):not([src*="shields.io"]):not([src*="badge"]) {
   height: auto !important;
 }
 
-/* Remove 'Source: ...' links everywhere */
+/* Remove 'Source: vignettes/****.Rmd' texts everywhere */
 .page-header small.dont-index,
 .template-article small.dont-index,
 small.dont-index {
@@ -474,25 +386,6 @@ small.dont-index {
   align-items: center !important;
   flex-direction: row !important;
   gap: 0.25rem !important;
-}
-
-@media (max-width: 991.98px) {
-  .navbar .navbar-nav:last-child {
-    flex-wrap: wrap !important;
-    margin-top: 0.5rem !important;
-    gap: 0.5rem !important;
-  }
-
-  .navbar form[role="search"] {
-    width: 100% !important;
-    margin: 0.25rem 0 !important;
-  }
-
-  .navbar #search-input,
-  .navbar #search-input:focus {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
 }
 
 #dropdown-lightswitch {
@@ -658,8 +551,6 @@ small.dont-index {
 
 /* 3. Navbar, Icons, Lightswitch & Dropdowns */
 [data-bs-theme="dark"] .navbar {
-  --bs-navbar-padding-x: 0;
-  --bs-navbar-padding-y: 0.75rem;
   background-color: #0F172A !important;
   border-bottom: 1px solid #334155 !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
@@ -694,10 +585,6 @@ small.dont-index {
 
 [data-bs-theme="dark"] .navbar-toggler {
   border-color: #475569 !important;
-}
-
-[data-bs-theme="dark"] .navbar .navbar-toggler-icon {
-  --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28241,245,249,0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
 }
 
 [data-bs-theme="dark"] .navbar .dropdown-menu {
@@ -1137,10 +1024,10 @@ small.dont-index {
 }
 
 /* Immediate horizontal expansion of main panel and container when TOC is collapsed */
-body.toc-collapsed > .container,
-body.toc-collapsed > .container.template-article,
-body.toc-collapsed > .container-xl,
-body.toc-collapsed > .container-xxl,
+body.toc-collapsed .container,
+body.toc-collapsed .container.template-article,
+body.toc-collapsed .container-xl,
+body.toc-collapsed .container-xxl,
 .container.container-fullwidth {
   max-width: 96% !important;
   width: 96% !important;
@@ -1284,8 +1171,7 @@ p.caption {
   border-color: #334155;
 }
 
-.sc-doc-zoom-container.sc-pannable,
-.sc-doc-zoom-container.sc-pannable .sc-doc-zoom-target img {
+.sc-doc-zoom-container.sc-pannable {
   cursor: grab;
 }
 
@@ -1370,7 +1256,7 @@ p.caption {
   max-height: none !important;
   -webkit-user-drag: none;
   user-select: none;
-  cursor: inherit;
+  pointer-events: none;
 }
 
 .sc-lightbox-close {
@@ -1444,4 +1330,64 @@ p.caption {
   cursor: pointer;
   height: 6px;
 }
+
+/* ==========================================================================
+   Reference Examples Visibility, Responsive Example Plots & KaTeX Math
+   ========================================================================== */
+.template-reference-topic pre,
+#ref-examples ~ .sourceCode pre {
+  max-height: none !important;
+  overflow-y: visible !important;
+  overflow-x: auto !important;
+  white-space: pre !important;
+}
+
+pre .r-plt.img,
+span.r-plt.img {
+  display: block !important;
+  margin: 0.9rem 0 !important;
+  text-align: center !important;
+  white-space: normal !important;
+}
+
+pre .r-plt.img img,
+span.r-plt.img img {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin: 0 auto !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  padding: 4px !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box !important;
+  cursor: zoom-in !important;
+}
+
+[data-bs-theme="dark"] pre .r-plt.img img,
+[data-bs-theme="dark"] span.r-plt.img img {
+  background-color: #ffffff !important;
+  border-color: #475569 !important;
+  filter: none !important;
+}
+
+/* KaTeX mathematical notation rendering */
+.katex {
+  font-size: 1.04em !important;
+  color: inherit !important;
+}
+
+.katex-display {
+  margin: 1rem 0 !important;
+  padding: 0.35rem 0.5rem !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+[data-bs-theme="dark"] .katex,
+[data-bs-theme="dark"] .katex-display {
+  color: #f1f5f9 !important;
+}
+
 

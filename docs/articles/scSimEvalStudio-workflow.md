@@ -2,7 +2,7 @@
 
 ## 1. Welcome to `scSimEvalStudio`
 
-**`scSimEvalStudio`** (version `0.99.8`) is a **point-and-click Shiny
+**`scSimEvalStudio`** (version `0.99.9`) is a **point-and-click Shiny
 web app** built to make single-cell and multiomics simulation
 benchmarking simple and accessible—even if you are brand new to R.
 
@@ -25,7 +25,7 @@ Instead of writing scripts to run metrics and format dozens of plots,
 
 ![Overview of the 4 simple stages inside scSimEvalStudio: Load Data, Run
 Evaluation, Compare Rankings, and Explore & Export
-Results.](../../../../../../../../../C%3A/Users/kabil/AppData/Local/R/win-library/4.6/scSimEvalStudio/shiny/scSimEvalApp/www/workflow_diagram.png)
+Results.](workflow_diagram.png)
 
 Overview of the 4 simple stages inside scSimEvalStudio: Load Data, Run
 Evaluation, Compare Rankings, and Explore & Export Results.
@@ -230,9 +230,9 @@ properly:
 `#> [1] stats     graphics  grDevices utils     datasets  methods   base     `\
 `#> `\
 `#> other attached packages:`\
-`#> [1] scSimEval_0.99.17      Matrix_1.7-6           DT_0.34.0             `\
+`#> [1] scSimEval_0.99.18      Matrix_1.7-6           DT_0.34.0             `\
 `#> [4] ggplot2_4.0.4          bslib_0.12.0           shiny_1.14.0          `\
-`#> [7] scSimEvalStudio_0.99.8`\
+`#> [7] scSimEvalStudio_0.99.9`\
 `#> `\
 `#> loaded via a namespace (and not attached):`\
 `#>   [1] RColorBrewer_1.1-3          jsonlite_2.0.0             `\
